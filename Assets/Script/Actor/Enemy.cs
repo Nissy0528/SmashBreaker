@@ -79,9 +79,16 @@ public class Enemy : MonoBehaviour
     }
 
     /// <summary>
+    /// 気絶フラグ
+    /// </summary>
+    public bool IsStan
+    {
+        get { return isStan; }
+    }
+
+    /// <summary>
     /// あたり判定
     /// </summary>
-    /// <param name="col"></param>
     void OnTriggerEnter2D(Collider2D col)
     {
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
@@ -95,5 +102,15 @@ public class Enemy : MonoBehaviour
             col.transform.parent.GetComponent<Player>().ChangeHp(1);
             GameManager.GameStop();//ゲーム停止
         }
+
+        //吹き飛ばされた敵に当たったら消滅
+        if (col.transform.tag == "Enemy")
+        {
+            if (col.gameObject.GetComponent<Enemy>().IsStan && !isStan)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
+
 }
