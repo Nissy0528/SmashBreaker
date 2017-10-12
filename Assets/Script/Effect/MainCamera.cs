@@ -77,17 +77,17 @@ public class MainCamera : MonoBehaviour
     /// 画面の左下
     /// </summary>
     /// <returns></returns>
-    public Vector3 ScreenMin()
+    public Vector3 ScreenMin
     {
-        return screenMinPos;
+        get { return screenMinPos; }
     }
 
     /// <summary>
     /// 画面の右下
     /// </summary>
     /// <returns></returns>
-    public Vector3 ScreenMax()
+    public Vector3 ScreenMax
     {
-        return screenMaxPos;
+        get { return screenMaxPos; }
     }
 }

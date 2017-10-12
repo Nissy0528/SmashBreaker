@@ -66,8 +66,8 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Clamp()
     {
-        Vector3 screenMinPos = camera.ScreenMin();//画面の左下の座標
-        Vector3 screenMaxPos = camera.ScreenMax();//画面の右下の座標
+        Vector3 screenMinPos = camera.ScreenMin;//画面の左下の座標
+        Vector3 screenMaxPos = camera.ScreenMax;//画面の右下の座標
 
         //座標を画面内に制限
         Vector3 pos = transform.position;

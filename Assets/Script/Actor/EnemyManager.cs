@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    public GameObject enemy;//敵オブジェクト
+    public GameObject enemyBorn;//敵登場エフェクト
     public float spawnSpeed;//敵生成速度
     public int enemyRange;//敵生成の最大数
 
     private GameObject[] enemys;//現在ゲーム上にいる敵
+    private GameObject[] enemyBorns;//現在ゲーム上にある敵登場エフェクト
     private MainCamera camera;//カメラ
     private Vector3 spawnPos;//生成位置
     private float spawnDelay;
-    private int spawnPosNum;
 
     // Use this for initialization
     void Start()
@@ -25,6 +25,7 @@ public class EnemyManager : MonoBehaviour
     void Update()
     {
         enemys = GameObject.FindGameObjectsWithTag("Enemy");//ゲーム上にいる敵取得
+        enemyBorns = GameObject.FindGameObjectsWithTag("EnemyBorn");//ゲーム上にある敵登場エフェクト
         Spawn();//敵生成
     }
 
@@ -34,7 +35,7 @@ public class EnemyManager : MonoBehaviour
     private void Spawn()
     {
         //敵の数が指定数以上になったら生成しない
-        if (enemys.Length >= enemyRange) return;
+        if (enemys.Length >= enemyRange || enemyBorns.Length >= enemyRange) return;
 
         if (spawnDelay > 0.0f)
         {
@@ -43,34 +44,12 @@ public class EnemyManager : MonoBehaviour
 
         if (spawnDelay <= 0.0f)
         {
-            spawnPosNum = Random.Range(0, 4);
-            switch(spawnPosNum)
-            {
-                //画面外の上に座標を指定
-                case 0:
-                    spawnPos.x = Random.Range(camera.ScreenMin().x, camera.ScreenMax().x);
-                    spawnPos.y = camera.ScreenMax().y;
-                    break;
-                //画面外の右に座標を指定
-                case 1:
-                    spawnPos.x = camera.ScreenMax().x;
-                    spawnPos.y = Random.Range(camera.ScreenMin().y, camera.ScreenMax().y);
-                    break;
-                //画面外の下に座標を指定
-                case 2:
-                    spawnPos.x = Random.Range(camera.ScreenMin().x, camera.ScreenMax().x);
-                    spawnPos.y = camera.ScreenMin().y;
-                    break;
-                //画面外の左に座標を指定
-                case 3:
-                    spawnPos.x = camera.ScreenMin().x;
-                    spawnPos.y = Random.Range(camera.ScreenMin().y, camera.ScreenMax().y);
-                    break;
-            }
+            spawnPos.x = Random.Range(camera.ScreenMin.x, camera.ScreenMax.x);
+            spawnPos.y = Random.Range(camera.ScreenMin.y, camera.ScreenMax.y);
 
             //敵を生成位置に生成
-            GameObject enemyObj = Instantiate(enemy);
-            enemyObj.transform.position = spawnPos;
+            GameObject enemyBornObj = Instantiate(enemyBorn);
+            enemyBornObj.transform.position = spawnPos;
             spawnDelay = spawnSpeed;
         }
     }

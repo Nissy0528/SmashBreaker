@@ -66,8 +66,8 @@ public class Enemy : MonoBehaviour
         if (!isStan) return;
 
         Vector3 pos = transform.position;
-        Vector3 screenMinPos = camera.ScreenMin();//画面の左下の座標
-        Vector3 screenMaxPos = camera.ScreenMax();//画面の右下の座標
+        Vector3 screenMinPos = camera.ScreenMin;//画面の左下の座標
+        Vector3 screenMaxPos = camera.ScreenMax;//画面の右下の座標
 
         //画面外に出たら消滅
         if (pos.x <= screenMinPos.x - size.x / 2 || pos.x >= screenMaxPos.x + size.x / 2
