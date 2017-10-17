@@ -5,18 +5,24 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float speed;//移動速度
+    public float backSpeed;//殴ったときに後ろに下がる速度
     public int hp;//体力
-    public GameObject smashCol;//攻撃のあたり判定
 
+    private GameObject smashCol;//攻撃のあたり判定
+    private GameObject backPosObj;//後ろに下がる座標オブジェクト
+    private GameObject smashGage;//スマッシュゲージ
     private MainCamera camera;//カメラ
     private Animator anim;//アニメーション
     private Vector3 size;//大きさ
     private Vector3 attackColSize;//攻撃あたり判定の大きさ
     private Vector3 iniAttackPos;//攻撃あたり判定の初期位置
+    private Vector3 backPos;//後ろに下がる座標
     private float x_axis;//横の入力値
     private float y_axis;//縦の入力値
+    private float sp;//スマッシュポイント
     private bool isSmash;//攻撃フラグ
     private bool isDamage;//ダメージ
+    private bool isBack;//tureなら後ろに下がり続ける
 
     //↓仮変数（後で使わなくなるかも）
     private int flashCnt;//点滅カウント
@@ -37,14 +43,23 @@ public class Player : MonoBehaviour
     void Start()
     {
         camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        smashCol = transform.Find("SmashColllison").gameObject;
+        backPosObj = transform.Find("BackPos").gameObject;
         size = transform.localScale;//大きさ取得
         anim = GetComponent<Animator>();
-        isSmash = false;//攻撃フラグfalse
         state = State.IDEL;//最初は待機状態
+
         //あたり判定の大きさを体力に合わせて変える
         attackColSize = smashCol.transform.localScale;
         iniAttackPos = smashCol.transform.localPosition;
         ChangeHp(0);
+
+        //各フラグをfalseに
+        isSmash = false;
+        isDamage = false;
+        isBack = false;
+
+        sp = 0.0f;
     }
 
     // Update is called once per frame
@@ -56,32 +71,36 @@ public class Player : MonoBehaviour
             Move();//移動
             Rotate();//向き変更
             Damage();//ダメージ演出
+            Back();//後ろに下がる
         }
         Animation();//アニメーションの制御
-        Clamp();//移動制限
+        //Clamp();//移動制限
     }
 
-    /// <summary>
-    /// 移動制限
-    /// </summary>
-    private void Clamp()
-    {
-        Vector3 screenMinPos = camera.ScreenMin;//画面の左下の座標
-        Vector3 screenMaxPos = camera.ScreenMax;//画面の右下の座標
+    ///// <summary>
+    ///// 移動制限
+    ///// </summary>
+    //private void Clamp()
+    //{
+    //    Vector3 screenMinPos = camera.ScreenMin;//画面の左下の座標
+    //    Vector3 screenMaxPos = camera.ScreenMax;//画面の右下の座標
 
-        //座標を画面内に制限
-        Vector3 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, screenMinPos.x + size.x / 2, screenMaxPos.x - size.x / 2);
-        pos.y = Mathf.Clamp(pos.y, screenMinPos.y + size.y / 2, screenMaxPos.y - size.y / 2);
-        transform.position = pos;
-    }
+    //    //座標を画面内に制限(自分の座標)
+    //    Vector3 pos = transform.position;
+    //    pos.x = Mathf.Clamp(pos.x, screenMinPos.x + size.x / 2, screenMaxPos.x - size.x / 2);
+    //    pos.y = Mathf.Clamp(pos.y, screenMinPos.y + size.y / 2, screenMaxPos.y - size.y / 2);
+    //    transform.position = pos;
+
+    //    backPos.x = Mathf.Clamp(backPos.x, screenMinPos.x + size.x / 2, screenMaxPos.x - size.x / 2);
+    //    backPos.y = Mathf.Clamp(backPos.y, screenMinPos.y + size.y / 2, screenMaxPos.y - size.y / 2);
+    //}
 
     /// <summary>
     /// 移動
     /// </summary>
     private void Move()
     {
-        if (state == State.ATTACK) return;
+        if (state == State.ATTACK || isBack) return;
 
         x_axis = Input.GetAxisRaw("Horizontal");
         y_axis = Input.GetAxisRaw("Vertical");
@@ -124,7 +143,7 @@ public class Player : MonoBehaviour
     {
         var animState = anim.GetCurrentAnimatorStateInfo(0);
 
-        //移動柱なら移動アニメーション
+        //移動中なら移動アニメーション
         if (state == State.MOVE)
         {
             anim.SetBool("Run", true);
@@ -197,17 +216,69 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
+    /// 後ろに下がる
+    /// </summary>
+    private void Back()
+    {
+        if (!isBack) return;
+
+        //指定した距離分下がる
+        transform.position = Vector3.MoveTowards(transform.position, backPos, backSpeed * Time.deltaTime);
+        if (transform.position == backPos)
+        {
+            isBack = false;
+        }
+    }
+
+    /// <summary>
     /// 体力回復
     /// </summary>
     public void ChangeHp(int h)
     {
+        //体力を上限まで回復
         hp += h;
         hp = Mathf.Clamp(hp, 0, 5);
+
+        //体力に合わせて拳のサイズを変える
         smashCol.transform.localScale = new Vector3(attackColSize.x * hp, attackColSize.y * hp, 1);
         Vector3 attackPos = smashCol.transform.localPosition;
         attackPos.y = iniAttackPos.y - attackColSize.y * hp;
         smashCol.transform.localPosition = attackPos;
         smashCol.SetActive(false);
+
+        if (h > 0)
+        {
+            sp = 0.0f;
+        }
+    }
+
+    /// <summary>
+    /// スマッシュポイント加算
+    /// </summary>
+    public void AddSP()
+    {
+        sp = Mathf.Min(sp + 1.0f, 30.0f);
+    }
+
+    /// <summary>
+    /// 後退開始
+    /// </summary>
+    public void SetBack()
+    {
+        //後ろに下がるように
+        if (!isBack)
+        {
+            backPos = backPosObj.transform.position;
+            isBack = true;
+        }
+    }
+
+    /// <summary>
+    /// スマッシュポイント取得
+    /// </summary>
+    public float GetSP
+    {
+        get { return sp; }
     }
 
     /// <summary>
@@ -217,7 +288,7 @@ public class Player : MonoBehaviour
     void OnCollisionStay2D(Collision2D col)
     {
         //敵に当たったらダメージ
-        if (col.transform.tag == "Enemy")
+        if (col.transform.tag == "Enemy" && state != State.ATTACK)
         {
             if (hp > 0 && !isDamage)
             {

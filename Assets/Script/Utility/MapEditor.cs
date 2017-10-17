@@ -279,7 +279,7 @@ public class MapEditor : EditorWindow
                     if (gridRect[y, x].Contains(pos))
                     {
                         //消しゴムの時はデータを消す
-                        if (parent.SelectedImagePath.IndexOf("000") > -1)
+                        if (parent.SelectedImagePath.IndexOf("eraser") > -1)
                         {
                             map[y, x] = "";
                         }
@@ -411,17 +411,18 @@ public class MapEditor : EditorWindow
                     {
                         result += ",";
                     }
-                    result += "\n";
                 }
+                result += "\n";
             }
             return result;
         }
-
+        
+        //不要な文字を切り出す（パスと拡張し切り出し）
         private string OutputDataFormat(string data)
         {
             if (data != null && data.Length > 0)
             {
-                string[] tmps = data.Split('/');
+                string[] tmps = data.Split('\\');
                 string fileName = tmps[tmps.Length - 1];
                 return fileName.Split('.')[0];
             }

@@ -79,6 +79,21 @@ public class Enemy : MonoBehaviour
     }
 
     /// <summary>
+    /// 吹き飛ぶ
+    /// </summary>
+    private void Shoot(GameObject col)
+    {
+        Rigidbody2D rigid = GetComponent<Rigidbody2D>();
+        GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
+        rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);//後ろに吹き飛ぶ
+        anim.SetBool("Stan", true);//気絶アニメーション開始
+        isStan = true;//気絶フラグtrue
+        player.GetComponent<Player>().AddSP();//プレイヤーのスマッシュポイント加算
+        player.GetComponent<Player>().SetBack();//プレイヤー後退開始
+        GameManager.GameStop();//ゲーム停止
+    }
+
+    /// <summary>
     /// 気絶フラグ
     /// </summary>
     public bool IsStan
@@ -94,13 +109,7 @@ public class Enemy : MonoBehaviour
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
         if (col.transform.tag == "Attack" && !isStan)
         {
-            Rigidbody2D rigid = GetComponent<Rigidbody2D>();
-            GetComponent<BoxCollider2D>().isTrigger = true;
-            rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);
-            anim.SetBool("Stan", true);
-            isStan = true;
-            col.transform.parent.GetComponent<Player>().ChangeHp(1);
-            GameManager.GameStop();//ゲーム停止
+            Shoot(col.gameObject);
         }
 
         //吹き飛ばされた敵に当たったら消滅
@@ -108,6 +117,7 @@ public class Enemy : MonoBehaviour
         {
             if (col.gameObject.GetComponent<Enemy>().IsStan && !isStan)
             {
+                player.GetComponent<Player>().AddSP();//プレイヤーのスマッシュポイント加算
                 Destroy(gameObject);
             }
         }

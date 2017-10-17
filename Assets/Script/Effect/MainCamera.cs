@@ -6,11 +6,15 @@ public class MainCamera : MonoBehaviour
 {
     public float shakeTime;//振動時間（設定用）
     public float shakeRange;//振動の幅
+    public float followSpeed;//追従速度
 
+    private GameObject parent;//親オブジェクト
+    private GameObject player;//プレイヤー
     private Camera camera;//カメラ
     private Vector3 savePosition;//振動する前の座標
     private Vector3 screenMinPos;//画面の左下
     private Vector3 screenMaxPos;//画面の右上
+    private Vector3 offset;
     //振動する幅
     private Vector2 lowRange;
     private Vector2 maxRange;
@@ -20,20 +24,27 @@ public class MainCamera : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        parent = transform.parent.gameObject;
+        player = GameObject.Find("Player");
+        offset = transform.position - player.transform.position;
         camera = GetComponent<Camera>();
         screenMinPos = camera.ScreenToWorldPoint(Vector3.zero);//画面の左下の座標
         screenMaxPos = camera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 1));//画面の右下の座標
-        savePosition = transform.position;//振動前の座標取得
+        savePosition = parent.transform.position;//振動前の座標取得
         lifeTime = 0.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
+        screenMinPos = camera.ScreenToWorldPoint(Vector3.zero);//画面の左下の座標
+        screenMaxPos = camera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 1));//画面の右下の座標
+
         Shake();//振動
+        Follow();//プレイヤー追従
 
         //振動開始
-        if(isShake)
+        if (isShake)
         {
             SetShake();
             isShake = false;
@@ -59,7 +70,7 @@ public class MainCamera : MonoBehaviour
         //振動時間が0になったら振動終了
         if (lifeTime < 0.0f)
         {
-            transform.position = savePosition;
+            parent.transform.position = savePosition;
             lifeTime = 0.0f;
         }
 
@@ -69,8 +80,19 @@ public class MainCamera : MonoBehaviour
             lifeTime -= Time.deltaTime;
             float x_val = Random.Range(lowRange.x, maxRange.x);
             float y_val = Random.Range(lowRange.y, maxRange.y);
-            transform.position = new Vector3(x_val, y_val, transform.position.z);
+            parent.transform.position = new Vector3(x_val, y_val, parent.transform.position.z);
         }
+    }
+
+    /// <summary>
+    /// プライヤー追従
+    /// </summary>
+    private void Follow()
+    {
+        Vector3 newPosition = transform.position;
+        newPosition.x = player.transform.position.x + offset.x;
+        newPosition.y = player.transform.position.y + offset.y;
+        transform.position = Vector3.Lerp(transform.position, newPosition, followSpeed * Time.deltaTime);
     }
 
     /// <summary>

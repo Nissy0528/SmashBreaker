@@ -84,8 +84,10 @@
     <Compile Include="Assets\Script\Effect\EnemyBorn.cs" />
     <Compile Include="Assets\Script\Effect\MainCamera.cs" />
     <Compile Include="Assets\Script\UI\PlayerHP.cs" />
+    <Compile Include="Assets\Script\UI\SmashGage.cs" />
     <Compile Include="Assets\Script\Utility\GameManager.cs" />
     <Compile Include="Assets\Script\Utility\MapEditor.cs" />
+    <Compile Include="Assets\Script\Utility\MapReader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
