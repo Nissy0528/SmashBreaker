@@ -104,23 +104,23 @@ public class Player : MonoBehaviour
 
         x_axis = Input.GetAxisRaw("Horizontal");
         y_axis = Input.GetAxisRaw("Vertical");
+        Vector2 axis = Vector2.zero;
 
-        float vx = 0.0f;
-        float vy = 0.0f;
         state = State.IDEL;
 
-        if (x_axis >= 0.5f || x_axis <= -0.5f)
+        if (x_axis >= 0.5f || x_axis <= -0.5f
+            || y_axis >= 0.5f || y_axis <= -0.5f)
         {
-            vx = x_axis * speed * Time.deltaTime;//横移動速度
-            state = State.MOVE;
-        }
-        if (y_axis >= 0.5f || y_axis <= -0.5f)
-        {
-            vy = y_axis * speed * Time.deltaTime;//縦移動速度
+            axis = new Vector2(x_axis, y_axis);
             state = State.MOVE;
         }
 
-        transform.Translate(new Vector2(vx, vy), Space.World);
+        if (axis.magnitude != 0.0f)
+        {
+            axis.Normalize();
+        }
+
+        transform.Translate(axis * speed * Time.deltaTime, Space.World);
     }
 
     /// <summary>
