@@ -12,7 +12,7 @@ public class PlayerHP : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<Player>();
+        player = GameObject.Find("Chara").GetComponent<Player>();
     }
 
     // Update is called once per frame
@@ -40,5 +40,13 @@ public class PlayerHP : MonoBehaviour
                 hpTextures[i].SetActive(false);
             }
         }
+    }
+
+    /// <summary>
+    /// 体力が最大か
+    /// </summary>
+    public bool IsHPMax
+    {
+        get { return playerHP >= hpTextures.Length; }
     }
 }

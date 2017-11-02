@@ -5,14 +5,14 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float speed;//移動速度
-    public float backSpeed;//殴ったときに後ろに下がる速度
+    //public float backSpeed;//殴ったときに後ろに下がる速度
     public int hp;//体力
 
-    private GameObject smashCol;//攻撃のあたり判定
-    private GameObject backPosObj;//後ろに下がる座標オブジェクト
+    private GameObject smash;//攻撃のあたり判定
+    //private GameObject backPosObj;//後ろに下がる座標オブジェクト
     private GameObject smashGage;//スマッシュゲージ
     private MainCamera camera;//カメラ
-    private Animator anim;//アニメーション
+    //private Animator anim;//アニメーション
     private Vector3 size;//大きさ
     private Vector3 attackColSize;//攻撃あたり判定の大きさ
     private Vector3 iniAttackPos;//攻撃あたり判定の初期位置
@@ -20,9 +20,8 @@ public class Player : MonoBehaviour
     private float x_axis;//横の入力値
     private float y_axis;//縦の入力値
     private float sp;//スマッシュポイント
-    private bool isSmash;//攻撃フラグ
     private bool isDamage;//ダメージ
-    private bool isBack;//tureなら後ろに下がり続ける
+    //private bool isBack;//tureなら後ろに下がり続ける
 
     //↓仮変数（後で使わなくなるかも）
     private int flashCnt;//点滅カウント
@@ -34,7 +33,6 @@ public class Player : MonoBehaviour
     {
         IDEL,//待機
         MOVE,//移動
-        ATTACK,//攻撃
         DEAD,//死亡
     }
     private State state;//状態
@@ -43,21 +41,19 @@ public class Player : MonoBehaviour
     void Start()
     {
         camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
-        smashCol = transform.Find("SmashColllison").gameObject;
-        backPosObj = transform.Find("BackPos").gameObject;
+        smash = GameObject.Find("Smash").gameObject;
+        //backPosObj = transform.Find("BackPos").gameObject;
         size = transform.localScale;//大きさ取得
-        anim = GetComponent<Animator>();
         state = State.IDEL;//最初は待機状態
 
         //あたり判定の大きさを体力に合わせて変える
-        attackColSize = smashCol.transform.localScale;
-        iniAttackPos = smashCol.transform.localPosition;
+        attackColSize = smash.transform.localScale;
+        iniAttackPos = smash.transform.localPosition;
         ChangeHp(0);
 
         //各フラグをfalseに
-        isSmash = false;
         isDamage = false;
-        isBack = false;
+        //isBack = false;
 
         sp = 0.0f;
     }
@@ -67,13 +63,11 @@ public class Player : MonoBehaviour
     {
         if (state != State.DEAD)
         {
-            Smash();//攻撃
             Move();//移動
             Rotate();//向き変更
             Damage();//ダメージ演出
-            Back();//後ろに下がる
+            //Back();//後ろに下がる
         }
-        Animation();//アニメーションの制御
         //Clamp();//移動制限
     }
 
@@ -100,7 +94,7 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        if (state == State.ATTACK || isBack) return;
+        //if (isBack) return;
 
         x_axis = Input.GetAxisRaw("Horizontal");
         y_axis = Input.GetAxisRaw("Vertical");
@@ -137,65 +131,6 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// アニメーションの制御
-    /// </summary>
-    private void Animation()
-    {
-        var animState = anim.GetCurrentAnimatorStateInfo(0);
-
-        //移動中なら移動アニメーション
-        if (state == State.MOVE)
-        {
-            anim.SetBool("Run", true);
-        }
-        else
-        {
-            anim.SetBool("Run", false);
-        }
-
-        //攻撃柱なら
-        if (state == State.ATTACK)
-        {
-            //攻撃アニメーションが終わったら
-            if (animState.IsName("Player_Smash"))
-            {
-                isSmash = true;
-                if (animState.normalizedTime >= 0.7f)
-                {
-                    smashCol.SetActive(true);//攻撃のあたり判定をアクティブ化
-                }
-                if (animState.normalizedTime >= 1.0f)
-                {
-                    smashCol.SetActive(false);//攻撃のあたり判定を非アクティブ化
-                }
-            }
-            //待機状態に戻ったら
-            if (animState.IsName("Player_Idle") && isSmash)
-            {
-                isSmash = false;//攻撃フラグをfalseに
-                state = State.IDEL;//待機状態に
-            }
-        }
-    }
-
-    /// <summary>
-    /// 攻撃
-    /// </summary>
-    private void Smash()
-    {
-        if (state == State.ATTACK) return;
-
-        //攻撃入力がされたら
-        if (Input.GetButtonDown("Smash"))
-        {
-            anim.SetTrigger("Smash");//攻撃アニメーション開始
-            x_axis = 0.0f;
-            y_axis = 0.0f;
-            state = State.ATTACK;//攻撃状態に
-        }
-    }
-
-    /// <summary>
     /// ダメージ演出
     /// </summary>
     private void Damage()
@@ -218,17 +153,17 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 後ろに下がる
     /// </summary>
-    private void Back()
-    {
-        if (!isBack) return;
+    //private void Back()
+    //{
+    //    if (!isBack) return;
 
-        //指定した距離分下がる
-        transform.position = Vector3.MoveTowards(transform.position, backPos, backSpeed * Time.deltaTime);
-        if (transform.position == backPos)
-        {
-            isBack = false;
-        }
-    }
+    //    //指定した距離分下がる
+    //    transform.position = Vector3.MoveTowards(transform.position, backPos, backSpeed * Time.deltaTime);
+    //    if (transform.position == backPos)
+    //    {
+    //        isBack = false;
+    //    }
+    //}
 
     /// <summary>
     /// 体力回復
@@ -240,11 +175,7 @@ public class Player : MonoBehaviour
         hp = Mathf.Clamp(hp, 0, 5);
 
         //体力に合わせて拳のサイズを変える
-        smashCol.transform.localScale = new Vector3(attackColSize.x * hp, attackColSize.y * hp, 1);
-        Vector3 attackPos = smashCol.transform.localPosition;
-        attackPos.y = iniAttackPos.y - attackColSize.y * hp;
-        smashCol.transform.localPosition = attackPos;
-        smashCol.SetActive(false);
+        smash.transform.localScale = new Vector3(attackColSize.x * hp, attackColSize.y * hp, 1);
 
         if (h > 0)
         {
@@ -263,15 +194,15 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 後退開始
     /// </summary>
-    public void SetBack()
-    {
-        //後ろに下がるように
-        if (!isBack)
-        {
-            backPos = backPosObj.transform.position;
-            isBack = true;
-        }
-    }
+    //public void SetBack()
+    //{
+    //    //後ろに下がるように
+    //    if (!isBack)
+    //    {
+    //        backPos = backPosObj.transform.position;
+    //        isBack = true;
+    //    }
+    //}
 
     /// <summary>
     /// スマッシュポイント取得
@@ -282,13 +213,25 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
+    /// 死亡フラグ
+    /// </summary>
+    /// <returns></returns>
+    public bool IsDead()
+    {
+        return state == State.DEAD;
+    }
+
+    /// <summary>
     /// あたり判定
     /// </summary>
     /// <param name="col"></param>
     void OnCollisionStay2D(Collision2D col)
     {
+        SpriteRenderer texture = GetComponent<SpriteRenderer>();
+        Color color = texture.color;
+
         //敵に当たったらダメージ
-        if (col.transform.tag == "Enemy" && state != State.ATTACK)
+        if (col.transform.tag == "Enemy")
         {
             if (hp > 0 && !isDamage)
             {
@@ -298,7 +241,8 @@ public class Player : MonoBehaviour
             if (hp <= 0 && state != State.DEAD)
             {
                 hp = 0;
-                anim.SetTrigger("Dead");
+                color.a = 0.0f;
+                texture.color = color;
                 state = State.DEAD;
             }
         }

@@ -15,7 +15,7 @@ public class SmashGage : MonoBehaviour
     void Start()
     {
         slider = GetComponent<Slider>();
-        player = GameObject.Find("Player").GetComponent<Player>();
+        player = GameObject.Find("Chara").GetComponent<Player>();
     }
 
     // Update is called once per frame

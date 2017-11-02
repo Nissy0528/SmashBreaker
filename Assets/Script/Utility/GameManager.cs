@@ -6,31 +6,24 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public float stopTime;//ゲームストップの長さ
-    public GameObject gameover;
+    public GameObject gameover;//ゲームオーバーUI
+    public GameObject smashText;//スマッシュUI
 
-    private float stopDelay;
-    private Player player;
+    private float stopDelay;//ゲーム停止時間
+    private Player player;//プレイヤー
 
     // Use this for initialization
     void Start()
     {
         stopDelay = stopTime;
-        player = GameObject.Find("Player").GetComponent<Player>();
+        player = GameObject.Find("Chara").GetComponent<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        GameStart();
-        ShowGameOver();
-    }
-
-    /// <summary>
-    /// ゲームストップ
-    /// </summary>
-    public static void GameStop()
-    {
-        Time.timeScale = 0.0f;
+        GameStart();//ゲーム再開
+        ShowGameOver();//ゲームオーバー表示
     }
 
     /// <summary>
@@ -38,8 +31,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void GameStart()
     {
-        if (Time.timeScale >= 1.0f) return;
+        if (Time.timeScale >= 1.0f || smashText.activeSelf) return;
 
+        //指定した時間まで達したらゲーム再開
         stopDelay -= 0.1f;
         if (stopDelay <= 0.0f)
         {
@@ -56,6 +50,7 @@ public class GameManager : MonoBehaviour
         if (player.hp > 0) return;
 
         gameover.SetActive(true);
+        //リトライボタンが押されたらMainシーンを再読み込み
         if (Input.GetButtonDown("Decision"))
         {
             SceneManager.LoadScene("Main");
