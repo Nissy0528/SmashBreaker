@@ -5,6 +5,7 @@ using UnityEngine;
 public class Smash : MonoBehaviour
 {
     public GameObject player;//プレイヤー
+    public PlayerHP playerHP;//プレイヤーの体力
     public float smashSpeed;//拳を飛ばす速度
     public float smashLength;//飛ぶ距離
 
@@ -44,7 +45,7 @@ public class Smash : MonoBehaviour
         if (Input.GetButtonDown("Smash") || Mathf.Abs(Input.GetAxisRaw("Smash")) >= 0.5f)
         {
             smashCol.GetComponent<CircleCollider2D>().enabled = true;
-            moveToPos = smash.transform.position + smash.transform.up * smashLength;//攻撃を飛ばす方向を設定
+            moveToPos = smash.transform.position + smash.transform.up * (smashLength * playerHP.HP_Dif);//攻撃を飛ばす方向を設定
             offset = smash.transform.position - transform.position;//攻撃オブジェクトとの距離設定
             isAttack = true;
         }

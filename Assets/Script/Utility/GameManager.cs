@@ -8,9 +8,12 @@ public class GameManager : MonoBehaviour
     public float stopTime;//ゲームストップの長さ
     public GameObject gameover;//ゲームオーバーUI
     public GameObject smashText;//スマッシュUI
+    public GameObject enemyManager;//エネミーマネージャー
 
     private float stopDelay;//ゲーム停止時間
     private Player player;//プレイヤー
+    private GameObject[] bossObjs;//ボス
+    private GameObject[] enemys;//敵
 
     // Use this for initialization
     void Start()

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NormalEnemy : Enemy
 {
+    public GameObject bonusText;
     public float speed;//移動速度
     public float shoot_speed;//吹き飛ぶ速度
     public float rotateSpped;//回転速度
@@ -61,7 +62,9 @@ public class NormalEnemy : Enemy
         {
             if (col.gameObject.GetComponent<Enemy>().IsStan && !isStan)
             {
-                player.GetComponent<Player>().AddSP();//プレイヤーのスマッシュポイント加算
+                GameObject text = Instantiate(bonusText);
+                text.GetComponent<TextUI>().SetPos(transform.position);
+                player.GetComponent<Player>().AddSP(2);//プレイヤーのスマッシュポイント加算
                 Destroy(gameObject);
             }
         }

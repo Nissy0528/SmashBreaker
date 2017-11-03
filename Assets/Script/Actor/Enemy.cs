@@ -61,7 +61,7 @@ public class Enemy : MonoBehaviour
         GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
         rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);//後ろに吹き飛ぶ
         isStan = true;//気絶フラグtrue
-        player.GetComponent<Player>().AddSP();//プレイヤーのスマッシュポイント加算
+        player.GetComponent<Player>().AddSP(1);//プレイヤーのスマッシュポイント加算
         //player.GetComponent<Player>().SetBack();//プレイヤー後退開始
         Time.timeScale = 0.0f;//ゲーム停止
     }
@@ -83,21 +83,6 @@ public class Enemy : MonoBehaviour
     void OnTriggerEnter2D(Collider2D col)
     {
         TriggerEnter(col);
-        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-        if (col.transform.tag == "Attack")
-        {
-            Shoot(col.gameObject);
-        }
-
-        //吹き飛ばされた敵に当たったら消滅
-        if (col.transform.tag == "Enemy")
-        {
-            if (col.gameObject.GetComponent<Enemy>().IsStan && !isStan)
-            {
-                player.GetComponent<Player>().AddSP();//プレイヤーのスマッシュポイント加算
-                Destroy(gameObject);
-            }
-        }
     }
 
 }

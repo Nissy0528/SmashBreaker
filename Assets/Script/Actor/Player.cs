@@ -172,7 +172,7 @@ public class Player : MonoBehaviour
     {
         //体力を上限まで回復
         hp += h;
-        hp = Mathf.Clamp(hp, 0, 5);
+        hp = Mathf.Clamp(hp, 0, 3);
 
         //体力に合わせて拳のサイズを変える
         smash.transform.localScale = new Vector3(attackColSize.x * hp, attackColSize.y * hp, 1);
@@ -186,9 +186,9 @@ public class Player : MonoBehaviour
     /// <summary>
     /// スマッシュポイント加算
     /// </summary>
-    public void AddSP()
+    public void AddSP(int value)
     {
-        sp = Mathf.Min(sp + 1.0f, 30.0f);
+        sp = Mathf.Min(sp + value, 30.0f);
     }
 
     /// <summary>
@@ -222,29 +222,37 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public void Damege()
+    {
+        SpriteRenderer texture = GetComponent<SpriteRenderer>();
+        Color color = texture.color;
+
+        if (hp > 0 && !isDamage)
+        {
+            ChangeHp(-1);
+            isDamage = true;
+        }
+        if (hp <= 0 && state != State.DEAD)
+        {
+            hp = 0;
+            color.a = 0.0f;
+            texture.color = color;
+            state = State.DEAD;
+        }
+    }
+
+    /// <summary>
     /// あたり判定
     /// </summary>
     /// <param name="col"></param>
     void OnCollisionStay2D(Collision2D col)
     {
-        SpriteRenderer texture = GetComponent<SpriteRenderer>();
-        Color color = texture.color;
-
         //敵に当たったらダメージ
         if (col.transform.tag == "Enemy")
         {
-            if (hp > 0 && !isDamage)
-            {
-                ChangeHp(-1);
-                isDamage = true;
-            }
-            if (hp <= 0 && state != State.DEAD)
-            {
-                hp = 0;
-                color.a = 0.0f;
-                texture.color = color;
-                state = State.DEAD;
-            }
+            Damege();
         }
     }
 }
