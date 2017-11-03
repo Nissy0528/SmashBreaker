@@ -94,7 +94,6 @@
     <Compile Include="Assets\Script\UI\TextUI.cs" />
     <Compile Include="Assets\Script\Utility\GameManager.cs" />
     <Compile Include="Assets\Script\Utility\MapCreater.cs" />
-    <Compile Include="Assets\Script\Utility\MapEditor.cs" />
     <Compile Include="Assets\Script\Utility\MapReader.cs" />
   </ItemGroup>
   <ItemGroup>
