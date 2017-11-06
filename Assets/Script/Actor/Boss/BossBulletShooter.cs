@@ -4,25 +4,12 @@ using UnityEngine;
 
 public class BossBulletShooter : MonoBehaviour
 {
-	/// <summary>
-	/// 弾丸の種類
-	/// </summary>
-	public enum BulletType
-	{
-		None,
-		Grow,
-	}
-
-	/// <summary>
-	/// 使用する弾丸の種類
-	/// </summary>
-	public BulletType[] bulletList = { (BulletType)1 };
 
 	/// <summary>
 	/// 弾丸用のPrefab
 	/// </summary>
 	[SerializeField]
-	private GameObject bullet;
+	private GameObject[] bullet;
 
 
 	// Use this for initialization
@@ -49,9 +36,23 @@ public class BossBulletShooter : MonoBehaviour
 		if(t_rate < t_count)
 		{
 			t_count = 0;
-			Shot(0, 90f);
+			Shot(90f);
 		}
 
+	}
+
+
+	/// <summary>
+	/// 発射処理
+	/// </summary>
+	/// <param name="rotation">発射角(実数)</param>
+ 
+	private void Shot(float rotation)
+	{
+		Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.forward * rotation);
+		Vector3 popPoint = transform.position + rot * (Vector3.up);
+		var bInstant = Instantiate<GameObject>(bullet[0], popPoint, Quaternion.identity);
+		bInstant.transform.rotation = rot;
 	}
 
 	/// <summary>
@@ -63,31 +64,7 @@ public class BossBulletShooter : MonoBehaviour
 	{
 		Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.forward * rotation);
 		Vector3 popPoint = transform.position + rot * ( Vector3.up);
-		var bInstant = Instantiate<GameObject>(bullet, popPoint, Quaternion.identity);
+		var bInstant = Instantiate<GameObject>(bullet[index], popPoint, Quaternion.identity);
 		bInstant.transform.rotation = rot;
-		bInstant.AddComponent(BulletTypeCheck(bulletList[index]));
-	}
-
-
-	/// <summary>
-	/// 弾丸の種類をチェックするよ
-	/// </summary>
-	/// <param name="type"></param>
-	/// <returns></returns>
-	private System.Type BulletTypeCheck(BulletType type)
-	{
-		if(type == BulletType.Grow)
-		{
-			return typeof(GrowBullet);
-		}
-
-
-
-		if (type == BulletType.None)
-		{
-			Debug.Log("未設定");
-		}
-
-		return null;
 	}
 }
