@@ -71,23 +71,23 @@ public class Player : MonoBehaviour
         //Clamp();//移動制限
     }
 
-    ///// <summary>
-    ///// 移動制限
-    ///// </summary>
-    //private void Clamp()
-    //{
-    //    Vector3 screenMinPos = camera.ScreenMin;//画面の左下の座標
-    //    Vector3 screenMaxPos = camera.ScreenMax;//画面の右下の座標
+    /// <summary>
+    /// 移動制限
+    /// </summary>
+    private void Clamp()
+    {
+        Vector3 screenMinPos = camera.ScreenMin;//画面の左下の座標
+        Vector3 screenMaxPos = camera.ScreenMax;//画面の右下の座標
 
-    //    //座標を画面内に制限(自分の座標)
-    //    Vector3 pos = transform.position;
-    //    pos.x = Mathf.Clamp(pos.x, screenMinPos.x + size.x / 2, screenMaxPos.x - size.x / 2);
-    //    pos.y = Mathf.Clamp(pos.y, screenMinPos.y + size.y / 2, screenMaxPos.y - size.y / 2);
-    //    transform.position = pos;
+        //座標を画面内に制限(自分の座標)
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, screenMinPos.x + 0.5f, screenMaxPos.x - 0.5f);
+        pos.y = Mathf.Clamp(pos.y, screenMinPos.y + 0.5f, screenMaxPos.y - 0.5f);
+        transform.position = pos;
 
-    //    backPos.x = Mathf.Clamp(backPos.x, screenMinPos.x + size.x / 2, screenMaxPos.x - size.x / 2);
-    //    backPos.y = Mathf.Clamp(backPos.y, screenMinPos.y + size.y / 2, screenMaxPos.y - size.y / 2);
-    //}
+        backPos.x = Mathf.Clamp(backPos.x, screenMinPos.x + size.x / 2, screenMaxPos.x - size.x / 2);
+        backPos.y = Mathf.Clamp(backPos.y, screenMinPos.y + size.y / 2, screenMaxPos.y - size.y / 2);
+    }
 
     /// <summary>
     /// 移動
@@ -181,14 +181,32 @@ public class Player : MonoBehaviour
         {
             sp = 0.0f;
         }
+        if (hp == 3)
+        {
+            sp = 30.0f;
+        }
     }
 
     /// <summary>
-    /// スマッシュポイント加算
+    /// スマッシュポイント変動
     /// </summary>
     public void AddSP(int value)
     {
-        sp = Mathf.Min(sp + value, 30.0f);
+        if (value > 0)
+        {
+            sp = Mathf.Min(sp + value, 30.0f);
+        }
+        if (value < 0)
+        {
+            if (sp > 0.0f)
+            {
+                sp = Mathf.Max(sp - 15.0f, 0);
+            }
+            else
+            {
+                ChangeHp(value);
+            }
+        }
     }
 
     /// <summary>
@@ -231,7 +249,7 @@ public class Player : MonoBehaviour
 
         if (hp > 0 && !isDamage)
         {
-            ChangeHp(-1);
+            AddSP(-1);
             isDamage = true;
         }
         if (hp <= 0 && state != State.DEAD)
@@ -250,7 +268,7 @@ public class Player : MonoBehaviour
     void OnCollisionStay2D(Collision2D col)
     {
         //敵に当たったらダメージ
-        if (col.transform.tag == "Enemy")
+        if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
         {
             Damage();
         }

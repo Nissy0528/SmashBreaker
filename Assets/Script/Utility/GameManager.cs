@@ -7,19 +7,22 @@ public class GameManager : MonoBehaviour
 {
     public float stopTime;//ゲームストップの長さ
     public GameObject gameover;//ゲームオーバーUI
+    public GameObject gameclear;//ゲームクリアUI
     public GameObject smashText;//スマッシュUI
     public GameObject enemyManager;//エネミーマネージャー
 
     private float stopDelay;//ゲーム停止時間
     private Player player;//プレイヤー
-    private GameObject[] bossObjs;//ボス
-    private GameObject[] enemys;//敵
+    private GameObject bossObj;//ボス
+    private MainCamera camera;//カメラ
 
     // Use this for initialization
     void Start()
     {
         stopDelay = stopTime;
         player = GameObject.Find("Chara").GetComponent<Player>();
+        bossObj = GameObject.FindGameObjectWithTag("Boss");
+        camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
     }
 
     // Update is called once per frame
@@ -27,6 +30,7 @@ public class GameManager : MonoBehaviour
     {
         GameStart();//ゲーム再開
         ShowGameOver();//ゲームオーバー表示
+        ShowGameClear();//ゲームクリア表示
     }
 
     /// <summary>
@@ -53,9 +57,28 @@ public class GameManager : MonoBehaviour
         if (player.hp > 0) return;
 
         gameover.SetActive(true);
+        Time.timeScale = 0.0f;
         //リトライボタンが押されたらMainシーンを再読み込み
         if (Input.GetButtonDown("Decision"))
         {
+            Time.timeScale = 1.0f;
+            SceneManager.LoadScene("Main");
+        }
+    }
+
+    /// <summary>
+    /// ゲームクリア表示
+    /// </summary>
+    private void ShowGameClear()
+    {
+        if (bossObj != null || !camera.IsShakeFinish) return;
+
+        gameclear.SetActive(true);
+        Time.timeScale = 0.0f;
+        //リトライボタンが押されたらMainシーンを再読み込み
+        if (Input.GetButtonDown("Decision"))
+        {
+            Time.timeScale = 1.0f;
             SceneManager.LoadScene("Main");
         }
     }
