@@ -112,4 +112,12 @@ public class MainCamera : MonoBehaviour
     {
         get { return screenMaxPos; }
     }
+
+    /// <summary>
+    /// 振動終了
+    /// </summary>
+    public bool IsShakeFinish
+    {
+        get { return lifeTime == 0.0f; }
+    }
 }

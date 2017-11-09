@@ -22,6 +22,8 @@ public class Smash : MonoBehaviour
     {
         smash = transform.Find("Smash").gameObject;//攻撃オブジェクト取得
         smashCol = smash.transform.GetChild(0).gameObject;
+        isAttack = false;
+        isReturn = false;
     }
 
     // Update is called once per frame
@@ -41,14 +43,15 @@ public class Smash : MonoBehaviour
     {
         if (isAttack) return;
 
-        //攻撃コマンドが入力されたら攻撃フラグをtureに
+        //攻撃コマンドが入力されたら押下フラグをtureに
         if (Input.GetButtonDown("Smash") || Mathf.Abs(Input.GetAxisRaw("Smash")) >= 0.5f)
         {
-            smashCol.GetComponent<CircleCollider2D>().enabled = true;
+            smashCol.GetComponent<CircleCollider2D>().enabled = true;//あたり判定を有効に
             moveToPos = smash.transform.position + smash.transform.up * (smashLength * playerHP.HP_Dif);//攻撃を飛ばす方向を設定
             offset = smash.transform.position - transform.position;//攻撃オブジェクトとの距離設定
             isAttack = true;
         }
+
     }
 
     /// <summary>
@@ -80,9 +83,10 @@ public class Smash : MonoBehaviour
             {
                 smashCol.GetComponent<CircleCollider2D>().enabled = false;
                 isReturn = true;
+                return;
             }
             //戻るフラグがtrueなら攻撃フラグと戻るフラグをfalseに
-            else
+            if (isReturn && (Input.GetButtonUp("Smash") || Mathf.Abs(Input.GetAxisRaw("Smash")) == 0.0f))
             {
                 isAttack = false;
                 isReturn = false;
@@ -95,7 +99,7 @@ public class Smash : MonoBehaviour
     /// </summary>
     private void Rotate()
     {
-        if (isAttack) return;//攻撃中なら何もしない
+        if (isAttack || Time.timeScale == 0.0f) return;//攻撃中なら何もしない
 
         //右スティックの入力値を取得
         float x_axis = Input.GetAxisRaw("Smash_H");
@@ -110,6 +114,18 @@ public class Smash : MonoBehaviour
             Vector3 vec = (lookPos - transform.position).normalized;//向く方向を正規化
             float angle = (Mathf.Atan2(vec.y, vec.x) * Mathf.Rad2Deg) - 90.0f;
             transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);//入力された方向に向く
+        }
+    }
+
+    /// <summary>
+    /// あたり判定
+    /// </summary>
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
+        {
+            smashCol.GetComponent<CircleCollider2D>().enabled = false;//あたり判定を有効に
+            isReturn = true;
         }
     }
 }
