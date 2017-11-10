@@ -8,7 +8,8 @@ public class Translation : MonoBehaviour
     public float speed;//速度
 
     private Vector3 target;//目指す座標
-    private int posNum;
+    private int posNum;//目指す座標の番号
+    private Enemy enemyClass;
 
     // Use this for initialization
     void Start()
@@ -18,13 +19,17 @@ public class Translation : MonoBehaviour
             target = positions[0];
         }
         posNum = 0;
+        enemyClass = GetComponent<Enemy>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Move();
-        TargetChange();
+        if (!enemyClass.IsStan)
+        {
+            Move();
+            TargetChange();
+        }
     }
 
     /// <summary>

@@ -58,7 +58,6 @@ public class Enemy : MonoBehaviour
         if (isStan) return;
 
         Rigidbody2D rigid = GetComponent<Rigidbody2D>();
-        GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
         rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);//後ろに吹き飛ぶ
         isStan = true;//気絶フラグtrue
         player.GetComponent<Player>().AddSP(1);//プレイヤーのスマッシュポイント加算

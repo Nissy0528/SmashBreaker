@@ -59,12 +59,12 @@ public class Razer
         shotRay.direction = velocity.normalized;
         //マテリアル設定
         lineRenderer.material = mat;
-        Color color = lineRenderer.material.color;
-        color.a = 0.0f;
-        lineRenderer.material.color = color;
+        //Color color = lineRenderer.material.color;
+        //color.a = 0.0f;
+        //lineRenderer.material.color = color;
         //幅設定
-        lineRenderer.startWidth = 0.0f;
-        lineRenderer.endWidth = 0.0f;
+        lineRenderer.startWidth = 0.5f;
+        lineRenderer.endWidth = 0.5f;
 
         this.shieldLayer = shieldLayer;
     }
@@ -95,7 +95,7 @@ public class Razer
         lineRenderer.SetPosition(0, origin.transform.position);
         lineRenderer.SetPosition(1, kz);
 
-        RazerPrepare();
+        //RazerPrepare();
     }
 
     private void ShieldCheck()
@@ -123,8 +123,8 @@ public class Razer
 
         if (time >= 2.5f)
         {
-            lineRenderer.startWidth = 1.0f;
-            lineRenderer.endWidth = 1.0f;
+            lineRenderer.startWidth = 0.5f;
+            lineRenderer.endWidth = 0.5f;
             Color color = lineRenderer.material.color;
             color.a = 1.0f;
             lineRenderer.material.color = color;
@@ -137,7 +137,7 @@ public class Razer
     /// <returns></returns>
     public Collider2D GetHit()
     {
-        if (time < 2.5f || lineRenderer.enabled == false) return null;
+        if (lineRenderer.enabled == false) return null;
 
         Vector2 rotdir = (origin.transform.rotation * shotRay.direction);
         Vector3 kz = shotRay.origin + rotdir * distance;
@@ -155,14 +155,14 @@ public class Razer
     {
         lineRenderer.enabled = isEnabled;
         distance = 0;
-        //マテリアル設定
-        Color color = lineRenderer.material.color;
-        color.a = 0.0f;
-        lineRenderer.material.color = color;
-        //幅設定
-        lineRenderer.startWidth = 0.0f;
-        lineRenderer.endWidth = 0.0f;
-        time = 0.0f;
+        ////マテリアル設定
+        //Color color = lineRenderer.material.color;
+        //color.a = 0.0f;
+        //lineRenderer.material.color = color;
+        ////幅設定
+        //lineRenderer.startWidth = 0.0f;
+        //lineRenderer.endWidth = 0.0f;
+        //time = 0.0f;
     }
 }
 

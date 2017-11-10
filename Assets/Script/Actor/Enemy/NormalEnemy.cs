@@ -54,6 +54,7 @@ public class NormalEnemy : Enemy
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
         if (col.transform.tag == "Attack")
         {
+            GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
             Shoot(col.gameObject);
         }
 

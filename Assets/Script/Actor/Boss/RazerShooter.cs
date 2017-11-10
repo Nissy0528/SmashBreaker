@@ -51,9 +51,18 @@ public class RazerShooter : MonoBehaviour
 
     private float razerCount;
     private bool isEnable;
+    private List<GameObject> muzzle = new List<GameObject>();
 
     public void Start()
     {
+        GameObject[] muzzles = GameObject.FindGameObjectsWithTag("Muzzle");
+        for (int i = 0; i < muzzles.Length; i++)
+        {
+            if (muzzles[i].transform.parent == transform)
+            {
+                muzzle.Add(muzzles[i]);
+            }
+        }
         Init();
     }
 
@@ -63,11 +72,11 @@ public class RazerShooter : MonoBehaviour
     public void Init()
     {
         razerList = new List<Razer>();
-        for (int i = 0; i < velocitys.Length; i++)
+        for (int i = 0; i < muzzle.Count; i++)
         {
-            razerList.Add(new Razer(transform, velocitys[i], speed, shieldLayer, mat, targetLayers));
+            razerList.Add(new Razer(muzzle[i].transform.Find("FirePos"), muzzle[i].transform.up, speed, shieldLayer, mat, targetLayers));
         }
-        razerCount = 0.0f;
+        razerCount = razerTime;
         isEnable = true;
     }
 
@@ -82,6 +91,7 @@ public class RazerShooter : MonoBehaviour
             HitCheck(r);
         }
         Swich();
+        MuzzleColor();
     }
 
     /// <summary>
@@ -89,15 +99,31 @@ public class RazerShooter : MonoBehaviour
     /// </summary>
     private void Swich()
     {
-        if(razerCount>0.0f)
+        if (razerCount < razerTime)
         {
-            razerCount -= Time.deltaTime;
+            razerCount += Time.deltaTime;
             return;
         }
 
         isEnable = !isEnable;
         Stop();
-        razerCount = razerTime;
+        razerCount = 0.0f;
+    }
+
+    /// <summary>
+    /// 発射口の透明度を徐々に濃くする
+    /// </summary>
+    private void MuzzleColor()
+    {
+        if (isEnable) return;
+
+        for (int i = 0; i < muzzle.Count; i++)
+        {
+            GameObject fireObj = muzzle[i].transform.Find("Fire").gameObject;
+            Color fireColor = fireObj.GetComponent<SpriteRenderer>().color;
+            fireColor.a = razerCount / razerTime;
+            fireObj.GetComponent<SpriteRenderer>().color = fireColor;
+        }
     }
 
     /// <summary>

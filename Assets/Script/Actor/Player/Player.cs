@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     public float speed;//移動速度
     //public float backSpeed;//殴ったときに後ろに下がる速度
     public int hp;//体力
+    public int maxHP;//最大体力
+    public int maxSP;//最大スマッシュポイント
 
     private GameObject smash;//攻撃のあたり判定
     //private GameObject backPosObj;//後ろに下がる座標オブジェクト
@@ -172,7 +174,7 @@ public class Player : MonoBehaviour
     {
         //体力を上限まで回復
         hp += h;
-        hp = Mathf.Clamp(hp, 0, 3);
+        hp = Mathf.Clamp(hp, 0, maxHP);
 
         //体力に合わせて拳のサイズを変える
         smash.transform.localScale = new Vector3(attackColSize.x * hp, attackColSize.y * hp, 1);
@@ -183,7 +185,7 @@ public class Player : MonoBehaviour
         }
         if (hp == 3)
         {
-            sp = 30.0f;
+            sp = maxSP;
         }
     }
 
@@ -194,13 +196,13 @@ public class Player : MonoBehaviour
     {
         if (value > 0)
         {
-            sp = Mathf.Min(sp + value, 30.0f);
+            sp = Mathf.Min(sp + value, maxSP);
         }
         if (value < 0)
         {
             if (sp > 0.0f)
             {
-                sp = Mathf.Max(sp - 15.0f, 0);
+                sp = Mathf.Max(sp - maxSP / 2, 0);
             }
             else
             {
