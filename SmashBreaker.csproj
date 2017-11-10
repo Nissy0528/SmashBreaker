@@ -85,8 +85,9 @@
     <Compile Include="Assets\Script\Actor\Boss\Razer.cs" />
     <Compile Include="Assets\Script\Actor\Boss\RazerShooter.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Translation.cs" />
+    <Compile Include="Assets\Script\Actor\BossTargeter.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\Enemy.cs" />
-    <Compile Include="Assets\Script\Actor\Enemy\EnemyManager.cs" />
+    <Compile Include="Assets\Script\Actor\Enemy\EnemySpawner.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\NormalEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Player\Player.cs" />
     <Compile Include="Assets\Script\Actor\Player\Smash.cs" />
