@@ -4,17 +4,12 @@ using UnityEngine;
 
 public class Razer
 {
-    private const float limit = 100f;
-
+   
     /// <summary>
     /// 原点の空オブジェクト
     /// </summary>
     private GameObject origin;
 
-    /// <summary>
-    /// 速度
-    /// </summary>
-    private float speed;
     /// <summary>
     /// 距離
     /// </summary>
@@ -80,14 +75,7 @@ public class Razer
 
     private void LineUpdate()
     {
-
-        //長さの加算
-        distance += speed * Time.deltaTime;
-
-        distance = Mathf.Min(distance, limit);
-
-
-        ShieldCheck();
+        WallCheck();
         shotRay.origin = origin.transform.position;
         Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction) * distance;
 
@@ -98,7 +86,7 @@ public class Razer
         //RazerPrepare();
     }
 
-    private void ShieldCheck()
+    private void WallCheck()
     {
         Vector2 rotdir = (origin.transform.rotation * shotRay.direction);
         Vector3 kz = shotRay.origin + rotdir * distance;
