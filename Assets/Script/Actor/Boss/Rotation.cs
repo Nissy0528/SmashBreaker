@@ -27,8 +27,8 @@ public class Rotation : MonoBehaviour
     /// 反転
     /// </summary>
     public bool rivers;
-    public List<GameObject> muzzle = new List<GameObject>();
 
+    private List<GameObject> muzzle = new List<GameObject>();
     private Enemy enemyClass;//エネミークラス
 
     // Use this for initialization

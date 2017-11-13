@@ -30,12 +30,6 @@ public class RazerShooter : MonoBehaviour
     private List<Razer> razerList;
 
     /// <summary>
-    /// 飛ばす方向
-    /// </summary>
-    [SerializeField]
-    private Vector3[] velocitys;
-
-    /// <summary>
     /// 標的のレイヤー
     /// </summary>
     [SerializeField]

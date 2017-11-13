@@ -79,6 +79,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Actor\Boss\Boss.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\BossBullet.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\BossBulletShooter.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\EyeMove.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\GrowBullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Razer.cs" />
     <Compile Include="Assets\Script\Actor\Boss\RazerShooter.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Rotation.cs" />
