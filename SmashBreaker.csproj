@@ -84,6 +84,7 @@
     <Compile Include="Assets\Script\Actor\Boss\GrowBullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Razer.cs" />
     <Compile Include="Assets\Script\Actor\Boss\RazerShooter.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\Rotation.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Translation.cs" />
     <Compile Include="Assets\Script\Actor\BossTargeter.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\Enemy.cs" />
