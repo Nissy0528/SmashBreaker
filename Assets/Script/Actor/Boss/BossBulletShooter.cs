@@ -17,7 +17,6 @@ public class BossBulletShooter : MonoBehaviour
 	[SerializeField]
 	private int bulletCount = 1;
 
-
 	// Use this for initialization
 	void Start()
 	{
@@ -61,7 +60,7 @@ public class BossBulletShooter : MonoBehaviour
 	/// </summary>
 	/// <param name="rotation">発射角(実数)</param>
  
-	private void Shot(float rotation)
+	public void Shot(float rotation)
 	{
 		Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.forward * rotation);
 		Vector3 popPoint = transform.position + rot * (Vector3.up);
@@ -74,7 +73,7 @@ public class BossBulletShooter : MonoBehaviour
 	/// </summary>
 	/// <param name="index">発射する弾丸</param>
 	///<param name="rotation">発射角(実数)</param> 
-	private void Shot( int index , float rotation)
+	public void Shot( int index , float rotation)
 	{
 		Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.forward * rotation);
 		Vector3 popPoint = transform.position + rot * ( Vector3.up);
