@@ -11,6 +11,12 @@ public class BossBulletShooter : MonoBehaviour
 	[SerializeField]
 	private GameObject[] bullet;
 
+	/// <summary>
+	/// 発射数
+	/// </summary>
+	[SerializeField]
+	private int bulletCount = 1;
+
 
 	// Use this for initialization
 	void Start()
@@ -36,7 +42,15 @@ public class BossBulletShooter : MonoBehaviour
 		if(t_rate < t_count)
 		{
 			t_count = 0;
-			Shot(90f);
+
+			var rot = 0f;
+			for(var i = 0; i < bulletCount; i++)
+			{
+				rot = i * (360f/bulletCount);
+				
+				Shot(rot);
+			}
+
 		}
 
 	}
