@@ -127,7 +127,7 @@ public class Razer
         if (lineRenderer.enabled == false) return null;
 
         Vector2 rotdir = (origin.transform.rotation * shotRay.direction);
-        Vector3 kz = shotRay.origin + rotdir * distance;
+        Vector3 kz = lineRenderer.GetPosition(1);
         //当たったobj取得
         float st = Vector2.Distance(origin.transform.position, kz);
         shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, layerMask);
@@ -141,7 +141,6 @@ public class Razer
     public void Stop(bool isEnabled)
     {
         lineRenderer.enabled = isEnabled;
-        distance = 0;
         ////マテリアル設定
         //Color color = lineRenderer.material.color;
         //color.a = 0.0f;
