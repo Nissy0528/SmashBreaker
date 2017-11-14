@@ -4,18 +4,12 @@ using UnityEngine;
 
 public class Razer
 {
-   
     /// <summary>
     /// 原点の空オブジェクト
     /// </summary>
     private GameObject origin;
 
-    /// <summary>
-    /// 距離
-    /// </summary>
-    [SerializeField]
-    private float distance = 0.0f;
-    public Ray2D shotRay;
+   private Ray2D shotRay;
 
     /// <summary>
     /// 線の描画
@@ -29,17 +23,15 @@ public class Razer
     /// <summary>
     /// 遮蔽物レイヤー
     /// </summary>
-    private string shieldLayer;
+    private string wallLayer;
 
-    public Razer(Transform shooter, Vector3 velocity, float speed, string shieldLayer, Material mat, params string[] targetLayers)
-    {
+    public Razer(Transform shooter, Vector3 velocity, string wallLayer, Material mat, params string[] targetLayers)
+	{
         //空オブジェクトの生成
         origin = new GameObject("shooter");
         var transform = origin.transform;
         transform.SetParent(shooter);
         transform.localPosition = Vector3.zero;
-
-        this.speed = speed;
 
         ///線の作成
         lineRenderer = origin.AddComponent<LineRenderer>();
@@ -61,7 +53,7 @@ public class Razer
         lineRenderer.startWidth = 0.5f;
         lineRenderer.endWidth = 0.5f;
 
-        this.shieldLayer = shieldLayer;
+        this.wallLayer = wallLayer;
     }
 
     /// <summary>
@@ -75,9 +67,9 @@ public class Razer
 
     private void LineUpdate()
     {
-        WallCheck();
+		float length = WallCheck();
         shotRay.origin = origin.transform.position;
-        Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction) * distance;
+        Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction);
 
 
         lineRenderer.SetPosition(0, origin.transform.position);
@@ -86,17 +78,24 @@ public class Razer
         //RazerPrepare();
     }
 
-    private void WallCheck()
+	/// <summary>
+	/// 壁判定
+	/// </summary>
+	/// <returns></returns>
+    private float WallCheck()
     {
         Vector2 rotdir = (origin.transform.rotation * shotRay.direction);
-        Vector3 kz = shotRay.origin + rotdir * distance;
+		const float range = 150f;
+		Vector3 kz = shotRay.origin + rotdir * range;
         //当たったobj取得
         float st = Vector2.Distance(origin.transform.position, kz);
-        shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, LayerMask.GetMask(shieldLayer));
+        shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, LayerMask.GetMask(wallLayer));
         if (shotHit)
         {
-            distance = Vector2.Distance(origin.transform.position, shotHit.transform.position);
+            return Vector2.Distance(origin.transform.position, shotHit.transform.position);
         }
+
+		return range;
     }
 
     /// <summary>
@@ -104,7 +103,7 @@ public class Razer
     /// </summary>
     private void RazerPrepare()
     {
-       time += Time.deltaTime;
+        time += Time.deltaTime;
 
         lineRenderer.startWidth = Mathf.Min(lineRenderer.startWidth + Time.deltaTime, 0.25f);
         lineRenderer.endWidth = Mathf.Min(lineRenderer.endWidth + Time.deltaTime, 0.25f);

@@ -68,7 +68,7 @@ public class RazerShooter : MonoBehaviour
         razerList = new List<Razer>();
         for (int i = 0; i < muzzle.Count; i++)
         {
-            razerList.Add(new Razer(muzzle[i].transform.Find("FirePos"), muzzle[i].transform.up, speed, shieldLayer, mat, targetLayers));
+            razerList.Add(new Razer(muzzle[i].transform.Find("FirePos"), muzzle[i].transform.up, shieldLayer, mat, targetLayers));
         }
         razerCount = razerTime;
         isEnable = true;
