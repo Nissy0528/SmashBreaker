@@ -69,7 +69,7 @@ public class Razer
     {
 		float length = WallCheck();
         shotRay.origin = origin.transform.position;
-        Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction);
+        Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction * length);
 
 
         lineRenderer.SetPosition(0, origin.transform.position);
