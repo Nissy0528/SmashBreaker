@@ -91,6 +91,7 @@
     <Compile Include="Assets\Script\Actor\Enemy\Enemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\EnemySpawner.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\NormalEnemy.cs" />
+    <Compile Include="Assets\Script\Actor\Enemy\RotEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Player\Player.cs" />
     <Compile Include="Assets\Script\Actor\Player\Smash.cs" />
     <Compile Include="Assets\Script\Effect\EnemyBorn.cs" />

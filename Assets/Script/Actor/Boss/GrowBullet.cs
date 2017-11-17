@@ -17,6 +17,7 @@ public class GrowBullet : BossBullet
 	protected override void BulletInit()
 	{
 		base.BulletInit();
+		GetComponent<Rigidbody2D>().freezeRotation = true;
 	}
 
 	/// <summary>
