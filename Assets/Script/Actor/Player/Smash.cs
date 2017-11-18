@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class Smash : MonoBehaviour
 {
+    public struct Parameter
+    {
+        public float length;//飛ぶ距離
+        public int power;//威力
+    }
+
     public GameObject player;//プレイヤー
     public PlayerHP playerHP;//プレイヤーの体力
     public float smashSpeed;//拳を飛ばす速度
-    public float smashLength;//飛ぶ距離
 
+    private Parameter parameter;//パラメータ
     private GameObject smash;//攻撃オブジェクト
     private GameObject smashCol;//攻撃あたり判定
     private Vector3 returnPos;//戻る座標
@@ -46,8 +52,8 @@ public class Smash : MonoBehaviour
         //攻撃コマンドが入力されたら押下フラグをtureに
         if (Input.GetButtonDown("Smash") || Mathf.Abs(Input.GetAxisRaw("Smash")) >= 0.5f)
         {
-            smashCol.GetComponent<CircleCollider2D>().enabled = true;//あたり判定を有効に
-            moveToPos = smash.transform.position + smash.transform.up * (smashLength * playerHP.HP_Dif);//攻撃を飛ばす方向を設定
+            smashCol.GetComponent<CircleCollider2D>().isTrigger = true;//あたり判定を有効に
+            moveToPos = smash.transform.position + smash.transform.up * parameter.length;//攻撃を飛ばす方向を設定
             offset = smash.transform.position - transform.position;//攻撃オブジェクトとの距離設定
             isAttack = true;
         }
@@ -81,7 +87,7 @@ public class Smash : MonoBehaviour
             //戻るフラグがfalseならtureに
             if (!isReturn)
             {
-                smashCol.GetComponent<CircleCollider2D>().enabled = false;
+                smashCol.GetComponent<CircleCollider2D>().isTrigger = false;//あたり判定を有効に
                 isReturn = true;
                 return;
             }
@@ -118,13 +124,40 @@ public class Smash : MonoBehaviour
     }
 
     /// <summary>
+    /// 飛ばせる距離
+    /// </summary>
+    public Parameter GetParam
+    {
+        get { return parameter; }
+    }
+
+    /// <summary>
+    /// パラメータ設定
+    /// </summary>
+    public void SetParam(float value, int i)
+    {
+        switch (i)
+        {
+            case 4:
+                parameter.length = value;
+                break;
+            case 5:
+                parameter.power = (int)value;
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    /// <summary>
     /// あたり判定
     /// </summary>
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
         {
-            smashCol.GetComponent<CircleCollider2D>().enabled = false;//あたり判定を有効に
+            smashCol.GetComponent<CircleCollider2D>().isTrigger = false;//あたり判定を有効に
             isReturn = true;
         }
     }

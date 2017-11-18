@@ -22,7 +22,7 @@ public class RazerShooter : MonoBehaviour
     /// 速度
     /// </summary>
     [SerializeField]
-    private float speed = 10f;
+    private float time = 2.5f;
 
     /// <summary>
     /// レーザー
@@ -68,10 +68,11 @@ public class RazerShooter : MonoBehaviour
         razerList = new List<Razer>();
         for (int i = 0; i < muzzle.Count; i++)
         {
-            razerList.Add(new Razer(muzzle[i].transform.Find("FirePos"), muzzle[i].transform.up, speed, shieldLayer, mat, targetLayers));
+            razerList.Add(new Razer(muzzle[i].transform.Find("FirePos"), muzzle[i].transform.up, shieldLayer, mat, targetLayers));
         }
-        razerCount = razerTime;
-        isEnable = true;
+        razerCount = 0.0f;
+        isEnable = false;
+        Stop();
     }
 
     /// <summary>
@@ -133,7 +134,6 @@ public class RazerShooter : MonoBehaviour
             var posi = rCol.transform.position;
             //与ダメージ処理
             AddDamage(rCol.gameObject);
-            //AddDamage(rCol.gameObject);
             //撃破パーティクル
             //var p = Instantiate(particle);
             //p.transform.position = posi;

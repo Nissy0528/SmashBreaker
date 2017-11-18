@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed;//移動速度
-    //public float backSpeed;//殴ったときに後ろに下がる速度
-    public int hp;//体力
-    public int maxHP;//最大体力
-    public int maxSP;//最大スマッシュポイント
+    //パラメータの構造体
+    public struct Parameter
+    {
+        public int hp;//体力
+        public int maxHP;//最大体力
+        public int maxSP;//最大スマッシュポイント
+        public float speed;//移動速度
+        public float sp;//スマシュポイント
+    }
 
+    private Parameter parameter;//パラメータ
     private GameObject smash;//攻撃のあたり判定
-    //private GameObject backPosObj;//後ろに下がる座標オブジェクト
     private GameObject smashGage;//スマッシュゲージ
     private MainCamera camera;//カメラ
-    //private Animator anim;//アニメーション
     private Vector3 size;//大きさ
     private Vector3 attackColSize;//攻撃あたり判定の大きさ
-    private Vector3 iniAttackPos;//攻撃あたり判定の初期位置
     private Vector3 backPos;//後ろに下がる座標
     private float x_axis;//横の入力値
     private float y_axis;//縦の入力値
-    private float sp;//スマッシュポイント
     private bool isDamage;//ダメージ
-    //private bool isBack;//tureなら後ろに下がり続ける
 
     //↓仮変数（後で使わなくなるかも）
     private int flashCnt;//点滅カウント
@@ -44,20 +44,17 @@ public class Player : MonoBehaviour
     {
         camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
         smash = GameObject.Find("Smash").gameObject;
-        //backPosObj = transform.Find("BackPos").gameObject;
         size = transform.localScale;//大きさ取得
         state = State.IDEL;//最初は待機状態
 
         //あたり判定の大きさを体力に合わせて変える
         attackColSize = smash.transform.localScale;
-        iniAttackPos = smash.transform.localPosition;
         ChangeHp(0);
 
         //各フラグをfalseに
         isDamage = false;
-        //isBack = false;
 
-        sp = 0.0f;
+        parameter.sp = 0.0f;
     }
 
     // Update is called once per frame
@@ -96,8 +93,6 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        //if (isBack) return;
-
         x_axis = Input.GetAxisRaw("Horizontal");
         y_axis = Input.GetAxisRaw("Vertical");
         Vector2 axis = Vector2.zero;
@@ -116,7 +111,7 @@ public class Player : MonoBehaviour
             axis.Normalize();
         }
 
-        transform.Translate(axis * speed * Time.deltaTime, Space.World);
+        transform.Translate(axis * parameter.speed * Time.deltaTime, Space.World);
     }
 
     /// <summary>
@@ -153,39 +148,20 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// 後ろに下がる
-    /// </summary>
-    //private void Back()
-    //{
-    //    if (!isBack) return;
-
-    //    //指定した距離分下がる
-    //    transform.position = Vector3.MoveTowards(transform.position, backPos, backSpeed * Time.deltaTime);
-    //    if (transform.position == backPos)
-    //    {
-    //        isBack = false;
-    //    }
-    //}
-
-    /// <summary>
     /// 体力回復
     /// </summary>
     public void ChangeHp(int h)
     {
         //体力を上限まで回復
-        hp += h;
-        hp = Mathf.Clamp(hp, 0, maxHP);
+        parameter.hp += h;
+        parameter.hp = Mathf.Clamp(parameter.hp, 0, parameter.maxHP);
 
         //体力に合わせて拳のサイズを変える
-        smash.transform.localScale = new Vector3(attackColSize.x * hp, attackColSize.y * hp, 1);
+        smash.transform.localScale = new Vector3(attackColSize.x * parameter.hp, attackColSize.y * parameter.hp, 1);
 
         if (h > 0)
         {
-            sp = 0.0f;
-        }
-        if (hp == 3)
-        {
-            sp = maxSP;
+            parameter.sp = 0.0f;
         }
     }
 
@@ -196,13 +172,13 @@ public class Player : MonoBehaviour
     {
         if (value > 0)
         {
-            sp = Mathf.Min(sp + value, maxSP);
+            parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
         }
         if (value < 0)
         {
-            if (sp > 0.0f)
+            if (parameter.sp > 0.0f)
             {
-                sp = Mathf.Max(sp - maxSP / 2, 0);
+                parameter.sp = Mathf.Max(parameter.sp - parameter.maxSP / 2, 0);
             }
             else
             {
@@ -212,24 +188,36 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// 後退開始
+    /// パラメータ取得
     /// </summary>
-    //public void SetBack()
-    //{
-    //    //後ろに下がるように
-    //    if (!isBack)
-    //    {
-    //        backPos = backPosObj.transform.position;
-    //        isBack = true;
-    //    }
-    //}
+    public Parameter GetParam
+    {
+        get { return parameter; }
+    }
 
     /// <summary>
-    /// スマッシュポイント取得
+    /// パラメータ設定
     /// </summary>
-    public float GetSP
+    public void SetParam(float value, int i)
     {
-        get { return sp; }
+        switch (i)
+        {
+            case 0:
+                parameter.hp = (int)value;
+                break;
+            case 1:
+                parameter.maxHP = (int)value;
+                break;
+            case 2:
+                parameter.maxSP = (int)value;
+                break;
+            case 3:
+                parameter.speed = value;
+                break;
+            default:
+                break;
+
+        }
     }
 
     /// <summary>
@@ -249,14 +237,14 @@ public class Player : MonoBehaviour
         SpriteRenderer texture = GetComponent<SpriteRenderer>();
         Color color = texture.color;
 
-        if (hp > 0 && !isDamage)
+        if (parameter.hp > 0 && !isDamage)
         {
-            AddSP(-1);
+            ChangeHp(-1);
             isDamage = true;
         }
-        if (hp <= 0 && state != State.DEAD)
+        if (parameter.hp <= 0 && state != State.DEAD)
         {
-            hp = 0;
+            parameter.hp = 0;
             color.a = 0.0f;
             texture.color = color;
             state = State.DEAD;

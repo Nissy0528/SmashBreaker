@@ -29,7 +29,13 @@ public class SmashGage : MonoBehaviour
     /// </summary>
     private void SmashPoint()
     {
-        sp = player.GetSP;
+        if (player.GetParam.hp >= player.GetParam.maxHP)
+        {
+            slider.value = 1.0f;
+            return;
+        }
+
+        sp = player.GetParam.sp;
         slider.value = sp / max;
 
         if (sp >= max)

@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class Razer
 {
-    private const float limit = 100f;
+    private const float limit = 200f;
 
     /// <summary>
     /// 原点の空オブジェクト
     /// </summary>
     private GameObject origin;
 
-    /// <summary>
-    /// 速度
-    /// </summary>
-    private float speed;
     /// <summary>
     /// 距離
     /// </summary>
@@ -30,21 +26,20 @@ public class Razer
     private int layerMask;
 
     private float time;
+    private float count;
 
     /// <summary>
     /// 遮蔽物レイヤー
     /// </summary>
     private string shieldLayer;
 
-    public Razer(Transform shooter, Vector3 velocity, float speed, string shieldLayer, Material mat, params string[] targetLayers)
+    public Razer(Transform shooter, Vector3 velocity, string shieldLayer, Material mat, params string[] targetLayers)
     {
         //空オブジェクトの生成
         origin = new GameObject("shooter");
         var transform = origin.transform;
         transform.SetParent(shooter);
         transform.localPosition = Vector3.zero;
-
-        this.speed = speed;
 
         ///線の作成
         lineRenderer = origin.AddComponent<LineRenderer>();
@@ -59,9 +54,6 @@ public class Razer
         shotRay.direction = velocity.normalized;
         //マテリアル設定
         lineRenderer.material = mat;
-        //Color color = lineRenderer.material.color;
-        //color.a = 0.0f;
-        //lineRenderer.material.color = color;
         //幅設定
         lineRenderer.startWidth = 0.5f;
         lineRenderer.endWidth = 0.5f;
@@ -82,9 +74,7 @@ public class Razer
     {
 
         //長さの加算
-        distance += speed * Time.deltaTime;
-
-        distance = Mathf.Min(distance, limit);
+        distance = limit;
 
 
         ShieldCheck();
@@ -116,12 +106,12 @@ public class Razer
     /// </summary>
     private void RazerPrepare()
     {
-       time += Time.deltaTime;
+        count += Time.deltaTime;
 
         lineRenderer.startWidth = Mathf.Min(lineRenderer.startWidth + Time.deltaTime, 0.25f);
         lineRenderer.endWidth = Mathf.Min(lineRenderer.endWidth + Time.deltaTime, 0.25f);
 
-        if (time >= 2.5f)
+        if (count >= time)
         {
             lineRenderer.startWidth = 0.5f;
             lineRenderer.endWidth = 0.5f;
@@ -155,14 +145,6 @@ public class Razer
     {
         lineRenderer.enabled = isEnabled;
         distance = 0;
-        ////マテリアル設定
-        //Color color = lineRenderer.material.color;
-        //color.a = 0.0f;
-        //lineRenderer.material.color = color;
-        ////幅設定
-        //lineRenderer.startWidth = 0.0f;
-        //lineRenderer.endWidth = 0.0f;
-        //time = 0.0f;
     }
 }
 

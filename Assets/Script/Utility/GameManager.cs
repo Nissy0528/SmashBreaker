@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void ShowGameOver()
     {
-        if (player.hp > 0) return;
+        if (player.GetParam.hp > 0) return;
 
         gameover.SetActive(true);
         Time.timeScale = 0.0f;

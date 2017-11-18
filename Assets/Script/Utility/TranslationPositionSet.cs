@@ -7,6 +7,11 @@ using UnityEditor;
 
 public class TranslationPositionSet : MonoBehaviour
 {
+    public GameObject marker;
+
+    private List<Vector2> positions = new List<Vector2>();
+    private GameObject markerObj;
+
 #if UNITY_EDITOR
 
     private void OnDrawGizmos()
@@ -18,13 +23,34 @@ public class TranslationPositionSet : MonoBehaviour
         }
 
         //マウスの位置取得
-        Vector3 mousePosition = Event.current.mousePosition;
+        Vector2 mousePosition = Event.current.mousePosition;
 
         //シーン上の座標に変換
         mousePosition.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePosition.y;
         mousePosition = SceneView.currentDrawingSceneView.camera.ScreenToWorldPoint(mousePosition);
 
-        Debug.Log("座標 : " + mousePosition.x.ToString("F2") + ", " + mousePosition.y.ToString("F2"));
+        positions.Add(mousePosition);
+        CreateMarker(mousePosition);
     }
 #endif
+
+    /// <summary>
+    /// マーカー設置
+    /// </summary>
+    /// <param name="position"></param>
+    private void CreateMarker(Vector2 position)
+    {
+        markerObj = Instantiate(marker);
+        markerObj.transform.position = position;
+        markerObj.name = marker.name + positions.Count;
+        markerObj.transform.parent = gameObject.transform;
+    }
+
+    /// <summary>
+    /// 座標リスト取得
+    /// </summary>
+    public List<Vector2> GetPositions
+    {
+        get { return positions; }
+    }
 }

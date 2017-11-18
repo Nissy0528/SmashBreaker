@@ -13,7 +13,7 @@ public class PlayerHP : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Chara").GetComponent<Player>();
-        playerHP = player.hp;
+        playerHP = player.GetParam.hp;
     }
 
     // Update is called once per frame
@@ -28,7 +28,7 @@ public class PlayerHP : MonoBehaviour
     private void ChangeHP()
     {
         //プレイヤーの体力に合わせて表示する画像の個数を変更
-        playerHP = player.hp;
+        playerHP = player.GetParam.hp;
 
         for (int i = 0; i < hpTextures.Length; i++)
         {

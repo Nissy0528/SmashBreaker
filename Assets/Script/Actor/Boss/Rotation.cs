@@ -6,18 +6,6 @@ using UnityEngine;
 public class Rotation : MonoBehaviour
 {
     /// <summary>
-    /// 速度
-    /// </summary>
-    [SerializeField]
-    private int speed = 2;
-
-    /// <summary>
-    ///耐力
-    /// </summary>
-    [SerializeField]
-    private float bytal = 10;
-
-    /// <summary>
     /// 回転速度
     /// </summary>
     [SerializeField]
@@ -49,11 +37,6 @@ public class Rotation : MonoBehaviour
     void Update()
     {
         Move();
-
-        if (bytal <= 0)
-        {
-            Destroy(gameObject);
-        }
     }
 
     private void Move()
@@ -66,7 +49,6 @@ public class Rotation : MonoBehaviour
         for (int i = 0; i < muzzle.Count; i++)
         {
             muzzle[i].transform.Rotate(rotation * riv);
-            muzzle[i].GetComponent<Rigidbody2D>().MovePosition(muzzle[i].transform.position + ((muzzle[i].transform.rotation * Vector3.forward) * speed));
         }
     }
 }
