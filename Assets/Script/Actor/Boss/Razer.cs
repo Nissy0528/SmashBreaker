@@ -31,10 +31,10 @@ public class Razer
     /// <summary>
     /// 遮蔽物レイヤー
     /// </summary>
-    private string shieldLayer;
+    private string wallLayer;
 
-    public Razer(Transform shooter, Vector3 velocity, string shieldLayer, Material mat, params string[] targetLayers)
-    {
+    public Razer(Transform shooter, Vector3 velocity, string wallLayer, Material mat, params string[] targetLayers)
+	{
         //空オブジェクトの生成
         origin = new GameObject("shooter");
         var transform = origin.transform;
@@ -58,7 +58,7 @@ public class Razer
         lineRenderer.startWidth = 0.5f;
         lineRenderer.endWidth = 0.5f;
 
-        this.shieldLayer = shieldLayer;
+        this.wallLayer = wallLayer;
     }
 
     /// <summary>
@@ -72,14 +72,15 @@ public class Razer
 
     private void LineUpdate()
     {
-
         //長さの加算
         distance = limit;
 
 
         ShieldCheck();
+
+        float length = WallCheck();
         shotRay.origin = origin.transform.position;
-        Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction) * distance;
+        Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction * length);
 
 
         lineRenderer.SetPosition(0, origin.transform.position);
@@ -88,17 +89,24 @@ public class Razer
         //RazerPrepare();
     }
 
-    private void ShieldCheck()
+	/// <summary>
+	/// 壁判定
+	/// </summary>
+	/// <returns></returns>
+    private float WallCheck()
     {
         Vector2 rotdir = (origin.transform.rotation * shotRay.direction);
-        Vector3 kz = shotRay.origin + rotdir * distance;
+		const float range = 150f;
+		Vector3 kz = shotRay.origin + rotdir * range;
         //当たったobj取得
         float st = Vector2.Distance(origin.transform.position, kz);
-        shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, LayerMask.GetMask(shieldLayer));
+        shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, LayerMask.GetMask(wallLayer));
         if (shotHit)
         {
-            distance = Vector2.Distance(origin.transform.position, shotHit.transform.position);
+            return Vector2.Distance(origin.transform.position, shotHit.transform.position);
         }
+
+		return range;
     }
 
     /// <summary>
@@ -130,7 +138,7 @@ public class Razer
         if (lineRenderer.enabled == false) return null;
 
         Vector2 rotdir = (origin.transform.rotation * shotRay.direction);
-        Vector3 kz = shotRay.origin + rotdir * distance;
+        Vector3 kz = lineRenderer.GetPosition(1);
         //当たったobj取得
         float st = Vector2.Distance(origin.transform.position, kz);
         shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, layerMask);
@@ -145,6 +153,14 @@ public class Razer
     {
         lineRenderer.enabled = isEnabled;
         distance = 0;
+        ////マテリアル設定
+        //Color color = lineRenderer.material.color;
+        //color.a = 0.0f;
+        //lineRenderer.material.color = color;
+        ////幅設定
+        //lineRenderer.startWidth = 0.0f;
+        //lineRenderer.endWidth = 0.0f;
+        //time = 0.0f;
     }
 }
 
