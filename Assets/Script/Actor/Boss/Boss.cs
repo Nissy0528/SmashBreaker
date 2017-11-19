@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Boss : Enemy
 {
-    public float shoot_speed;//吹き飛ぶ速度
     public GameObject smashText;//スマッシュUI
 
     private PlayerHP playerHP;//プレイヤー体力UI
@@ -12,7 +11,6 @@ public class Boss : Enemy
     // Use this for initialization
     void Start()
     {
-        shootSpeed = shoot_speed;
         playerHP = GameObject.Find("PlayerHP").GetComponent<PlayerHP>();
         Initialize();
     }

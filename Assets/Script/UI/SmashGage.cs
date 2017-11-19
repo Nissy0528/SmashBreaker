@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 public class SmashGage : MonoBehaviour
 {
-    public float max;//最大値
-
     private float sp;//スマッシュポイント
+    private float max;//最大スマッシュポイント
     private Slider slider;
     private Player player;
 
@@ -16,6 +15,7 @@ public class SmashGage : MonoBehaviour
     {
         slider = GetComponent<Slider>();
         player = GameObject.Find("Chara").GetComponent<Player>();
+        max = player.GetParam.maxSP;
     }
 
     // Update is called once per frame

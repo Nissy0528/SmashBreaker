@@ -6,13 +6,11 @@ public class NormalEnemy : Enemy
 {
     public GameObject bonusText;
     public float speed;//移動速度
-    public float shoot_speed;//吹き飛ぶ速度
     public float rotateSpped;//回転速度
 
     // Use this for initialization
     void Start()
     {
-        shootSpeed = shoot_speed;
         Initialize();
     }
 
@@ -65,7 +63,7 @@ public class NormalEnemy : Enemy
             {
                 GameObject text = Instantiate(bonusText);
                 text.GetComponent<TextUI>().SetPos(transform.position);
-                player.GetComponent<Player>().AddSP(2);//プレイヤーのスマッシュポイント加算
+                player.GetComponent<Player>().AddSP(base.point * 2);//プレイヤーのスマッシュポイント加算
                 Destroy(gameObject);
             }
         }

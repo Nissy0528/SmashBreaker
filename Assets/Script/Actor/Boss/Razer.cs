@@ -4,18 +4,12 @@ using UnityEngine;
 
 public class Razer
 {
-    private const float limit = 200f;
-
     /// <summary>
     /// 原点の空オブジェクト
     /// </summary>
     private GameObject origin;
+    private GameObject effect;//エフェクトオブジェクト
 
-    /// <summary>
-    /// 距離
-    /// </summary>
-    [SerializeField]
-    private float distance = 0.0f;
     public Ray2D shotRay;
 
     /// <summary>
@@ -25,6 +19,7 @@ public class Razer
     private RaycastHit2D shotHit;
     private int layerMask;
 
+    private float length;
     private float time;
     private float count;
 
@@ -33,13 +28,15 @@ public class Razer
     /// </summary>
     private string wallLayer;
 
-    public Razer(Transform shooter, Vector3 velocity, string wallLayer, Material mat, params string[] targetLayers)
-	{
+    public Razer(Transform shooter, Vector3 velocity, string wallLayer, Material mat, float time, params string[] targetLayers)
+    {
         //空オブジェクトの生成
         origin = new GameObject("shooter");
         var transform = origin.transform;
         transform.SetParent(shooter);
         transform.localPosition = Vector3.zero;
+
+        this.time = time;
 
         ///線の作成
         lineRenderer = origin.AddComponent<LineRenderer>();
@@ -54,9 +51,6 @@ public class Razer
         shotRay.direction = velocity.normalized;
         //マテリアル設定
         lineRenderer.material = mat;
-        //幅設定
-        lineRenderer.startWidth = 0.5f;
-        lineRenderer.endWidth = 0.5f;
 
         this.wallLayer = wallLayer;
     }
@@ -72,13 +66,7 @@ public class Razer
 
     private void LineUpdate()
     {
-        //長さの加算
-        distance = limit;
-
-
-        ShieldCheck();
-
-        float length = WallCheck();
+        length = WallCheck();
         shotRay.origin = origin.transform.position;
         Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction * length);
 
@@ -86,18 +74,18 @@ public class Razer
         lineRenderer.SetPosition(0, origin.transform.position);
         lineRenderer.SetPosition(1, kz);
 
-        //RazerPrepare();
+        RazerPrepare();
     }
 
-	/// <summary>
-	/// 壁判定
-	/// </summary>
-	/// <returns></returns>
+    /// <summary>
+    /// 壁判定
+    /// </summary>
+    /// <returns></returns>
     private float WallCheck()
     {
         Vector2 rotdir = (origin.transform.rotation * shotRay.direction);
-		const float range = 150f;
-		Vector3 kz = shotRay.origin + rotdir * range;
+        const float range = 150f;
+        Vector3 kz = shotRay.origin + rotdir * range;
         //当たったobj取得
         float st = Vector2.Distance(origin.transform.position, kz);
         shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, LayerMask.GetMask(wallLayer));
@@ -106,7 +94,7 @@ public class Razer
             return Vector2.Distance(origin.transform.position, shotHit.transform.position);
         }
 
-		return range;
+        return range;
     }
 
     /// <summary>
@@ -114,10 +102,9 @@ public class Razer
     /// </summary>
     private void RazerPrepare()
     {
-        count += Time.deltaTime;
+        if (lineRenderer.enabled == false) return;
 
-        lineRenderer.startWidth = Mathf.Min(lineRenderer.startWidth + Time.deltaTime, 0.25f);
-        lineRenderer.endWidth = Mathf.Min(lineRenderer.endWidth + Time.deltaTime, 0.25f);
+        count += Time.deltaTime;
 
         if (count >= time)
         {
@@ -126,6 +113,7 @@ public class Razer
             Color color = lineRenderer.material.color;
             color.a = 1.0f;
             lineRenderer.material.color = color;
+            GameObject.Destroy(effect);
         }
     }
 
@@ -135,7 +123,7 @@ public class Razer
     /// <returns></returns>
     public Collider2D GetHit()
     {
-        if (lineRenderer.enabled == false) return null;
+        if (count < time || lineRenderer.enabled == false) return null;
 
         Vector2 rotdir = (origin.transform.rotation * shotRay.direction);
         Vector3 kz = lineRenderer.GetPosition(1);
@@ -151,16 +139,52 @@ public class Razer
     /// </summary>
     public void Stop(bool isEnabled)
     {
+        //幅設定
+        lineRenderer.startWidth = 0.25f;
+        lineRenderer.endWidth = 0.25f;
         lineRenderer.enabled = isEnabled;
-        distance = 0;
-        ////マテリアル設定
-        //Color color = lineRenderer.material.color;
-        //color.a = 0.0f;
-        //lineRenderer.material.color = color;
-        ////幅設定
-        //lineRenderer.startWidth = 0.0f;
-        //lineRenderer.endWidth = 0.0f;
-        //time = 0.0f;
+        count = 0.0f;
+        //マテリアル設定
+        Color color = lineRenderer.material.color;
+        if (!isEnabled)
+        {
+            color.a = 0.0f;
+        }
+        else
+        {
+            CreateEffect();
+            color.a = 0.25f;
+        }
+        lineRenderer.material.color = color;
+    }
+
+    /// <summary>
+    /// エフェクト生成
+    /// </summary>
+    private void CreateEffect()
+    {
+        effect = GameObject.Instantiate(Resources.Load("Prefab/Effect/RazerEffect")) as GameObject;
+        var e_transform = effect.transform;
+        e_transform.SetParent(origin.transform.parent);
+        e_transform.localPosition = Vector3.zero;
+        e_transform.localRotation = Quaternion.identity;
+        e_transform.GetComponent<RazerEffect>().SetRazer = this;
+    }
+
+    /// <summary>
+    /// レーザーインターバル判定
+    /// </summary>
+    public bool IsRazer
+    {
+        get { return count >= time || lineRenderer.enabled == false; }
+    }
+
+    /// <summary>
+    /// 長さ取得
+    /// </summary>
+    public float Length
+    {
+        get { return length; }
     }
 }
 

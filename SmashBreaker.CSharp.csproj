@@ -81,6 +81,8 @@
     <Compile Include="Assets\Script\Actor\Boss\Boss.cs" />
     <Compile Include="Assets\Script\Actor\Boss\BossBullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\BossBulletShooter.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\CircleBullet.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\CircleBulletShooter.cs" />
     <Compile Include="Assets\Script\Actor\Boss\EyeMove.cs" />
     <Compile Include="Assets\Script\Actor\Boss\GrowBullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Razer.cs" />
@@ -88,13 +90,17 @@
     <Compile Include="Assets\Script\Actor\Boss\Rotation.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Translation.cs" />
     <Compile Include="Assets\Script\Actor\BossTargeter.cs" />
+    <Compile Include="Assets\Script\Actor\Enemy\DistanseEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\Enemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\EnemySpawner.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\NormalEnemy.cs" />
+    <Compile Include="Assets\Script\Actor\Enemy\RotEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Player\Player.cs" />
     <Compile Include="Assets\Script\Actor\Player\Smash.cs" />
     <Compile Include="Assets\Script\Effect\EnemyBorn.cs" />
     <Compile Include="Assets\Script\Effect\MainCamera.cs" />
+    <Compile Include="Assets\Script\Effect\RazerEffect.cs" />
+    <Compile Include="Assets\Script\Effect\TextureAnimator.cs" />
     <Compile Include="Assets\Script\UI\PlayerHP.cs" />
     <Compile Include="Assets\Script\UI\SmashGage.cs" />
     <Compile Include="Assets\Script\UI\SmashText.cs" />

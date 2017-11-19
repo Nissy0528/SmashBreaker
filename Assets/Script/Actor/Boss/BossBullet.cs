@@ -48,11 +48,11 @@ public class BossBullet : MonoBehaviour
 	/// 当たり判定
 	/// </summary>
 	/// <param name="collision"></param>
-	private void OnCollisionEnter2D(Collision2D collision)
+	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		Collision(collision);
 	}
 
-	protected virtual void Collision(Collision2D col) { }
+	protected virtual void Collision(Collider2D col) { }
 
 }

@@ -19,12 +19,6 @@ public class RazerShooter : MonoBehaviour
     private GameObject particle;
 
     /// <summary>
-    /// 速度
-    /// </summary>
-    [SerializeField]
-    private float time = 2.5f;
-
-    /// <summary>
     /// レーザー
     /// </summary>
     private List<Razer> razerList;
@@ -40,12 +34,13 @@ public class RazerShooter : MonoBehaviour
     [SerializeField]
     private string shieldLayer;
 
-    public Material mat;
-    public float razerTime;
+    public Material mat;//レーザーの色
+    public float razerTime = 2.5f;//レーザー切り替え時間
+    public float time = 2.5f;//レーザー発射時間
 
     private float razerCount;
-    private bool isEnable;
-    private List<GameObject> muzzle = new List<GameObject>();
+    private bool isEnable;//レーザーのアクティブフラグ
+    private List<GameObject> muzzle = new List<GameObject>();//発射口のリスト
 
     public void Start()
     {
@@ -68,7 +63,7 @@ public class RazerShooter : MonoBehaviour
         razerList = new List<Razer>();
         for (int i = 0; i < muzzle.Count; i++)
         {
-            razerList.Add(new Razer(muzzle[i].transform.Find("FirePos"), muzzle[i].transform.up, shieldLayer, mat, targetLayers));
+            razerList.Add(new Razer(muzzle[i].transform.Find("FirePos"), muzzle[i].transform.up, shieldLayer, mat, time, targetLayers));
         }
         razerCount = 0.0f;
         isEnable = false;
@@ -94,6 +89,8 @@ public class RazerShooter : MonoBehaviour
     /// </summary>
     private void Swich()
     {
+        if (!ShootCount()) return;
+
         if (razerCount < razerTime)
         {
             razerCount += Time.deltaTime;
@@ -147,6 +144,22 @@ public class RazerShooter : MonoBehaviour
         {
             col.GetComponent<Player>().Damage();
         }
+    }
+
+    /// <summary>
+    /// レーザー切り替えカウント判定
+    /// </summary>
+    /// <returns></returns>
+    private bool ShootCount()
+    {
+        foreach (var r in razerList)
+        {
+            if (!r.IsRazer)
+                return false;
+            else
+                return true;
+        }
+        return false;
     }
 
     /// <summary>

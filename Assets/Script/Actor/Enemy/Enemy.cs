@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
+    protected int point;//倒されたときのポイント
+    [SerializeField]
     protected float shootSpeed;//吹き飛ぶ速度
+
     protected GameObject player;//プレイヤー
     protected Vector3 playerVec;//プレイヤーの方向
     protected Vector3 lookPos;//見る方向
@@ -60,7 +64,7 @@ public class Enemy : MonoBehaviour
         Rigidbody2D rigid = GetComponent<Rigidbody2D>();
         rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);//後ろに吹き飛ぶ
         isStan = true;//気絶フラグtrue
-        player.GetComponent<Player>().AddSP(1);//プレイヤーのスマッシュポイント加算
+        player.GetComponent<Player>().AddSP(point);//プレイヤーのスマッシュポイント加算
         //player.GetComponent<Player>().SetBack();//プレイヤー後退開始
         Time.timeScale = 0.0f;//ゲーム停止
     }

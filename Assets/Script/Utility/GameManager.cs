@@ -10,8 +10,10 @@ public class GameManager : MonoBehaviour
     public GameObject gameclear;//ゲームクリアUI
     public GameObject smashText;//スマッシュUI
     public GameObject enemyManager;//エネミーマネージャー
+    public GameObject pauseText;//ポーズUI
 
     private float stopDelay;//ゲーム停止時間
+    private bool isPause;//ポーズフラグ
     private Player player;//プレイヤー
     private GameObject bossObj;//ボス
     private MainCamera camera;//カメラ
@@ -31,6 +33,7 @@ public class GameManager : MonoBehaviour
         GameStart();//ゲーム再開
         ShowGameOver();//ゲームオーバー表示
         ShowGameClear();//ゲームクリア表示
+        Pause();//ポーズ
     }
 
     /// <summary>
@@ -81,5 +84,31 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1.0f;
             SceneManager.LoadScene("Main");
         }
+    }
+
+    /// <summary>
+    /// ポーズ
+    /// </summary>
+    private void Pause()
+    {
+        if (Input.GetButtonDown("Pause"))
+        {
+            if (!isPause)
+            {
+                isPause = true;
+            }
+            else
+            {
+                Time.timeScale = 1.0f;
+                isPause = false;
+            }
+        }
+
+        if (isPause)
+        {
+            Time.timeScale = 0.0f;
+        }
+
+        pauseText.SetActive(isPause);
     }
 }

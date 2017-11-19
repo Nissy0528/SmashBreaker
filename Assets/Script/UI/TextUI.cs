@@ -13,7 +13,8 @@ public class TextUI : MonoBehaviour
     void Start()
     {
         rectTransfrom = GetComponent<RectTransform>();
-        transform.parent = GameObject.Find("Canvas").transform;
+        GameObject canvas = GameObject.Find("Canvas");
+        rectTransfrom.SetParent(canvas.transform, false);
         rectTransfrom.position = RectTransformUtility.WorldToScreenPoint(Camera.main, position);
         text = GetComponent<Text>();
     }

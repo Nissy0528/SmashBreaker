@@ -12,19 +12,24 @@ public class EnemySpawner : MonoBehaviour
     private GameObject[] enemyBorns;//現在ゲーム上にある敵登場エフェクト
     private Vector3 spawnPos;//生成位置
     private PlayerHP playerHP;//プレイヤー体力UI
+    private TextureAnimator animation_chid;//アニメーションするオブジェクト
     private float spawnDelay;//敵生成時間
+    private bool animStop;//アニメーション停止フラグ
 
     // Use this for initialization
     void Start()
     {
-        spawnDelay = 0.0f;
+        spawnDelay = spawnTime;
         spawnPos = transform.GetChild(0).position;
         playerHP = GameObject.Find("PlayerHP").GetComponent<PlayerHP>();
+        animation_chid = transform.GetChild(1).GetComponent<TextureAnimator>();
+        animation_chid.CurrentTex = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
+        StopAnim();
         Spawn();//敵生成
 
         enemys.RemoveAll(x => x == null);//敵リストの空の要素を削除
@@ -50,6 +55,38 @@ public class EnemySpawner : MonoBehaviour
             enemyObj.transform.position = spawnPos;
             enemys.Add(enemyObj);
             spawnDelay = spawnTime;
+            SetAnim();
+        }
+    }
+
+    /// <summary>
+    /// アニメーション開始
+    /// </summary>
+    private void SetAnim()
+    {
+        if (animation_chid.IsPlay) return;
+
+        animation_chid.SetTime = spawnTime / 2f;
+        animation_chid.IsPlay = true;
+        animation_chid.IsLoop = true;
+        animation_chid.NextTex();
+        animStop = false;
+    }
+
+    /// <summary>
+    /// アニメーション停止
+    /// </summary>
+    private void StopAnim()
+    {
+        if (enemys.Count < enemyRange) return;
+
+        if (animation_chid.CurrentTex == 0)
+        {
+            animStop = true;
+        }
+        if (animStop && animation_chid.CurrentTex == 1)
+        {
+            animation_chid.Stop();
         }
     }
 

@@ -43,7 +43,7 @@ public class GrowBullet : BossBullet
 	/// 当たり判定
 	/// </summary>
 	/// <param name="col"></param>
-	protected override void Collision(Collision2D col)
+	protected override void Collision(Collider2D col)
 	{
 		string layer = LayerMask.LayerToName(col.gameObject.layer);
 		if (layer == "Wall")
@@ -56,8 +56,6 @@ public class GrowBullet : BossBullet
 			Destroy(gameObject);
 			p.Damage();
 		}
-
-
 		//base.Collision(col);
 	}
 }
