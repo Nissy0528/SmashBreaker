@@ -104,6 +104,7 @@
     <Compile Include="Assets\Script\UI\Title.cs" />
     <Compile Include="Assets\Script\Utility\CharaDataSet.cs" />
     <Compile Include="Assets\Script\Utility\DataSet.cs" />
+    <Compile Include="Assets\Script\Utility\DebugCommand.cs" />
     <Compile Include="Assets\Script\Utility\GameManager.cs" />
     <Compile Include="Assets\Script\Utility\MapCreater.cs" />
     <Compile Include="Assets\Script\Utility\MapReader.cs" />

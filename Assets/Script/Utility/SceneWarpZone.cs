@@ -9,13 +9,13 @@ public class SceneWarpZone : MonoBehaviour {
 	/// <summary>
 	/// 移動先のscene
 	/// </summary>
-	private string nextScene;
+	[SerializeField]
+	private string nextScene = "Main";
 
 	private void Start()
 	{
 		GetComponent<Collider2D>().isTrigger = true;
-		//一時的に消しておく
-		gameObject.SetActive(false);
+		
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)

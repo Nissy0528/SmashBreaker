@@ -30,7 +30,8 @@ public class GameManager : MonoBehaviour
         camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
 
 		warpZone = FindObjectOfType<SceneWarpZone>();
-    }
+		warpZone.gameObject.SetActive(false);
+	}
 
     // Update is called once per frame
     void Update()
