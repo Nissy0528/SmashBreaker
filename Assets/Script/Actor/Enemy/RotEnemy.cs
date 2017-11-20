@@ -26,11 +26,17 @@ public class RotEnemy : Enemy
 	[SerializeField, Tooltip("旋回を行う間合い(値以下の距離になるまで旋回)")]
 	private float turnDistanse = 8f;
 
+	/// <summary>
+	/// トークン
+	/// </summary>
+	private GameObject token;
+
 	// Use this for initialization
 	void Start()
 	{
 		shootSpeed = shoot_speed;
 		Initialize();
+		token = gameObject;
 	}
 	private void Update()
 	{
@@ -51,6 +57,13 @@ public class RotEnemy : Enemy
 
 		TurnBack();
 
+		
+		//ターゲットと自身間のベクトル
+		var direction = ( token.transform.position - transform.position);
+
+
+		transform.Translate(direction * Time.deltaTime, Space.World);
+
 		transform.Translate(-transform.up * speed * Time.deltaTime, Space.World);
 	}
 
@@ -63,7 +76,6 @@ public class RotEnemy : Enemy
 		var target = FindObjectOfType<Smash>().transform;
 		//ターゲットの背後へのベクトル
 		var tBack = target.up * -1;
-		Debug.DrawRay(player.transform.position, player.transform.position + (tBack * 5), Color.green, 100f);
 
 		//ターゲットと自身間のベクトル
 		var direction = (transform.position - target.position);
@@ -75,12 +87,18 @@ public class RotEnemy : Enemy
 		{
 			return;
 		}
+
+		token.transform.position = transform.position;
+
 		var cross = Vector3.Cross(direction, tBack).z;
 		//旋回の左右判定
 		var angle = turnSpeed * cross < 0f ? -1f : 1f;
 		//回転軸
-		Vector3 axis = transform.TransformDirection(Vector3.forward);
-		transform.RotateAround(target.position, axis, angle);
+		Vector3 axis = token.transform.TransformDirection(Vector3.forward);
+		token.transform.RotateAround(target.position, axis, angle);
+
+		gameObject.GetComponent<Rigidbody2D>().MovePosition(token.transform.position);
+		//Destroy(token);
 	}
 
 	/// <summary>

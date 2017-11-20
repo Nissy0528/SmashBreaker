@@ -76,7 +76,7 @@ public class Razer
         distance = limit;
 
 
-        ShieldCheck();
+		WallCheck();
 
         float length = WallCheck();
         shotRay.origin = origin.transform.position;
@@ -103,9 +103,9 @@ public class Razer
         shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, LayerMask.GetMask(wallLayer));
         if (shotHit)
         {
-            return Vector2.Distance(origin.transform.position, shotHit.transform.position);
+            return Vector2.Distance(origin.transform.position, shotHit.point);
         }
-
+		
 		return range;
     }
 
