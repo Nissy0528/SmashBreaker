@@ -151,7 +151,7 @@ public class BossParameter
             book.Write(fs);
         }
 
-        //ExcelImport.Import(file, 0);
+        ExcelImport.Import(file, 1);
     }
 
     /// <summary>
@@ -233,7 +233,6 @@ public class BossParameter
         //各項目にパラメータ設定
         for (int i = 2; i < length; i++)
         {
-            Debug.Log(i);
             IRow row = sheet.CreateRow(rowIdx++);
             cells[i] = row.CreateCell(cellIdx++);
             cells[i + length] = row.CreateCell(cellIdx++);

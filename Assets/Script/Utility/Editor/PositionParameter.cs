@@ -5,19 +5,16 @@ using UnityEditor;
 
 public class PositionParameter
 {
-    public GameObject posSetObj;
-
     private BossParameter boss_param;
-    private GameObject obj;
+    private GameObject positionObj;
 
     /// <summary>
     /// シーン上に表示
     /// </summary>
     public PositionParameter()
     {
-
-        //obj = Instantiate(Resources.Load("Marker")) as GameObject;
         SceneView.onSceneGUIDelegate += PositionOnSceneGUI;
+        positionObj = GameObject.Instantiate(Resources.Load("Prefab/System/PositionSet")) as GameObject;
     }
 
     /// <summary>
@@ -45,8 +42,8 @@ public class PositionParameter
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("設定"))
         {
-            //boss_param = new BossParameter(obj.GetComponent<TranslationPositionSet>().GetPositions);
-            //DestroyImmediate(obj);
+            boss_param = new BossParameter(positionObj.GetComponent<TranslationPositionSet>().GetPositions);
+            GameObject.DestroyImmediate(positionObj);
             SceneView.onSceneGUIDelegate -= PositionOnSceneGUI;
         }
         EditorGUILayout.EndVertical();

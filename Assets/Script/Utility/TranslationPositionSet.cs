@@ -14,7 +14,7 @@ public class TranslationPositionSet : MonoBehaviour
 
 #if UNITY_EDITOR
 
-    private void OnDrawGizmos()
+    public void OnDrawGizmos()
     {
         //マウスのクリックがあったら処理
         if (Event.current == null || Event.current.type != EventType.mouseUp)
