@@ -97,7 +97,7 @@ public class DistanseEnemy : Enemy
 			{
 				GameObject text = Instantiate(bonusText);
 				text.GetComponent<TextUI>().SetPos(transform.position);
-				player.GetComponent<Player>().AddSP(2);//プレイヤーのスマッシュポイント加算
+				player.GetComponent<Player>().AddSP();//プレイヤーのスマッシュポイント加算
 				Destroy(gameObject);
 			}
 		}
