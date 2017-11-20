@@ -76,7 +76,7 @@ public class Razer
         distance = limit;
 
 
-        ShieldCheck();
+		WallCheck();
 
         float length = WallCheck();
         shotRay.origin = origin.transform.position;

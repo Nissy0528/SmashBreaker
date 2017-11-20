@@ -39,11 +39,7 @@ public class GrowBullet : BossBullet
 		transform.localScale += new Vector3(1, 1, 0) * (growSpeed * Time.deltaTime);
 	}
 
-	/// <summary>
-	/// 当たり判定
-	/// </summary>
-	/// <param name="col"></param>
-	protected override void Collision(Collision2D col)
+	private void Hit(Collider2D col)
 	{
 		string layer = LayerMask.LayerToName(col.gameObject.layer);
 		if (layer == "Wall")
@@ -56,8 +52,14 @@ public class GrowBullet : BossBullet
 			Destroy(gameObject);
 			p.Damage();
 		}
+	}
 
-
-		//base.Collision(col);
+	/// <summary>
+	/// 当たり判定
+	/// </summary>
+	/// <param name="col"></param>
+	protected override void Trigger(Collider2D col)
+	{
+		Hit(col);
 	}
 }

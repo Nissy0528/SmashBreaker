@@ -55,4 +55,11 @@ public class BossBullet : MonoBehaviour
 
 	protected virtual void Collision(Collision2D col) { }
 
+
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		Trigger(collision);
+	}
+
+	protected virtual void Trigger(Collider2D col) { }
 }
