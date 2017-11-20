@@ -25,6 +25,12 @@ public class Player : MonoBehaviour
 	private float y_axis;//縦の入力値
 	private bool isDamage;//ダメージ
 
+	/// <summary>
+	/// HP毎のSp取得量
+	/// </summary>
+	[SerializeField]
+	public SpRate spRate;
+
 	//↓仮変数（後で使わなくなるかも）
 	private int flashCnt;//点滅カウント
 
@@ -170,36 +176,32 @@ public class Player : MonoBehaviour
 	/// </summary>
 	public void AddSP()
 	{
-		var value = 1;
-		if (value > 0)
-		{
-			parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
-		}
-		
+		var value = spRate.spRates[parameter.hp - 1];
+		parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
 	}
 
-	/// <summary>
-	/// スマッシュポイント変動
-	/// </summary>
-	public void AddSP(int value)
-	{
-		if (value > 0)
-		{
-			parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
-		}
-		if (value < 0)
-		{
-			if (parameter.sp > 0.0f)
-			{
-				parameter.sp = Mathf.Max(parameter.sp - parameter.maxSP / 2, 0);
-			}
-			else
-			{
-				ChangeHp(value);
-			}
-		}
-	}
-
+	///// <summary>
+	///// スマッシュポイント変動
+	///// </summary>
+	//public void AddSP(int value)
+	//{
+	//	if (value > 0)
+	//	{
+	//		parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
+	//	}
+	//	if (value < 0)
+	//	{
+	//		if (parameter.sp > 0.0f)
+	//		{
+	//			parameter.sp = Mathf.Max(parameter.sp - parameter.maxSP / 2, 0);
+	//		}
+	//		else
+	//		{
+	//			ChangeHp(value);
+	//		}
+	//	}
+	//}
+	
 	/// <summary>
 	/// パラメータ取得
 	/// </summary>
@@ -229,7 +231,6 @@ public class Player : MonoBehaviour
 				break;
 			default:
 				break;
-
 		}
 	}
 

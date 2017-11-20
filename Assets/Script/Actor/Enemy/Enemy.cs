@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour
         Rigidbody2D rigid = GetComponent<Rigidbody2D>();
         rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);//後ろに吹き飛ぶ
         isStan = true;//気絶フラグtrue
-        player.GetComponent<Player>().AddSP(1);//プレイヤーのスマッシュポイント加算
+        player.GetComponent<Player>().AddSP();//プレイヤーのスマッシュポイント加算
         //player.GetComponent<Player>().SetBack();//プレイヤー後退開始
         Time.timeScale = 0.0f;//ゲーム停止
     }
