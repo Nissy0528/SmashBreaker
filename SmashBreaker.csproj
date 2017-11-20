@@ -101,6 +101,7 @@
     <Compile Include="Assets\Script\UI\SmashGage.cs" />
     <Compile Include="Assets\Script\UI\SmashText.cs" />
     <Compile Include="Assets\Script\UI\TextUI.cs" />
+    <Compile Include="Assets\Script\UI\Title.cs" />
     <Compile Include="Assets\Script\Utility\CharaDataSet.cs" />
     <Compile Include="Assets\Script\Utility\DataSet.cs" />
     <Compile Include="Assets\Script\Utility\GameManager.cs" />

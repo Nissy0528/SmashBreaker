@@ -18,6 +18,7 @@ public class GrowBullet : BossBullet
 	{
 		base.BulletInit();
 		GetComponent<Rigidbody2D>().freezeRotation = true;
+		GetComponent<BoxCollider2D>().isTrigger = true;
 	}
 
 	/// <summary>
