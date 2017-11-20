@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-public class SceneWarpZone : MonoBehaviour {
+public class SceneWarpZone : MonoBehaviour
+{
 
 	/// <summary>
 	/// 移動先のscene
@@ -15,18 +16,23 @@ public class SceneWarpZone : MonoBehaviour {
 	private void Start()
 	{
 		GetComponent<Collider2D>().isTrigger = true;
-		
+
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		Warp();
+		if (collision.GetComponent<Player>() != null)
+		{
+			Warp();
+
+		}
 	}
 	/// <summary>
 	/// 移動処理
 	/// </summary>
 	private void Warp()
 	{
+
 		SceneManager.LoadScene(nextScene);
 	}
 }

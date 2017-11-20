@@ -105,7 +105,7 @@ public class Razer
         {
             return Vector2.Distance(origin.transform.position, shotHit.point);
         }
-
+		
 		return range;
     }
 
