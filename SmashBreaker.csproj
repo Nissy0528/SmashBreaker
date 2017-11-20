@@ -107,6 +107,7 @@
     <Compile Include="Assets\Script\Utility\GameManager.cs" />
     <Compile Include="Assets\Script\Utility\MapCreater.cs" />
     <Compile Include="Assets\Script\Utility\MapReader.cs" />
+    <Compile Include="Assets\Script\Utility\SceneWarpZone.cs" />
     <Compile Include="Assets\Script\Utility\TranslationPositionSet.cs" />
   </ItemGroup>
   <ItemGroup>

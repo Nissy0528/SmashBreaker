@@ -16,6 +16,11 @@ public class GameManager : MonoBehaviour
     private GameObject bossObj;//ボス
     private MainCamera camera;//カメラ
 
+	/// <summary>
+	/// ワープゾーン
+	/// </summary>
+	private SceneWarpZone warpZone;
+
     // Use this for initialization
     void Start()
     {
@@ -23,6 +28,8 @@ public class GameManager : MonoBehaviour
         player = GameObject.Find("Chara").GetComponent<Player>();
         bossObj = GameObject.FindGameObjectWithTag("Boss");
         camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+
+		warpZone = FindObjectOfType<SceneWarpZone>();
     }
 
     // Update is called once per frame
@@ -73,13 +80,14 @@ public class GameManager : MonoBehaviour
     {
         if (bossObj != null || !camera.IsShakeFinish) return;
 
-        gameclear.SetActive(true);
-        Time.timeScale = 0.0f;
-        //リトライボタンが押されたらMainシーンを再読み込み
-        if (Input.GetButtonDown("Decision"))
-        {
-            Time.timeScale = 1.0f;
-            SceneManager.LoadScene("Main");
-        }
+		warpZone.gameObject.SetActive(true);
+        //gameclear.SetActive(true);
+        //Time.timeScale = 0.0f;
+        ////リトライボタンが押されたらMainシーンを再読み込み
+        //if (Input.GetButtonDown("Decision"))
+        //{
+        //    Time.timeScale = 1.0f;
+        //    SceneManager.LoadScene("Main");
+        //}
     }
 }
