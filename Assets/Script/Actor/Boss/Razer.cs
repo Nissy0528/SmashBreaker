@@ -67,6 +67,13 @@ public class Razer
     private void LineUpdate()
     {
         length = WallCheck();
+        //長さの加算
+        distance = limit;
+
+
+		WallCheck();
+
+        float length = WallCheck();
         shotRay.origin = origin.transform.position;
         Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction * length);
 
@@ -91,9 +98,8 @@ public class Razer
         shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, LayerMask.GetMask(wallLayer));
         if (shotHit)
         {
-            return Vector2.Distance(origin.transform.position, shotHit.transform.position);
+            return Vector2.Distance(origin.transform.position, shotHit.point);
         }
-
         return range;
     }
 

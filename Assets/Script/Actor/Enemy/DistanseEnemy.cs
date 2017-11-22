@@ -103,5 +103,4 @@ public class DistanseEnemy : Enemy
             isWall = true;
         }
     }
-
 }

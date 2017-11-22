@@ -60,6 +60,7 @@ public class PlayerParameter
             {
                 parameters[i] = EditorGUILayout.FloatField(parameters[i]);
             }
+
             GUILayout.EndHorizontal();
             EditorGUILayout.Space();
         }
@@ -70,6 +71,9 @@ public class PlayerParameter
         if (GUILayout.Button("設定"))
         {
             ExcelExport();
+
+			//SP取得量配列の設定
+			SpRateSettings.ChangeMaxHp((int)parameters[1]);
         }
         GUILayout.EndHorizontal();
 
