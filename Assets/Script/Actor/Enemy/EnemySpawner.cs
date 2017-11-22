@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemy;//敵
+    public Sprite[] sprites;//切り替える画像
     public float spawnTime;//敵生成時間（設定用）
     public int enemyRange;//敵生成の最大数
 
@@ -12,8 +13,9 @@ public class EnemySpawner : MonoBehaviour
     private GameObject[] enemyBorns;//現在ゲーム上にある敵登場エフェクト
     private Vector3 spawnPos;//生成位置
     private PlayerHP playerHP;//プレイヤー体力UI
-    private TextureAnimator animation_chid;//アニメーションするオブジェクト
+    private Sprite sprite;//画像
     private float spawnDelay;//敵生成時間
+    private float animCnt;
     private bool animStop;//アニメーション停止フラグ
 
     // Use this for initialization
@@ -22,15 +24,16 @@ public class EnemySpawner : MonoBehaviour
         spawnDelay = spawnTime;
         spawnPos = transform.GetChild(0).position;
         playerHP = GameObject.Find("PlayerHP").GetComponent<PlayerHP>();
-        animation_chid = transform.GetChild(1).GetComponent<TextureAnimator>();
-        animation_chid.CurrentTex = 1;
+        sprite = transform.Find("Mouth").GetComponent<SpriteRenderer>().sprite;
+        sprite = sprites[1];
+        transform.Find("Mouth").GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
     // Update is called once per frame
     void Update()
     {
-        StopAnim();
         Spawn();//敵生成
+        Anim();
 
         enemys.RemoveAll(x => x == null);//敵リストの空の要素を削除
     }
@@ -54,40 +57,27 @@ public class EnemySpawner : MonoBehaviour
             GameObject enemyObj = Instantiate(enemy);
             enemyObj.transform.position = spawnPos;
             enemys.Add(enemyObj);
+            sprite = sprites[0];
             spawnDelay = spawnTime;
-            SetAnim();
         }
     }
 
     /// <summary>
     /// アニメーション開始
     /// </summary>
-    private void SetAnim()
+    private void Anim()
     {
-        if (animation_chid.IsPlay) return;
-
-        animation_chid.SetTime = spawnTime / 2f;
-        animation_chid.IsPlay = true;
-        animation_chid.IsLoop = true;
-        animation_chid.NextTex();
-        animStop = false;
-    }
-
-    /// <summary>
-    /// アニメーション停止
-    /// </summary>
-    private void StopAnim()
-    {
-        if (enemys.Count < enemyRange) return;
-
-        if (animation_chid.CurrentTex == 0)
+        if (sprite == sprites[0])
         {
-            animStop = true;
+            animCnt += Time.deltaTime;
+            if (animCnt >= spawnTime / 2f)
+            {
+                sprite = sprites[1];
+                animCnt = 0.0f;
+            }
         }
-        if (animStop && animation_chid.CurrentTex == 1)
-        {
-            animation_chid.Stop();
-        }
+
+        transform.Find("Mouth").GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
     /// <summary>

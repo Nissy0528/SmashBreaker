@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     private bool isPause;//ポーズフラグ
     private Player player;//プレイヤー
     private GameObject bossObj;//ボス
-    private MainCamera camera;//カメラ
+    private MainCamera mainCamera;//カメラ
 
     // Use this for initialization
     void Start()
@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         stopDelay = stopTime;
         player = GameObject.Find("Chara").GetComponent<Player>();
         bossObj = GameObject.FindGameObjectWithTag("Boss");
-        camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
     }
 
     // Update is called once per frame
@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void ShowGameClear()
     {
-        if (bossObj != null || !camera.IsShakeFinish) return;
+        if (bossObj != null || !mainCamera.IsShakeFinish) return;
 
         gameclear.SetActive(true);
         Time.timeScale = 0.0f;

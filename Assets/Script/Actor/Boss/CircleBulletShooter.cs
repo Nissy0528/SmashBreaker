@@ -46,6 +46,8 @@ public class CircleBulletShooter : MonoBehaviour
             bulletPos.x += radius * Mathf.Cos(angle);
             bulletPos.y += radius * Mathf.Sin(angle);
 
+            if (bulletList[i] == null) continue;
+
             bulletList[i].transform.Rotate(0, 0, -(angleDiff * i));
             bulletList[i].transform.position = bulletPos;
         }

@@ -95,15 +95,14 @@ public class ExcelImport
 
         if (valueCell.CellType == CellType.String)
         {
-            bossData.posCsv = valueCell.StringCellValue;
-            if (!bossData.posCsv.Contains(",")) return;
+            string posCsv = valueCell.StringCellValue;
+            if (!posCsv.Contains(",")) return;
 
-            string[] posArray = bossData.posCsv.Split(',');
-            Regex re = new Regex(@"[^0-9]");
-            posArray[0] = re.Replace(posArray[0], "");
-            posArray[1] = re.Replace(posArray[1], "");
-            float x = float.Parse(posArray[0]);
-            float y = float.Parse(posArray[1]);
+            string[] posArray = posCsv.Split(',');
+            string posx = posArray[0].Replace("(", "");
+            string posy = posArray[1].Replace(")", "");
+            float x = float.Parse(posx);
+            float y = float.Parse(posy);
             Vector2 pos = new Vector2(x, y);
             bossData.translate_positions.Add(pos);
         }

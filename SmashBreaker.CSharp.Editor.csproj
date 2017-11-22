@@ -127,6 +127,9 @@
     <Reference Include="NPOI.OpenXmlFormats">
       <HintPath>Assets\Script\Utility\Editor\dll\dotnet2\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
+    <Reference Include="XInputDotNetPure">
+      <HintPath>Assets\Plugins\x86_64\XInputDotNetPure.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="SmashBreaker.CSharp.csproj">

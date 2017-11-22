@@ -14,13 +14,13 @@ public class Enemy : MonoBehaviour
     protected Vector3 lookPos;//見る方向
     protected bool isStan;//気絶フラグ
 
-    private MainCamera camera;//カメラ
+    private MainCamera mainCamera;//カメラ
     private Vector3 size;//サイズ
 
     // Use this for initialization
     public virtual void Initialize()
     {
-        camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
         player = GameObject.Find("Chara");//プレイヤーを探す
         isStan = false;
         size = transform.localScale;
@@ -42,14 +42,14 @@ public class Enemy : MonoBehaviour
         if (!isStan) return;
 
         Vector3 pos = transform.position;
-        Vector3 screenMinPos = camera.ScreenMin;//画面の左下の座標
-        Vector3 screenMaxPos = camera.ScreenMax;//画面の右下の座標
+        Vector3 screenMinPos = mainCamera.ScreenMin;//画面の左下の座標
+        Vector3 screenMaxPos = mainCamera.ScreenMax;//画面の右下の座標
 
         //画面外に出たら消滅
         if (pos.x <= screenMinPos.x - size.x / 2 || pos.x >= screenMaxPos.x + size.x / 2
             || pos.y <= screenMinPos.y - size.y / 2 || pos.y >= screenMaxPos.y + size.y / 2)
         {
-            camera.SetShake();//画面振動
+            mainCamera.SetShake();//画面振動
             Destroy(gameObject);//消滅
         }
     }

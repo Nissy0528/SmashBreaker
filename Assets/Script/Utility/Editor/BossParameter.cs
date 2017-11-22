@@ -13,8 +13,8 @@ public class BossParameter
     private PositionParameter positionsSet;
     private Vector2 scrollPos = Vector2.zero;
     private Rect windowRect;
-    private string[] names = new string[8];//パラメータ名の配列
-    private float[] parameters = new float[7];//パラメータの配列
+    private string[] names = new string[7];//パラメータ名の配列
+    private float[] parameters = new float[6];//パラメータの配列
     private List<Vector2> positions;//移動時の座標の配列
     private const string file = "Assets/Data/Excel/BossParameter.xls";//読み込むExcelファイルのパス
 
@@ -23,7 +23,8 @@ public class BossParameter
     /// </summary>
     public BossParameter(List<Vector2> positions)
     {
-        SetPositions(positions);
+        this.positions = new List<Vector2>();
+        ReadExcel(positions);
         SceneView.onSceneGUIDelegate += BossOnSceneGUI;
     }
 
@@ -84,7 +85,7 @@ public class BossParameter
 
             GUILayout.BeginHorizontal();
             names[i] = EditorGUILayout.TextField(names[i], GUILayout.Width(width));
-            if (i == 5)
+            if (i == 4)
             {
                 parameters[i - 1] = EditorGUILayout.IntField((int)parameters[i - 1]);
             }
@@ -121,7 +122,7 @@ public class BossParameter
     /// <summary>
     /// 座標リスト設定
     /// </summary>
-    private void SetPositions(List<Vector2> positions)
+    private void SetPositions(List<Vector2> positions, ICell valueCell)
     {
         if (positions != null)
         {
@@ -129,8 +130,15 @@ public class BossParameter
         }
         else
         {
-            this.positions = new List<Vector2>();
-            this.positions.Add(Vector2.zero);
+            string posCsv = valueCell.StringCellValue;
+
+            string[] posArray = posCsv.Split(',');
+            string posx = posArray[0].Replace("(", "");
+            string posy = posArray[1].Replace(")", "");
+            float x = float.Parse(posx);
+            float y = float.Parse(posy);
+            Vector2 pos = new Vector2(x, y);
+            this.positions.Add(pos);
         }
     }
 
@@ -261,6 +269,56 @@ public class BossParameter
         foreach (var cell in cells)
         {
             cell.CellStyle = style;
+        }
+    }
+
+    /// <summary>
+    /// エクセルデータ読み込み
+    /// </summary>
+    private void ReadExcel(List<Vector2> positions)
+    {
+        using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        {
+            IWorkbook book = new HSSFWorkbook(fs);
+            ISheet sheet = book.GetSheetAt(0);
+            int firstRow = sheet.FirstRowNum;
+            int lastRow = sheet.LastRowNum;
+            int posCount = 0;
+
+            for (int rowIdx = firstRow + 1; rowIdx <= lastRow; ++rowIdx)
+            {
+                IRow row = sheet.GetRow(rowIdx);
+                if (row == null) continue;
+
+                int cellIdx = 1;
+                int num = rowIdx - 2;
+
+                ICell nameCell = row.GetCell(cellIdx++);
+                ICell valueCell = row.GetCell(cellIdx);
+
+                if (num == 0)
+                {
+                    names[num] = nameCell.StringCellValue;
+                    parameters[num] = (float)valueCell.NumericCellValue;
+                }
+                else if (num == 1)
+                {
+                    names[num] = nameCell.StringCellValue;
+                }
+                else
+                {
+                    if (valueCell.CellType == CellType.Numeric)
+                    {
+                        names[num - posCount] = nameCell.StringCellValue;
+                        parameters[num - (posCount + 1)] = (float)valueCell.NumericCellValue;
+                    }
+                    else
+                    {
+                        posCount++;
+                        SetPositions(positions, valueCell);
+                    }
+                }
+            }
         }
     }
 }

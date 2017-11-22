@@ -15,14 +15,221 @@ Platform assembly: C:\Users\horne\Desktop\GitHub\SmashBreaker\SmashBreaker_Data\
 Loading C:\Users\horne\Desktop\GitHub\SmashBreaker\SmashBreaker_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\Users\horne\Desktop\GitHub\SmashBreaker\SmashBreaker_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\horne\Desktop\GitHub\SmashBreaker\SmashBreaker_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-- Completed reload, in  0.053 seconds
+- Completed reload, in  0.078 seconds
 Platform assembly: C:\Users\horne\Desktop\GitHub\SmashBreaker\SmashBreaker_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\horne\Desktop\GitHub\SmashBreaker\SmashBreaker_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 48Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.594452 ms
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Boss2') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+UnloadTime: 2.187092 ms
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Boss2') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.923518 ms
+
+Unloading 20 unused Assets to reduce memory usage. Loaded Objects now: 761.
+Total: 0.474879 ms (FindLiveObjects: 0.061439 ms CreateObjectMapping: 0.023466 ms MarkObjects: 0.322133 ms  DeleteObjects: 0.066559 ms)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour is missing!
+ 
+(Filename:  Line: 1514)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Boss2') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+The referenced script on this Behaviour (Game Object 'Spawner_0') is missing!
+ 
+(Filename:  Line: 1743)
+
+A script behaviour (probably TextureAnimator?) has a different serialization layout when loading. (Read 32 bytes but expected 44 bytes)
+Did you #ifdef UNITY_EDITOR a section of your serialized properties in any of your scripts?
+ 
+(Filename:  Line: 1879)
+
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.052159 ms
+
+Unloading 19 unused Assets to reduce memory usage. Loaded Objects now: 761.
+Total: 0.746239 ms (FindLiveObjects: 0.094719 ms CreateObjectMapping: 0.057173 ms MarkObjects: 0.502186 ms  DeleteObjects: 0.090453 ms)
+
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 1894 -> priority: 1 
-  Thread -> id: 2560 -> priority: 1 
+  Thread -> id: 24cc -> priority: 1 
+  Thread -> id: 38f0 -> priority: 1 

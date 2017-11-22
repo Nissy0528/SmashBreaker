@@ -10,7 +10,7 @@ public class MainCamera : MonoBehaviour
 
     private GameObject parent;//親オブジェクト
     private GameObject player;//プレイヤー
-    private Camera camera;//カメラ
+    private Camera cam;//カメラ
     private Vector3 savePosition;//振動する前の座標
     private Vector3 screenMinPos;//画面の左下
     private Vector3 screenMaxPos;//画面の右上
@@ -27,9 +27,9 @@ public class MainCamera : MonoBehaviour
         parent = transform.parent.gameObject;
         player = GameObject.Find("Chara");
         offset = transform.position - player.transform.position;
-        camera = GetComponent<Camera>();
-        screenMinPos = camera.ScreenToWorldPoint(Vector3.zero);//画面の左下の座標
-        screenMaxPos = camera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 1));//画面の右下の座標
+        cam = GetComponent<Camera>();
+        screenMinPos = cam.ScreenToWorldPoint(Vector3.zero);//画面の左下の座標
+        screenMaxPos = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 1));//画面の右下の座標
         savePosition = parent.transform.position;//振動前の座標取得
         lifeTime = 0.0f;
     }
@@ -37,8 +37,8 @@ public class MainCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        screenMinPos = camera.ScreenToWorldPoint(Vector3.zero);//画面の左下の座標
-        screenMaxPos = camera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 1));//画面の右下の座標
+        screenMinPos = cam.ScreenToWorldPoint(Vector3.zero);//画面の左下の座標
+        screenMaxPos = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 1));//画面の右下の座標
 
         Shake();//振動
         Follow();//プレイヤー追従

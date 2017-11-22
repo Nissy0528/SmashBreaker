@@ -69,6 +69,5 @@ public class PlayerData
 public class BossData
 {
     public float param;//ボスのパラメータ
-    public string posCsv;//座標の数字文字列
     public List<Vector2> translate_positions = new List<Vector2>();//移動時の座標リスト
 }

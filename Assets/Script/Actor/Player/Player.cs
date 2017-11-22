@@ -14,10 +14,13 @@ public class Player : MonoBehaviour
         public float sp;//スマシュポイント
     }
 
+    public GameObject damageEffect;//ダメージエフェクト
+
     private Parameter parameter;//パラメータ
     private GameObject smash;//攻撃のあたり判定
     private GameObject smashGage;//スマッシュゲージ
-    private MainCamera camera;//カメラ
+    private MainCamera mainCamera;//カメラ
+    private Animator anim;//アニメーション
     private Vector3 size;//大きさ
     private Vector3 attackColSize;//攻撃あたり判定の大きさ
     private Vector3 backPos;//後ろに下がる座標
@@ -42,8 +45,9 @@ public class Player : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
         smash = GameObject.Find("Smash").gameObject;
+        anim = transform.Find("body").GetComponent<Animator>();
         size = transform.localScale;//大きさ取得
         state = State.IDEL;//最初は待機状態
 
@@ -75,8 +79,8 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Clamp()
     {
-        Vector3 screenMinPos = camera.ScreenMin;//画面の左下の座標
-        Vector3 screenMaxPos = camera.ScreenMax;//画面の右下の座標
+        Vector3 screenMinPos = mainCamera.ScreenMin;//画面の左下の座標
+        Vector3 screenMaxPos = mainCamera.ScreenMax;//画面の右下の座標
 
         //座標を画面内に制限(自分の座標)
         Vector3 pos = transform.position;
@@ -98,12 +102,14 @@ public class Player : MonoBehaviour
         Vector2 axis = Vector2.zero;
 
         state = State.IDEL;
+        anim.SetBool("Walk", false);
 
         if (x_axis >= 0.5f || x_axis <= -0.5f
             || y_axis >= 0.5f || y_axis <= -0.5f)
         {
             axis = new Vector2(x_axis, y_axis);
             state = State.MOVE;
+            anim.SetBool("Walk", true);
         }
 
         if (axis.magnitude != 0.0f)
@@ -121,10 +127,14 @@ public class Player : MonoBehaviour
     {
         if (state != State.MOVE) return;
 
-        Vector3 lookPos = new Vector3(transform.position.x + x_axis * -1, transform.position.y + y_axis * -1, 0);//向く方向の座標
-        Vector3 vec = (lookPos - transform.position).normalized;//向く方向を正規化
-        float angle = (Mathf.Atan2(vec.y, vec.x) * Mathf.Rad2Deg) - 90.0f;
-        transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);//入力された方向に向く
+        if (x_axis > 0)
+        {
+            transform.rotation = Quaternion.identity;
+        }
+        if (x_axis < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
     }
 
     /// <summary>
@@ -134,17 +144,21 @@ public class Player : MonoBehaviour
     {
         if (!isDamage) return;
 
-        SpriteRenderer texture = GetComponent<SpriteRenderer>();
-        Color color = texture.color;
-        flashCnt += 1;
-        color.a = (flashCnt / 5) % 2;
-        if (flashCnt >= 60)
+        if (!damageEffect.activeSelf)
         {
-            color.a = 1;
-            flashCnt = 0;
-            isDamage = false;
+            mainCamera.SetShake();
+            ControllerShake.Shake(1.0f, 1.0f);
+            damageEffect.SetActive(true);
         }
-        texture.color = color;
+        else
+        {
+            if (mainCamera.IsShakeFinish)
+            {
+                ControllerShake.Shake(0.0f, 0.0f);
+                damageEffect.SetActive(false);
+                isDamage = false;
+            }
+        }
     }
 
     /// <summary>
@@ -234,8 +248,8 @@ public class Player : MonoBehaviour
     /// </summary>
     public void Damage()
     {
-        SpriteRenderer texture = GetComponent<SpriteRenderer>();
-        Color color = texture.color;
+        //SpriteRenderer texture = GetComponent<SpriteRenderer>();
+        //Color color = texture.color;
 
         if (parameter.hp > 0 && !isDamage)
         {
@@ -245,8 +259,8 @@ public class Player : MonoBehaviour
         if (parameter.hp <= 0 && state != State.DEAD)
         {
             parameter.hp = 0;
-            color.a = 0.0f;
-            texture.color = color;
+            //color.a = 0.0f;
+            //texture.color = color;
             state = State.DEAD;
         }
     }
