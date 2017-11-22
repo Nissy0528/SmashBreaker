@@ -25,7 +25,7 @@ public class CircleBullet : BossBullet
     /// 当たり判定
     /// </summary>
     /// <param name="col"></param>
-    protected override void Collision(Collider2D col)
+    protected override void Trigger(Collider2D col)
     {
         string layer = LayerMask.LayerToName(col.gameObject.layer);
         if (layer == "Wall")

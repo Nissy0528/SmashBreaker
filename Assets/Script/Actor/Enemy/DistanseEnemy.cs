@@ -80,7 +80,7 @@ public class DistanseEnemy : Enemy
     public override void TriggerEnter(Collider2D col)
     {
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-        if (col.transform.tag == "Attack")
+        if (col.transform.tag == "Attack" && !GetComponent<BoxCollider2D>().isTrigger)
         {
             GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
             Shoot(col.gameObject);
@@ -101,6 +101,16 @@ public class DistanseEnemy : Enemy
         if (col.transform.tag == "Wall")
         {
             isWall = true;
+        }
+    }
+
+    public override void TriggerStay(Collider2D col)
+    {
+        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
+        if (col.transform.tag == "Attack" && !GetComponent<BoxCollider2D>().isTrigger)
+        {
+            GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
+            Shoot(col.gameObject);
         }
     }
 }

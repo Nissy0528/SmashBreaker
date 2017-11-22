@@ -103,16 +103,22 @@
     <Compile Include="Assets\Script\Effect\MainCamera.cs" />
     <Compile Include="Assets\Script\Effect\RazerEffect.cs" />
     <Compile Include="Assets\Script\UI\BossTargeter.cs" />
+    <Compile Include="Assets\Script\UI\GameClaer.cs" />
+    <Compile Include="Assets\Script\UI\GameClear.cs" />
     <Compile Include="Assets\Script\UI\PlayerHP.cs" />
     <Compile Include="Assets\Script\UI\SmashGage.cs" />
     <Compile Include="Assets\Script\UI\SmashText.cs" />
     <Compile Include="Assets\Script\UI\TextUI.cs" />
+    <Compile Include="Assets\Script\UI\Title.cs" />
     <Compile Include="Assets\Script\Utility\CharaDataSet.cs" />
     <Compile Include="Assets\Script\Utility\ControllerShake.cs" />
     <Compile Include="Assets\Script\Utility\DataSet.cs" />
+    <Compile Include="Assets\Script\Utility\DebugCommand.cs" />
     <Compile Include="Assets\Script\Utility\GameManager.cs" />
     <Compile Include="Assets\Script\Utility\MapCreater.cs" />
     <Compile Include="Assets\Script\Utility\MapReader.cs" />
+    <Compile Include="Assets\Script\Utility\SceneWarpZone.cs" />
+    <Compile Include="Assets\Script\Utility\SpRate.cs" />
     <Compile Include="Assets\Script\Utility\TranslationPositionSet.cs" />
   </ItemGroup>
   <ItemGroup>

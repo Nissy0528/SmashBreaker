@@ -32,7 +32,7 @@ public class SceneWarpZone : MonoBehaviour
 	/// </summary>
 	private void Warp()
 	{
-
+        GameManager.stageNum++;
 		SceneManager.LoadScene(nextScene);
 	}
 }

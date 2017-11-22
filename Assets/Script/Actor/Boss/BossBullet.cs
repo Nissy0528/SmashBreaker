@@ -50,16 +50,8 @@ public class BossBullet : MonoBehaviour
 	/// <param name="collision"></param>
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		Collision(collision);
-	}
-
-	protected virtual void Collision(Collider2D col) { }
-
-
-	private void OnTriggerEnter2D(Collider2D collision)
-	{
-		Trigger(collision);
-	}
+        Trigger(collision);
+    }
 
 	protected virtual void Trigger(Collider2D col) { }
 }

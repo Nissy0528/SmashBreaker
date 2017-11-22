@@ -50,7 +50,7 @@ public class NormalEnemy : Enemy
     public override void TriggerEnter(Collider2D col)
     {
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-        if (col.transform.tag == "Attack")
+        if (col.transform.tag == "Attack" && !GetComponent<BoxCollider2D>().isTrigger)
         {
             GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
             Shoot(col.gameObject);
@@ -66,6 +66,16 @@ public class NormalEnemy : Enemy
                 player.GetComponent<Player>().AddSP(base.point * 2);//プレイヤーのスマッシュポイント加算
                 Destroy(gameObject);
             }
+        }
+    }
+
+    public override void TriggerStay(Collider2D col)
+    {
+        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
+        if (col.transform.tag == "Attack" && !GetComponent<BoxCollider2D>().isTrigger)
+        {
+            GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
+            Shoot(col.gameObject);
         }
     }
 }

@@ -21,6 +21,8 @@ public class Title : MonoBehaviour
 			startButton = GameObject.Find("start").GetComponent<Button>();
 		}
 		startButton.onClick.AddListener(() => StartPush());
+        GameManager.stageNum = 0;
+        GameManager.time = 0.0f;
 	}
 
 	// Update is called once per frame

@@ -145,6 +145,7 @@
     <Compile Include="Assets\Script\Utility\Editor\PlayerParameter.cs" />
     <Compile Include="Assets\Script\Utility\Editor\PositionParameter.cs" />
     <Compile Include="Assets\Script\Utility\Editor\ShowMenu.cs" />
+    <Compile Include="Assets\Script\Utility\Editor\SpRateSetting.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.OOXML.XML" />

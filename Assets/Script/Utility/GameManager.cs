@@ -5,12 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static int stageNum;//ステージ番号
+    public static float time;//経過時間
+
     public float stopTime;//ゲームストップの長さ
     public GameObject gameover;//ゲームオーバーUI
     public GameObject gameclear;//ゲームクリアUI
     public GameObject smashText;//スマッシュUI
-    public GameObject enemyManager;//エネミーマネージャー
     public GameObject pauseText;//ポーズUI
+    public GameObject[] stages;//ステージの配列
 
     private float stopDelay;//ゲーム停止時間
     private bool isPause;//ポーズフラグ
@@ -18,23 +21,24 @@ public class GameManager : MonoBehaviour
     private GameObject bossObj;//ボス
     private MainCamera mainCamera;//カメラ
 
-	/// <summary>
-	/// ワープゾーン
-	/// </summary>
-	private SceneWarpZone warpZone;
+    /// <summary>
+    /// ワープゾーン
+    /// </summary>
+    private SceneWarpZone warpZone;
 
     // Use this for initialization
     void Start()
     {
+        Instantiate(stages[stageNum]);
+
         stopDelay = stopTime;
         player = GameObject.Find("Chara").GetComponent<Player>();
         bossObj = GameObject.FindGameObjectWithTag("Boss");
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
-        camera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
 
-		warpZone = FindObjectOfType<SceneWarpZone>();
-		warpZone.gameObject.SetActive(false);
-	}
+        warpZone = FindObjectOfType<SceneWarpZone>();
+        warpZone.gameObject.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()
@@ -43,6 +47,12 @@ public class GameManager : MonoBehaviour
         ShowGameOver();//ゲームオーバー表示
         ShowGameClear();//ゲームクリア表示
         Pause();//ポーズ
+
+        if (!warpZone.gameObject.activeSelf && !gameclear.activeSelf)
+        {
+            time += Time.deltaTime;
+            Debug.Log(time);
+        }
     }
 
     /// <summary>
@@ -85,15 +95,21 @@ public class GameManager : MonoBehaviour
     {
         if (bossObj != null || !mainCamera.IsShakeFinish) return;
 
-		warpZone.gameObject.SetActive(true);
-        //gameclear.SetActive(true);
-        //Time.timeScale = 0.0f;
-        ////リトライボタンが押されたらMainシーンを再読み込み
-        //if (Input.GetButtonDown("Decision"))
-        //{
-        //    Time.timeScale = 1.0f;
-        //    SceneManager.LoadScene("Main");
-        //}
+        if (stageNum < stages.Length - 1)
+        {
+            warpZone.gameObject.SetActive(true);
+        }
+        else if (!warpZone.gameObject.activeSelf)
+        {
+            gameclear.SetActive(true);
+            Time.timeScale = 0.0f;
+            //リトライボタンが押されたらMainシーンを再読み込み
+            if (Input.GetButtonDown("Decision"))
+            {
+                Time.timeScale = 1.0f;
+                SceneManager.LoadScene("Title");
+            }
+        }
     }
 
     /// <summary>
@@ -105,6 +121,7 @@ public class GameManager : MonoBehaviour
         {
             if (!isPause)
             {
+                ControllerShake.Shake(0.0f, 0.0f);
                 isPause = true;
             }
             else

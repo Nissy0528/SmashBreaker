@@ -80,12 +80,19 @@ public class Enemy : MonoBehaviour
 
     public virtual void TriggerEnter(Collider2D col) { }
 
+    public virtual void TriggerStay(Collider2D col) { }
+
     /// <summary>
     /// あたり判定
     /// </summary>
     void OnTriggerEnter2D(Collider2D col)
     {
         TriggerEnter(col);
+    }
+
+    void OnTriggerStay2D(Collider2D col)
+    {
+        TriggerStay(col);
     }
 
 }

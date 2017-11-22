@@ -18,7 +18,7 @@ public class GrowBullet : BossBullet
     {
         base.BulletInit();
         GetComponent<Rigidbody2D>().freezeRotation = true;
-        GetComponent<BoxCollider2D>().isTrigger = true;
+        GetComponent<CircleCollider2D>().isTrigger = true;
     }
 
     /// <summary>
@@ -39,12 +39,6 @@ public class GrowBullet : BossBullet
     {
         transform.localScale += new Vector3(1, 1, 0) * (growSpeed * Time.deltaTime);
     }
-
-    /// <summary>
-    /// 当たり判定
-    /// </summary>
-    /// <param name="col"></param>
-    protected override void Collision(Collider2D col);
 
     private void Hit(Collider2D col)
     {

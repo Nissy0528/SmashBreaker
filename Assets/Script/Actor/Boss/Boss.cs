@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class Boss : Enemy
 {
-    public GameObject smashText;//スマッシュUI
-
+    private GameObject smashText;//スマッシュUI
     private PlayerHP playerHP;//プレイヤー体力UI
 
     // Use this for initialization
     void Start()
     {
         playerHP = GameObject.Find("PlayerHP").GetComponent<PlayerHP>();
+        smashText = GameObject.Find("SmashText");
+        smashText.SetActive(false);
         Initialize();
     }
 

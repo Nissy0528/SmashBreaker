@@ -66,14 +66,9 @@ public class Razer
 
     private void LineUpdate()
     {
-        length = WallCheck();
-        //長さの加算
-        distance = limit;
-
-
 		WallCheck();
 
-        float length = WallCheck();
+        length = WallCheck();
         shotRay.origin = origin.transform.position;
         Vector3 kz = shotRay.origin + (Vector2)(origin.transform.rotation * shotRay.direction * length);
 
