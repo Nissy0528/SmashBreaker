@@ -12,6 +12,7 @@ public class MapReader
     //読み込んだデータ
     private List<List<string>> data = new List<List<string>>();
     TextAsset textAsset = null;
+    private int counter;
 
     /// <summary>
     /// コンストラクタ
@@ -45,7 +46,7 @@ public class MapReader
         data.Clear();
         TextReader reader = CreateTextReader(name);
 
-        int counter = 0;
+        counter = 0;
         string line = "";
         while ((line = reader.ReadLine()) != null)
         {
@@ -55,7 +56,7 @@ public class MapReader
                 continue;
             }
 
-            //今の例をマス毎に区切る
+            //今の列をマス毎に区切る
             string[] fields = line.Split(SPRIT_CHAR);
             data.Add(new List<string>());
 
@@ -100,5 +101,13 @@ public class MapReader
     {
         string data = GetString(row, col);
         return float.Parse(data);
+    }
+
+    /// <summary>
+    /// マップサイズを取得
+    /// </summary>
+    public int GetSize
+    {
+        get { return counter; }
     }
 }
