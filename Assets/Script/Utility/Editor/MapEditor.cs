@@ -7,10 +7,10 @@ using System.IO;
 public class MapEditor : EditorWindow
 {
     private Object imgDirectory;//画像ディレクトリ
-    private Object outputDirectory;//出力先ディレクトリ
     private int mapSize = 10;//マップのマスの数
-    private float gridSize = 50.0f;//グリッドの大きさ
-    private string outputFileName;//出力ファイル名
+    private int selectedImageNum;//選択した画像の番号
+    private float gridSize = 32.0f;//グリッドの大きさ
+    private string outputFileName = "*";//出力ファイル名
     private string selectedImagePath;//選択した画像のパス
     private MapCreateWindow window;//マップ作製用ウィンドウ
 
@@ -46,13 +46,6 @@ public class MapEditor : EditorWindow
         GUILayout.EndHorizontal();
         EditorGUILayout.Space();
 
-        //出力先のファイルを指定
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("出力先ファイル : ", GUILayout.Width(110));
-        outputDirectory = EditorGUILayout.ObjectField(outputDirectory, typeof(Object), true);
-        GUILayout.EndHorizontal();
-        EditorGUILayout.Space();
-
         //保存するファイルの名前を指定
         GUILayout.BeginHorizontal();
         GUILayout.Label("保存するファイルの名前 : ", GUILayout.Width(110));
@@ -79,7 +72,7 @@ public class MapEditor : EditorWindow
             string path = AssetDatabase.GetAssetPath(imgDirectory);
             string[] names = Directory.GetFiles(path, "*.png");
             EditorGUILayout.BeginVertical();
-            foreach (string d in names)
+            for (int i = 0; i < names.Length; i++)
             {
                 if (position.x > maxW)
                 {
@@ -92,10 +85,11 @@ public class MapEditor : EditorWindow
                     EditorGUILayout.BeginHorizontal();
                 }
                 GUILayout.FlexibleSpace();
-                Texture2D tex = (Texture2D)AssetDatabase.LoadAssetAtPath(d, typeof(Texture2D));
+                Texture2D tex = (Texture2D)AssetDatabase.LoadAssetAtPath(names[i], typeof(Texture2D));
                 if (GUILayout.Button(tex, GUILayout.MaxWidth(size.x), GUILayout.MaxHeight(size.y), GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false)))
                 {
-                    selectedImagePath = d;
+                    selectedImageNum = i + 1;
+                    selectedImagePath = names[i];
                 }
                 GUILayout.FlexibleSpace();
                 position.x += size.x;
@@ -150,6 +144,14 @@ public class MapEditor : EditorWindow
     }
 
     /// <summary>
+    /// 選択した画像の番号
+    /// </summary>
+    private int SlectedImageNum
+    {
+        get { return selectedImageNum; }
+    }
+
+    /// <summary>
     /// マップサイズ
     /// </summary>
     public int MapSize
@@ -171,15 +173,7 @@ public class MapEditor : EditorWindow
     /// <returns></returns>
     public string OutputFilePath()
     {
-        string resultPath = "";
-        if (outputDirectory != null)
-        {
-            resultPath = AssetDatabase.GetAssetPath(outputDirectory);
-        }
-        else
-        {
-            resultPath = Application.dataPath;
-        }
+        string resultPath = "Assets/Resources/MapData";
 
         return resultPath + "/" + outputFileName + ".txt";
     }
@@ -198,6 +192,8 @@ public class MapEditor : EditorWindow
         private float gridSize = 0.0f;
         // マップデータ
         private string[,] map;
+        //マップ表示用データ
+        private string[,] mapNmae;
         // グリッドの四角
         private Rect[,] gridRect;
         // 親ウィンドウの参照を持つ
@@ -236,7 +232,15 @@ public class MapEditor : EditorWindow
             {
                 for (int j = 0; j < mapSize; j++)
                 {
-                    map[i, j] = "";
+                    map[i, j] = "0";
+                }
+            }
+            mapNmae = new string[mapSize, mapSize];
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    mapNmae[i, j] = "";
                 }
             }
             //グリッドデータを生成
@@ -281,11 +285,12 @@ public class MapEditor : EditorWindow
                         //消しゴムの時はデータを消す
                         if (parent.SelectedImagePath.IndexOf("eraser") > -1)
                         {
-                            map[y, x] = "";
+                            map[y, x] = "0";
                         }
                         else
                         {
-                            map[y, x] = parent.SelectedImagePath;
+                            mapNmae[y, x] = parent.selectedImagePath;
+                            map[y, x] = parent.selectedImageNum.ToString();
                         }
                         Repaint();
                         break;
@@ -298,9 +303,9 @@ public class MapEditor : EditorWindow
             {
                 for (int x = 0; x < mapSize; x++)
                 {
-                    if (map[y, x] != null && map[y, x].Length > 0)
+                    if (mapNmae[y, x] != null && mapNmae[y, x].Length > 0)
                     {
-                        Texture2D tex = (Texture2D)AssetDatabase.LoadAssetAtPath(map[y, x], typeof(Texture2D));
+                        Texture2D tex = (Texture2D)AssetDatabase.LoadAssetAtPath(mapNmae[y, x], typeof(Texture2D));
                         GUI.DrawTexture(gridRect[y, x], tex);
                     }
                 }
@@ -311,6 +316,11 @@ public class MapEditor : EditorWindow
             GUILayout.BeginArea(rect);
             if (GUILayout.Button("ファイルを出力", GUILayout.MinWidth(300), GUILayout.MinHeight(50)))
             {
+                if (parent.outputFileName == "*")
+                {
+                    EditorUtility.DisplayDialog("MapEditor", "ファイル名入力してください。", "OK");
+                    return;
+                }
                 OutputFile();
             }
             GUILayout.FlexibleSpace();
@@ -416,7 +426,7 @@ public class MapEditor : EditorWindow
             }
             return result;
         }
-        
+
         //不要な文字を切り出す（パスと拡張し切り出し）
         private string OutputDataFormat(string data)
         {
