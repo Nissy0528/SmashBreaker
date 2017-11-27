@@ -95,41 +95,11 @@ public class Enemy : MonoBehaviour
 	{
 		get { return isStan; }
 	}
-    /// <summary>
+	/// <summary>
 	/// あたり判定
 	/// </summary>
-	protected virtual void TriggerEnter(Collider2D col)
-	{
-		//プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-		if (col.transform.tag == "Attack" && !GetComponent<BoxCollider2D>().isTrigger)
-		{
-			GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
-			Shoot(col.gameObject);
-		}
-
-		//吹き飛ばされた敵に当たったら消滅
-		if (col.transform.tag == "Enemy")
-		{
-			if (col.gameObject.GetComponent<Enemy>().IsStan && !isStan)
-			{
-				GameObject text = Instantiate(bonusText);
-				text.GetComponent<TextUI>().SetPos(transform.position);
-				player.GetComponent<Player>().AddSP(point * 2);//プレイヤーのスマッシュポイント加算
-				Destroy(gameObject);
-			}
-		}
-	}
-
-
-	protected virtual void TriggerStay(Collider2D col)
-	{
-		//プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-		if (col.transform.tag == "Attack" && !GetComponent<BoxCollider2D>().isTrigger)
-		{
-			GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
-			Shoot(col.gameObject);
-		}
-	}
+	protected virtual void TriggerEnter(Collider2D col) { }
+	protected virtual void TriggerStay(Collider2D col) { }
 	/// <summary>
 	/// あたり判定
 	/// </summary>
