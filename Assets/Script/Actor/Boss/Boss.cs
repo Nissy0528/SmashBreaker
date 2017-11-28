@@ -25,7 +25,7 @@ public class Boss : Enemy
     /// <summary>
     /// あたり判定
     /// </summary>
-    public override void TriggerEnter(Collider2D col)
+    protected override void TriggerEnter(Collider2D col)
     {
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
         if (col.transform.tag == "Attack" && playerSP.IsMax)

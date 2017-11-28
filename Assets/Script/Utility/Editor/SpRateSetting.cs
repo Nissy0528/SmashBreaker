@@ -5,12 +5,14 @@ using System.Text;
 using UnityEngine;
 using UnityEditor;
 
+
+
 /// <summary>
 /// Rateの設定関連
 /// </summary>
 public class SpRateSettings
 {
-	private static float[] reserve;
+	private static int[] reserve;
 
 	public static string file = "Assets/Data/Asset/SpRate.asset";
 	public static SpRate GetRates()
@@ -22,7 +24,7 @@ public class SpRateSettings
 	{
 		var rate = GetRates();
 		reserve = rate.spRates;
-		rate.spRates = new float[maxHp];
+		rate.spRates = new int[maxHp];
 
 		var length = Mathf.Min(maxHp, reserve.Length);
 		for (int i = 0; i < length; i++)
