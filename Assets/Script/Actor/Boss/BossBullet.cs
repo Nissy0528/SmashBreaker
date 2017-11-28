@@ -8,7 +8,6 @@ public class BossBullet : MonoBehaviour
 	/// <summary>
 	/// 速度
 	/// </summary>
-	[SerializeField]
 	protected float speed = 5f;
 
 	// Use this for initialization

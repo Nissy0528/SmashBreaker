@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class PlayerHP : MonoBehaviour
 {
-    public GameObject[] hpTextures;
+    public GameObject texture;
 
+    private GameObject[] hpTextures;
     private Player player;//プレイヤー
     private int playerHP;//プレイヤーの体力
 
@@ -14,6 +15,21 @@ public class PlayerHP : MonoBehaviour
     {
         player = GameObject.Find("Chara").GetComponent<Player>();
         playerHP = player.GetParam.hp;
+        hpTextures = new GameObject[player.GetParam.maxHP];
+        CreateTextures();
+    }
+
+    /// <summary>
+    /// HP画像配置
+    /// </summary>
+    private void CreateTextures()
+    {
+        for (int i = 0; i < hpTextures.Length; i++)
+        {
+            hpTextures[i] = Instantiate(texture, transform);
+            RectTransform rectTransform = hpTextures[i].GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = new Vector2(-100 * i, 0.0f);
+        }
     }
 
     // Update is called once per frame

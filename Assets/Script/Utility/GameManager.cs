@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     private SceneWarpZone warpZone;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         Instantiate(stages[stageNum]);
 
@@ -51,7 +51,6 @@ public class GameManager : MonoBehaviour
         if (!warpZone.gameObject.activeSelf && !gameclear.activeSelf)
         {
             time += Time.deltaTime;
-            Debug.Log(time);
         }
     }
 

@@ -149,10 +149,11 @@
     <Compile Include="Assets\Script\Utility\Editor\SpRateSetting.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Resources\MapData\test.txt" />
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.OOXML.XML" />
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.OpenXml4Net.XML" />
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.XML" />
+    <None Include="Assets\Shader\Object.shader" />
+    <None Include="Assets\Shader\Player.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

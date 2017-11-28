@@ -5,12 +5,12 @@ using UnityEngine;
 public class Boss : Enemy
 {
     private GameObject smashText;//スマッシュUI
-    private PlayerHP playerHP;//プレイヤー体力UI
+    private SmashGage playerSP;//プレイヤー体力UI
 
     // Use this for initialization
     void Start()
     {
-        playerHP = GameObject.Find("PlayerHP").GetComponent<PlayerHP>();
+        playerSP = GameObject.Find("SmashGage").GetComponent<SmashGage>();
         smashText = GameObject.Find("SmashText");
         smashText.SetActive(false);
         Initialize();
@@ -28,7 +28,7 @@ public class Boss : Enemy
     public override void TriggerEnter(Collider2D col)
     {
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-        if (col.transform.tag == "Attack" && playerHP.IsHPMax)
+        if (col.transform.tag == "Attack" && playerSP.IsMax)
         {
             if (!isStan)
             {

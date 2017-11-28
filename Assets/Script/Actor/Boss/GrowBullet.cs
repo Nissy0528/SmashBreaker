@@ -8,7 +8,6 @@ public class GrowBullet : BossBullet
     /// <summary>
     /// 大きくなるスピード
     /// </summary>
-    [SerializeField]
     private float growSpeed = 4;
 
     /// <summary>

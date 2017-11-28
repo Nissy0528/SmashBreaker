@@ -10,8 +10,8 @@ using NPOI.SS.UserModel;
 public class PlayerParameter
 {
     private ParameterMenu menu;
-    private string[] names = new string[6];//パラメータ名の配列
-    private float[] parameters = new float[6];//パラメータの配列
+    private string[] names = new string[9];//パラメータ名の配列
+    private float[] parameters = new float[9];//パラメータの配列
     private const string file = "Assets/Data/Excel/PlayerParameter.xls";//読み込むExcelファイルのパス
 
     /// <summary>

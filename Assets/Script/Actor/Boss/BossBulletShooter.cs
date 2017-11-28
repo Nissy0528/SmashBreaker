@@ -14,7 +14,6 @@ public class BossBulletShooter : MonoBehaviour
 	/// <summary>
 	/// 発射数
 	/// </summary>
-	[SerializeField]
 	private int bulletCount = 1;
 
 	// Use this for initialization

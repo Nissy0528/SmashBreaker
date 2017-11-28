@@ -13,8 +13,8 @@ public class BossParameter
     private PositionParameter positionsSet;
     private Vector2 scrollPos = Vector2.zero;
     private Rect windowRect;
-    private string[] names = new string[7];//パラメータ名の配列
-    private float[] parameters = new float[6];//パラメータの配列
+    private string[] names = new string[11];//パラメータ名の配列
+    private float[] parameters = new float[10];//パラメータの配列
     private List<Vector2> positions;//移動時の座標の配列
     private const string file = "Assets/Data/Excel/BossParameter.xls";//読み込むExcelファイルのパス
 

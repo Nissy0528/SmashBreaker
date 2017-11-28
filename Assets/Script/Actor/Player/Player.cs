@@ -12,20 +12,21 @@ public class Player : MonoBehaviour
         public int maxSP;//最大スマッシュポイント
         public float speed;//移動速度
         public float sp;//スマシュポイント
+        public float spDifTime;//スマッシュポイントが減るまでの時間（設定用）
+        public float spDifSpeed;//スマッシュポイントが減る速度
     }
 
     public GameObject damageEffect;//ダメージエフェクト
+    public SmashGage smashGage;
 
     private Parameter parameter;//パラメータ
-    private GameObject smash;//攻撃のあたり判定
-    private GameObject smashGage;//スマッシュゲージ
     private MainCamera mainCamera;//カメラ
     private Animator anim;//アニメーション
     private Vector3 size;//大きさ
-    private Vector3 attackColSize;//攻撃あたり判定の大きさ
     private Vector3 backPos;//後ろに下がる座標
     private float x_axis;//横の入力値
     private float y_axis;//縦の入力値
+    private float spDifCount;//スマッシュポイントが減るまでの時間
     private bool isDamage;//ダメージ
 
     //↓仮変数（後で使わなくなるかも）
@@ -46,19 +47,16 @@ public class Player : MonoBehaviour
     void Start()
     {
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
-        smash = GameObject.Find("Smash").gameObject;
         anim = transform.Find("body").GetComponent<Animator>();
         size = transform.localScale;//大きさ取得
         state = State.IDEL;//最初は待機状態
-
-        //あたり判定の大きさを体力に合わせて変える
-        attackColSize = smash.transform.localScale;
-        ChangeHp(0);
 
         //各フラグをfalseに
         isDamage = false;
 
         parameter.sp = 0.0f;
+
+        spDifCount = 0.0f;
     }
 
     // Update is called once per frame
@@ -69,6 +67,7 @@ public class Player : MonoBehaviour
             Move();//移動
             Rotate();//向き変更
             DamageEffect();//ダメージ演出
+            SmashPoint();
             //Back();//後ろに下がる
         }
         //Clamp();//移動制限
@@ -162,6 +161,20 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
+    /// スマッシュポイント
+    /// </summary>
+    private void SmashPoint()
+    {
+        if (spDifCount > 0.0f)
+        {
+            spDifCount -= Time.deltaTime;
+            return;
+        }
+
+        parameter.sp = Mathf.Max(parameter.sp - Time.deltaTime * parameter.spDifSpeed, 0.0f);
+    }
+
+    /// <summary>
     /// 体力回復
     /// </summary>
     public void ChangeHp(int h)
@@ -169,14 +182,6 @@ public class Player : MonoBehaviour
         //体力を上限まで回復
         parameter.hp += h;
         parameter.hp = Mathf.Clamp(parameter.hp, 0, parameter.maxHP);
-
-        //体力に合わせて拳のサイズを変える
-        smash.transform.localScale = new Vector3(attackColSize.x * parameter.hp, attackColSize.y * parameter.hp, 1);
-
-        if (h > 0)
-        {
-            parameter.sp = 0.0f;
-        }
     }
 
     /// <summary>
@@ -184,20 +189,12 @@ public class Player : MonoBehaviour
     /// </summary>
     public void AddSP(int value)
     {
+        if (smashGage.IsMax) return;
+
         if (value > 0)
         {
             parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
-        }
-        if (value < 0)
-        {
-            if (parameter.sp > 0.0f)
-            {
-                parameter.sp = Mathf.Max(parameter.sp - parameter.maxSP / 2, 0);
-            }
-            else
-            {
-                ChangeHp(value);
-            }
+            spDifCount = parameter.spDifTime;
         }
     }
 
@@ -227,6 +224,12 @@ public class Player : MonoBehaviour
                 break;
             case 3:
                 parameter.speed = value;
+                break;
+            case 4:
+                parameter.spDifTime = value;
+                break;
+            case 5:
+                parameter.spDifSpeed = value;
                 break;
             default:
                 break;

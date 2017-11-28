@@ -8,10 +8,11 @@ public class Smash : MonoBehaviour
     {
         public float length;//飛ぶ距離
         public int power;//威力
+        public int maxScale;//ワンパン状態の拳の大きさ
     }
 
     public GameObject player;//プレイヤー
-    public PlayerHP playerHP;//プレイヤーの体力
+    public SmashGage playerSP;//プレイヤーのスマッシュゲージ
     public float smashSpeed;//拳を飛ばす速度
 
     private Parameter parameter;//パラメータ
@@ -20,6 +21,7 @@ public class Smash : MonoBehaviour
     private Vector3 returnPos;//戻る座標
     private Vector3 offset;//プレイヤーとの距離
     private Vector3 moveToPos;//飛ぶ方向
+    private Vector3 smashIniScale;
     private bool isAttack;//攻撃フラグ
     private bool isReturn;//戻るフラグ
 
@@ -27,6 +29,7 @@ public class Smash : MonoBehaviour
     void Start()
     {
         smash = transform.Find("Smash").gameObject;//攻撃オブジェクト取得
+        smashIniScale = smash.transform.localScale;
         smashCol = smash.transform.GetChild(0).gameObject;
         isAttack = false;
         isReturn = false;
@@ -40,6 +43,7 @@ public class Smash : MonoBehaviour
         Attack();//攻撃
         Move();//移動
         Rotate();//回転
+        ChangeScale();//拳の大きさ変更
     }
 
     /// <summary>
@@ -124,6 +128,21 @@ public class Smash : MonoBehaviour
     }
 
     /// <summary>
+    /// 拳の大きさ変更
+    /// </summary>
+    private void ChangeScale()
+    {
+        if (!playerSP.IsMax)
+        {
+            smash.transform.localScale = new Vector3(smashIniScale.x, smashIniScale.y, 1);
+        }
+        else
+        {
+            smash.transform.localScale = new Vector3(smashIniScale.x * parameter.maxScale, smashIniScale.y * parameter.maxScale, 1);
+        }
+    }
+
+    /// <summary>
     /// 飛ばせる距離
     /// </summary>
     public Parameter GetParam
@@ -138,11 +157,14 @@ public class Smash : MonoBehaviour
     {
         switch (i)
         {
-            case 4:
+            case 6:
                 parameter.length = value;
                 break;
-            case 5:
+            case 7:
                 parameter.power = (int)value;
+                break;
+            case 8:
+                parameter.maxScale = (int)value;
                 break;
             default:
                 break;
