@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
     //パラメータの構造体
@@ -30,6 +31,12 @@ public class Player : MonoBehaviour
 
     //↓仮変数（後で使わなくなるかも）
     private int flashCnt;//点滅カウント
+
+	/// <summary>
+	/// ポイント取得率
+	/// </summary>
+	[SerializeField]
+	private SpRate spRate;
 
     /// <summary>
     /// 状態を表す列挙型
@@ -186,6 +193,7 @@ public class Player : MonoBehaviour
     {
         if (value > 0)
         {
+			value *= spRate.spRates[parameter.hp - 1];
             parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
         }
         if (value < 0)
