@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class DistanseEnemy : Enemy
 {
-	
-	[SerializeField]
-	private float speed;//移動速度
 	[SerializeField]
 	private float rotateSpped;//回転速度
 
@@ -21,22 +18,12 @@ public class DistanseEnemy : Enemy
 	/// </summary>
 	private bool isWall;
 
-	// Use this for initialization
-	void Start()
+	protected override void EnemyUpdate()
 	{
-		Initialize();
+		base.EnemyUpdate();
+		Move();
+		Rotate();
 	}
-
-	private void Update()
-	{
-		// Update is called once per frame
-		EnemyUpdate();
-
-		Move();//移動
-
-		Rotate();//プレイヤーの方向を向く
-	}
-
 	private float angle = 15f;
 	private float count = 0f;
 	/// <summary>

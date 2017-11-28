@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+	
 	[SerializeField]
 	protected GameObject bonusText;
 	[SerializeField]
 	protected int point;//倒されたときのポイント
 	[SerializeField]
 	protected float shootSpeed;//吹き飛ぶ速度
+	/// <summary>
+	/// 移動速度
+	/// </summary>
+	[SerializeField]
+	protected float speed;
 
 	protected GameObject player;//プレイヤー
 	protected Vector3 playerVec;//プレイヤーの方向

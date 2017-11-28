@@ -5,8 +5,6 @@ using UnityEngine;
 public class RotEnemy : Enemy
 {
 	[SerializeField]
-	private float speed;//移動速度
-	[SerializeField]
 	private float rotateSpped;//回転速度
 
 	/// <summary>

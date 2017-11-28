@@ -5,8 +5,6 @@ using UnityEngine;
 public class NormalEnemy : Enemy
 {
 	[SerializeField]
-	private float speed;//移動速度
-	[SerializeField]
 	private float rotateSpped;//回転速度
 
 
