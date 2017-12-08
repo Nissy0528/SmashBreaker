@@ -10,8 +10,10 @@ using NPOI.SS.UserModel;
 public class PlayerParameter
 {
     private ParameterMenu menu;
-    private string[] names = new string[9];//パラメータ名の配列
-    private float[] parameters = new float[9];//パラメータの配列
+    private Vector2 scrollPos = Vector2.zero;
+    private Rect windowRect;
+    private string[] names = new string[6];//パラメータ名の配列
+    private float[] parameters = new float[6];//パラメータの配列
     private const string file = "Assets/Data/Excel/PlayerParameter.xls";//読み込むExcelファイルのパス
 
     /// <summary>
@@ -32,7 +34,7 @@ public class PlayerParameter
     private void PlayerOnSceneGUI(SceneView sceneView)
     {
         //ウィンドウの初期位置
-        Rect windowRect = new Rect(10, 30, 120, 30);
+        windowRect = new Rect(10, 30, 250, 200);
 
         Handles.BeginGUI();
         windowRect = GUILayout.Window(1, windowRect, PlayerGUI, "Playerのパラメーター");
@@ -46,20 +48,21 @@ public class PlayerParameter
     private void PlayerGUI(int id)
     {
         int width = 130;
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(windowRect.height));
 
         //各パラメータを設定
         for (int i = 0; i < names.Length; i++)
         {
             GUILayout.BeginHorizontal();
             names[i] = EditorGUILayout.TextField(names[i], GUILayout.Width(width));
-            if (i <= 2)
-            {
-                parameters[i] = EditorGUILayout.IntField((int)parameters[i]);
-            }
-            else
-            {
-                parameters[i] = EditorGUILayout.FloatField(parameters[i]);
-            }
+            //if (i <= 2)
+            //{
+            //    parameters[i] = EditorGUILayout.IntField((int)parameters[i]);
+            //}
+            //else
+            //{
+            parameters[i] = EditorGUILayout.FloatField(parameters[i]);
+            //}
 
             GUILayout.EndHorizontal();
             EditorGUILayout.Space();
@@ -72,8 +75,8 @@ public class PlayerParameter
         {
             ExcelExport();
 
-			//SP取得量配列の設定
-			SpRateSettings.ChangeMaxHp((int)parameters[1]);
+            //SP取得量配列の設定
+            //SpRateSettings.ChangeMaxHp((int)parameters[1]);
         }
         GUILayout.EndHorizontal();
 
@@ -86,6 +89,8 @@ public class PlayerParameter
             SceneView.onSceneGUIDelegate -= PlayerOnSceneGUI;
         }
         EditorGUILayout.EndVertical();
+
+        EditorGUILayout.EndScrollView();
     }
 
     /// <summary>
@@ -212,6 +217,8 @@ public class PlayerParameter
 
                 int cellIdx = 1;
                 int num = rowIdx - 2;
+
+                if (num > names.Length - 1) continue;
 
                 ICell nameCell = row.GetCell(cellIdx);
                 names[num] = nameCell.StringCellValue;

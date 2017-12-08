@@ -12,7 +12,7 @@ public class EnemySpawner : MonoBehaviour
     private List<GameObject> enemys = new List<GameObject>();//現在ゲーム上にいる敵
     private GameObject[] enemyBorns;//現在ゲーム上にある敵登場エフェクト
     private Vector3 spawnPos;//生成位置
-    private PlayerHP playerHP;//プレイヤー体力UI
+    //private PlayerHP playerHP;//プレイヤー体力UI
     private Sprite sprite;//画像
     private float spawnDelay;//敵生成時間
     private float animCnt;
@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
     {
         spawnDelay = spawnTime;
         spawnPos = transform.GetChild(0).position;
-        playerHP = GameObject.Find("PlayerHP").GetComponent<PlayerHP>();
+        //playerHP = GameObject.Find("PlayerHP").GetComponent<PlayerHP>();
         sprite = transform.Find("Mouth").GetComponent<SpriteRenderer>().sprite;
         sprite = sprites[1];
         transform.Find("Mouth").GetComponent<SpriteRenderer>().sprite = sprite;
@@ -84,11 +84,11 @@ public class EnemySpawner : MonoBehaviour
     /// あたり判定
     /// </summary>
     /// <param name="col"></param>
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.transform.tag == "Attack" && playerHP.IsHPMax)
-        {
-            Destroy(gameObject);
-        }
-    }
+    //void OnTriggerEnter2D(Collider2D col)
+    //{
+    //    if (col.transform.tag == "Attack")
+    //    {
+    //        //Destroy(gameObject);
+    //    }
+    //}
 }

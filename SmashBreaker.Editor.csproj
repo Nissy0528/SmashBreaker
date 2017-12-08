@@ -154,6 +154,7 @@
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.XML" />
     <None Include="Assets\Shader\Object.shader" />
     <None Include="Assets\Shader\Player.shader" />
+    <None Include="Assets\Shader\Stage.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

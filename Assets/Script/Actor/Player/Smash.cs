@@ -40,10 +40,10 @@ public class Smash : MonoBehaviour
     {
         if (player.GetComponent<Player>().IsDead()) return;//プレイヤーが死亡状態なら何もしない
 
-        Attack();//攻撃
+        //Attack();//攻撃
         Move();//移動
         Rotate();//回転
-        ChangeScale();//拳の大きさ変更
+        //ChangeScale();//拳の大きさ変更
     }
 
     /// <summary>
@@ -59,6 +59,7 @@ public class Smash : MonoBehaviour
             smashCol.GetComponent<CircleCollider2D>().isTrigger = true;//あたり判定を有効に
             moveToPos = smash.transform.position + smash.transform.up * parameter.length;//攻撃を飛ばす方向を設定
             offset = smash.transform.position - transform.position;//攻撃オブジェクトとの距離設定
+            //smash.transform.parent = null;
             isAttack = true;
         }
 
@@ -80,7 +81,7 @@ public class Smash : MonoBehaviour
         {
             moveToPos = returnPos;//もといた座標に戻る
             //ある程度戻ったら強制的に元の座標に
-            if (Vector3.Distance(smash.transform.position, moveToPos) <= 0.15f)
+            if (Vector3.Distance(smash.transform.position, moveToPos) <= 0.17f)
             {
                 smash.transform.position = moveToPos;
             }

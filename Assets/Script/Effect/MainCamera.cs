@@ -42,24 +42,28 @@ public class MainCamera : MonoBehaviour
 
         Shake();//振動
         Follow();//プレイヤー追従
-
-        //振動開始
-        if (isShake)
-        {
-            SetShake();
-            isShake = false;
-        }
     }
 
     /// <summary>
     /// 振動開始
     /// </summary>
-    public void SetShake()
+    public void SetShake(bool auto, float setTime)
     {
+        if (isShake) return;
+
         //振動の範囲設定
         lowRange = new Vector2(savePosition.x - shakeRange, savePosition.y - shakeRange);
         maxRange = new Vector2(savePosition.x + shakeRange, savePosition.y + shakeRange);
-        lifeTime = shakeTime;
+        if (auto)
+        {
+            lifeTime = shakeTime;
+        }
+        else
+        {
+            lifeTime = setTime;
+        }
+
+        isShake = true;
     }
 
     /// <summary>
@@ -72,8 +76,7 @@ public class MainCamera : MonoBehaviour
         //振動時間が0になったら振動終了
         if (lifeTime < 0.0f)
         {
-            parent.transform.position = savePosition;
-            lifeTime = 0.0f;
+            Stop();
         }
 
         //振動時間が設定されたら振動
@@ -121,5 +124,15 @@ public class MainCamera : MonoBehaviour
     public bool IsShakeFinish
     {
         get { return lifeTime == 0.0f; }
+    }
+
+    /// <summary>
+    /// 振動停止
+    /// </summary>
+    public void Stop()
+    {
+        parent.transform.position = savePosition;
+        isShake = false;
+        lifeTime = 0.0f;
     }
 }

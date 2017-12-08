@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class Translation : MonoBehaviour
 {
-    public Vector2[] positions;//移動する座標
-    public float speed;//速度
-
+    private Vector2[] positions;//移動する座標
     private Vector3 target;//目指す座標
-    private int posNum;//目指す座標の番号
     private Enemy enemyClass;
+    private float speed;//速度
+    private int posNum;//目指す座標の番号
 
     // Use this for initialization
     void Start()
@@ -57,5 +56,23 @@ public class Translation : MonoBehaviour
         }
 
         target = positions[posNum];
+    }
+
+    /// <summary>
+    /// 座標の配列
+    /// </summary>
+    public Vector2[] Positions
+    {
+        get { return positions; }
+        set { positions = value; }
+    }
+
+    /// <summary>
+    /// 移動速度
+    /// </summary>
+    public float Speed
+    {
+        get { return speed; }
+        set { speed = value; }
     }
 }

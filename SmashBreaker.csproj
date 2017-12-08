@@ -82,16 +82,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Actor\Boss\Boss.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\Boss2.cs" />
     <Compile Include="Assets\Script\Actor\Boss\BossBullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\BossBulletShooter.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\BulletShooter.cs" />
     <Compile Include="Assets\Script\Actor\Boss\CircleBullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\CircleBulletShooter.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\Dash.cs" />
     <Compile Include="Assets\Script\Actor\Boss\GrowBullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\PlayerLook.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Razer.cs" />
     <Compile Include="Assets\Script\Actor\Boss\RazerShooter.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Rotation.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Translation.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\WeakPoint.cs" />
+    <Compile Include="Assets\Script\Actor\Enemy\AreaEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\DistanseEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\Enemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\EnemySpawner.cs" />
@@ -103,6 +108,7 @@
     <Compile Include="Assets\Script\Effect\MainCamera.cs" />
     <Compile Include="Assets\Script\Effect\RazerEffect.cs" />
     <Compile Include="Assets\Script\Object\Pillar.cs" />
+    <Compile Include="Assets\Script\Object\Warp.cs" />
     <Compile Include="Assets\Script\UI\BossTargeter.cs" />
     <Compile Include="Assets\Script\UI\GameClaer.cs" />
     <Compile Include="Assets\Script\UI\GameClear.cs" />
@@ -127,6 +133,7 @@
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.XML" />
     <None Include="Assets\Shader\Object.shader" />
     <None Include="Assets\Shader\Player.shader" />
+    <None Include="Assets\Shader\Stage.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

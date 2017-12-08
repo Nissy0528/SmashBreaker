@@ -33,7 +33,7 @@
 
 			fixed4 frag(v2f_img i) :SV_Target
 			{
-				float alpha = tex2D(_MainTex,i.uv).a;
+				float alpha = tex2D(_MainTex,i.uv).a - 0.5;
 				fixed4 col = fixed4(0, 0, 0, alpha);
 				return col;
 			}

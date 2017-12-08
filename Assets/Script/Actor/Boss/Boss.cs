@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class Boss : Enemy
 {
-    private GameObject smashText;//スマッシュUI
-    private SmashGage playerSP;//プレイヤー体力UI
+    //private GameObject smashText;//スマッシュUI
+    //private SmashGage playerSP;//プレイヤー体力UI
+    private Animator anim;//アニメーション
+    private NormalEnemy followClass;
+    private Dash dashClass;
+    private RazerShooter razerClass;
 
     // Use this for initialization
     void Start()
     {
-        playerSP = GameObject.Find("SmashGage").GetComponent<SmashGage>();
-        smashText = GameObject.Find("SmashText");
-        smashText.SetActive(false);
+        //playerSP = GameObject.Find("SmashGage").GetComponent<SmashGage>();
+        //smashText = GameObject.Find("SmashText");
+        //smashText.SetActive(false);
+        anim = transform.Find("Chara").GetComponent<Animator>();
+        followClass = GetComponent<NormalEnemy>();
+        dashClass = GetComponent<Dash>();
+        razerClass = GetComponent<RazerShooter>();
         Initialize();
     }
 
@@ -20,23 +28,53 @@ public class Boss : Enemy
     void Update()
     {
         EnemyUpdate();
+        AI();
     }
 
     /// <summary>
-    /// あたり判定
+    /// 人工知能
     /// </summary>
-    protected override void TriggerEnter(Collider2D col)
+    private void AI()
     {
-        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-        if (col.transform.tag == "Attack" && playerSP.IsMax)
+        if (razerClass.GetEnable)
         {
-            if (!isStan)
-            {
-                smashText.SetActive(true);
-            }
-            GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-            GetComponent<CircleCollider2D>().isTrigger = true;//あたり判定のトリガーオン
-            Shoot(col.gameObject);
+            followClass.enabled = false;
+            dashClass.enabled = false;
         }
+        else
+        {
+            dashClass.enabled = true;
+            followClass.enabled = !dashClass.IsDash();
+        }
+
+        if (isStan)
+        {
+            followClass.enabled = false;
+            dashClass.enabled = false;
+            razerClass.enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// アニメーション切り替え
+    /// </summary>
+    /// <param name="name">切り替えるフラグの名前</param>
+    public void AnimBool(string name, bool frag)
+    {
+        if (!anim.enabled) return;
+
+        anim.SetBool(name, frag);
+    }
+
+    /// <summary>
+    /// アニメーション終了判定
+    /// </summary>
+    /// <returns></returns>
+    public bool AnimFinish(string name)
+    {
+        if (!anim.enabled) return false;
+
+        AnimatorStateInfo animState = anim.GetCurrentAnimatorStateInfo(0);
+        return animState.IsName(name) && animState.normalizedTime >= 1;
     }
 }

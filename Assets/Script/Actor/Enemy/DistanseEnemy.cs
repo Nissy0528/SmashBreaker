@@ -59,44 +59,4 @@ public class DistanseEnemy : Enemy
 		Quaternion newRota = Quaternion.Euler(0.0f, 0.0f, angle);//プレイヤーの方向を設定
 		transform.rotation = Quaternion.Slerp(transform.rotation, newRota, rotateSpped * Time.deltaTime);//プレイヤーの方向にゆっくり向く
 	}
-
-	/// <summary>
-	/// あたり判定
-	/// </summary>
-	protected override void TriggerEnter(Collider2D col)
-	{
-		//プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-		if (col.transform.tag == "Attack" && !GetComponent<BoxCollider2D>().isTrigger)
-		{
-			GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
-			Shoot(col.gameObject);
-		}
-
-		//吹き飛ばされた敵に当たったら消滅
-		if (col.transform.tag == "Enemy")
-		{
-			if (col.gameObject.GetComponent<Enemy>().IsStan && !isStan)
-			{
-				GameObject text = Instantiate(bonusText);
-				text.GetComponent<TextUI>().SetPos(transform.position);
-				player.GetComponent<Player>().AddSP(base.point * 2);//プレイヤーのスマッシュポイント加算
-				Destroy(gameObject);
-			}
-		}
-
-		if (col.transform.tag == "Wall")
-		{
-			isWall = true;
-		}
-	}
-
-	protected override void TriggerStay(Collider2D col)
-	{
-		//プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-		if (col.transform.tag == "Attack" && !GetComponent<BoxCollider2D>().isTrigger)
-		{
-			GetComponent<BoxCollider2D>().isTrigger = true;//あたり判定のトリガーオン
-			Shoot(col.gameObject);
-		}
-	}
 }

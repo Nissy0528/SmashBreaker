@@ -30,6 +30,8 @@ public class CircleBulletShooter : MonoBehaviour
     /// </summary>
     private void CreateBullets()
     {
+        bulletList = new List<GameObject>();
+
         for (int i = 0; i < bulletCount; i++)
         {
             bulletList.Add(Instantiate(bullet));

@@ -8,20 +8,10 @@ using UnityEngine;
 public class RazerShooter : MonoBehaviour
 {
     /// <summary>
-    /// 停止フラグ
-    /// </summary>
-    private bool isStop;
-
-    /// <summary>
     /// 爆破
     /// </summary>
     [SerializeField]
     private GameObject particle;
-
-    /// <summary>
-    /// レーザー
-    /// </summary>
-    private List<Razer> razerList;
 
     /// <summary>
     /// 標的のレイヤー
@@ -35,12 +25,19 @@ public class RazerShooter : MonoBehaviour
     private string shieldLayer;
 
     public Material mat;//レーザーの色
-    public float razerTime = 2.5f;//レーザー切り替え時間
-    public float time = 2.5f;//レーザー発射時間
 
+    public float razerOnTime;//レーザーオン時間
+    public float razerOffTime;//レーザーオフ時間
+    public float time;//レーザー発射時間
+    private List<Razer> razerList;//レーザーのリスト
+    private Razer warpRazer;//ワープしたレーザーのリスト
+    private List<GameObject> muzzle = new List<GameObject>();//発射口のリスト
+    private Boss boss_class;//ボスクラス
+    private GameObject boss_muzzle;//レーザー口
+    private GameObject warpRazerObj;
+    private MainCamera mainCamera;
     private float razerCount;
     private bool isEnable;//レーザーのアクティブフラグ
-    private List<GameObject> muzzle = new List<GameObject>();//発射口のリスト
 
     public void Start()
     {
@@ -52,6 +49,13 @@ public class RazerShooter : MonoBehaviour
                 muzzle.Add(muzzles[i]);
             }
         }
+
+        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+
+        boss_class = GetComponent<Boss>();
+        boss_muzzle = transform.Find("Muzzle").Find("Boss2_Muzzle").gameObject;
+        boss_muzzle.SetActive(false);
+
         Init();
     }
 
@@ -80,8 +84,13 @@ public class RazerShooter : MonoBehaviour
             r.Update();
             HitCheck(r);
         }
+        if (warpRazer != null)
+        {
+            warpRazer.Update();
+            HitCheck(warpRazer);
+        }
         Swich();
-        MuzzleColor();
+        //MuzzleColor();
     }
 
     /// <summary>
@@ -91,15 +100,37 @@ public class RazerShooter : MonoBehaviour
     {
         if (!ShootCount()) return;
 
-        if (razerCount < razerTime)
+        if (isEnable)
+        {
+            mainCamera.SetShake(false, razerOffTime);
+        }
+
+        if (razerCount < razerOnTime && !isEnable)
+        {
+            razerCount += Time.deltaTime;
+            return;
+        }
+        if (razerCount < razerOffTime && isEnable)
         {
             razerCount += Time.deltaTime;
             return;
         }
 
-        isEnable = !isEnable;
-        Stop();
-        razerCount = 0.0f;
+        boss_class.AnimBool("Razer", !isEnable);
+
+        if (isEnable)
+        {
+            warpRazer = null;
+            Destroy(warpRazerObj);
+        }
+
+        if (boss_class.AnimFinish("Boss_Razer"))
+        {
+            isEnable = !isEnable;
+            Stop();
+            razerCount = 0.0f;
+            boss_muzzle.SetActive(isEnable);
+        }
     }
 
     /// <summary>
@@ -113,7 +144,7 @@ public class RazerShooter : MonoBehaviour
         {
             GameObject fireObj = muzzle[i].transform.Find("Fire").gameObject;
             Color fireColor = fireObj.GetComponent<SpriteRenderer>().color;
-            fireColor.a = razerCount / razerTime;
+            fireColor.a = razerCount / razerOnTime;
             fireObj.GetComponent<SpriteRenderer>().color = fireColor;
         }
     }
@@ -128,21 +159,43 @@ public class RazerShooter : MonoBehaviour
 
         if (rCol != null)
         {
-            var posi = rCol.transform.position;
-            //与ダメージ処理
-            AddDamage(rCol.gameObject);
-            //撃破パーティクル
-            //var p = Instantiate(particle);
-            //p.transform.position = posi;
-            //Destroy(p, 5f);
+            AddDamage(rCol.gameObject);//プレイヤーにダメージ
+            WarpRazer(rCol.gameObject, r);//ワープしたレーザー生成
         }
     }
 
+    /// <summary>
+    /// ダメージ
+    /// </summary>
+    /// <param name="col"></param>
     private void AddDamage(GameObject col)
     {
         if (col.gameObject.tag == "Player")
         {
             col.GetComponent<Player>().Damage();
+        }
+
+        if (col.gameObject.tag == "Weak")
+        {
+            col.GetComponent<WeakPoint>().Dead();
+        }
+    }
+
+    /// <summary>
+    /// ワープしたレーザー生成
+    /// </summary>
+    /// <param name="col"></param>
+    private void WarpRazer(GameObject col, Razer razer)
+    {
+        if (col.gameObject.tag == "Warp" && warpRazer == null)
+        {
+            Warp warp = col.GetComponent<Warp>();
+            string[] target = new string[] { "Player", "Weak" };
+            if (warp.GetWarpPosObj != null)
+            {
+                warpRazer = new Razer(warp.GetWarpPosObj.transform, razer.Direction, shieldLayer, mat, 0.0f, target);
+                warpRazerObj = warpRazer.GetOrigin;
+            }
         }
     }
 
@@ -167,10 +220,28 @@ public class RazerShooter : MonoBehaviour
     /// </summary>
     public void Stop()
     {
-        isStop = true;
         foreach (var r in razerList)
         {
             r.Stop(isEnable);
         }
+    }
+
+    /// <summary>
+    /// 各時間設定
+    /// </summary>
+    /// <param name="razerTime">予兆時間</param>
+    /// <param name="time">発射時間</param>
+    public void SetSpeed(float razerTime, float time)
+    {
+        this.razerOnTime = razerTime;
+        this.time = time;
+    }
+
+    /// <summary>
+    /// レーザーフラグ
+    /// </summary>
+    public bool GetEnable
+    {
+        get { return isEnable; }
     }
 }

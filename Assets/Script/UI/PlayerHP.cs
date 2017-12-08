@@ -14,8 +14,8 @@ public class PlayerHP : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Chara").GetComponent<Player>();
-        playerHP = player.GetParam.hp;
-        hpTextures = new GameObject[player.GetParam.maxHP];
+        //playerHP = player.GetParam.hp;
+        //hpTextures = new GameObject[player.GetParam.maxHP];
         CreateTextures();
     }
 
@@ -44,7 +44,7 @@ public class PlayerHP : MonoBehaviour
     private void ChangeHP()
     {
         //プレイヤーの体力に合わせて表示する画像の個数を変更
-        playerHP = player.GetParam.hp;
+        //playerHP = player.GetParam.hp;
 
         for (int i = 0; i < hpTextures.Length; i++)
         {

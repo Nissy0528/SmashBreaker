@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Razer
 {
+    public Ray2D shotRay;
+
     /// <summary>
     /// 原点の空オブジェクト
     /// </summary>
     private GameObject origin;
     private GameObject effect;//エフェクトオブジェクト
-
-    public Ray2D shotRay;
 
     /// <summary>
     /// 線の描画
@@ -66,7 +66,7 @@ public class Razer
 
     private void LineUpdate()
     {
-		WallCheck();
+        WallCheck();
 
         length = WallCheck();
         shotRay.origin = origin.transform.position;
@@ -91,7 +91,7 @@ public class Razer
         //当たったobj取得
         float st = Vector2.Distance(origin.transform.position, kz);
         shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, LayerMask.GetMask(wallLayer));
-        if (shotHit)
+        if (shotHit && shotHit.transform.parent != origin.transform.parent)
         {
             return Vector2.Distance(origin.transform.position, shotHit.point);
         }
@@ -133,6 +133,7 @@ public class Razer
         shotHit = Physics2D.Raycast(origin.transform.position, rotdir, st, layerMask);
 
         return shotHit.collider;
+
     }
 
     /// <summary>
@@ -186,6 +187,21 @@ public class Razer
     public float Length
     {
         get { return length; }
+    }
+
+    /// <summary>
+    /// 発射方向
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 Direction
+    {
+        get { return origin.transform.parent.up; }
+    }
+
+
+    public GameObject GetOrigin
+    {
+        get { return origin; }
     }
 }
 

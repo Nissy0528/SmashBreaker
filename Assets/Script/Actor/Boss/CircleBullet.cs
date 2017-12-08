@@ -35,8 +35,20 @@ public class CircleBullet : BossBullet
         if (layer == "Player")
         {
             var p = col.gameObject.GetComponent<Player>();
-            Destroy(gameObject);
-            p.Damage();
+            if (!p.IsState(Player.State.DASH))
+            {
+                Destroy(gameObject);
+                p.Damage();
+            }
         }
+    }
+
+    /// <summary>
+    /// 速度
+    /// </summary>
+    public float Speed
+    {
+        set { speed = value; }
+        get { return speed; }
     }
 }

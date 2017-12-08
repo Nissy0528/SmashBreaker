@@ -112,6 +112,9 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="XInputDotNetPure">
+      <HintPath>Assets\Plugins\x86_64\XInputDotNetPure.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>Assets\Script\Utility\Editor\dll\dotnet2\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -127,9 +130,6 @@
     <Reference Include="NPOI.OpenXmlFormats">
       <HintPath>Assets\Script\Utility\Editor\dll\dotnet2\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
-    <Reference Include="XInputDotNetPure">
-      <HintPath>Assets\Plugins\x86_64\XInputDotNetPure.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="SmashBreaker.CSharp.csproj">
@@ -140,17 +140,21 @@
   <ItemGroup>
     <Compile Include="Assets\Script\Utility\Editor\BossParameter.cs" />
     <Compile Include="Assets\Script\Utility\Editor\ExcelImport.cs" />
+    <Compile Include="Assets\Script\Utility\Editor\MapCreater.cs" />
     <Compile Include="Assets\Script\Utility\Editor\MapEditor.cs" />
     <Compile Include="Assets\Script\Utility\Editor\ParameterMenu.cs" />
     <Compile Include="Assets\Script\Utility\Editor\PlayerParameter.cs" />
     <Compile Include="Assets\Script\Utility\Editor\PositionParameter.cs" />
     <Compile Include="Assets\Script\Utility\Editor\ShowMenu.cs" />
+    <Compile Include="Assets\Script\Utility\Editor\SpRateSetting.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.OOXML.XML" />
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.OpenXml4Net.XML" />
     <None Include="Assets\Script\Utility\Editor\dll\dotnet2\NPOI.XML" />
-    <None Include="Assets\test.txt" />
+    <None Include="Assets\Shader\Object.shader" />
+    <None Include="Assets\Shader\Player.shader" />
+    <None Include="Assets\Shader\Stage.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

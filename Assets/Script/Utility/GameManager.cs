@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        Instantiate(stages[stageNum]);
+        //Instantiate(stages[stageNum]);
 
         stopDelay = stopTime;
         player = GameObject.Find("Chara").GetComponent<Player>();
@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void ShowGameOver()
     {
-        if (player.GetParam.hp > 0) return;
+        if (!player.IsState(Player.State.DEAD)) return;
 
         gameover.SetActive(true);
         Time.timeScale = 0.0f;
@@ -94,21 +94,21 @@ public class GameManager : MonoBehaviour
     {
         if (bossObj != null || !mainCamera.IsShakeFinish) return;
 
-        if (stageNum < stages.Length - 1)
-        {
+        //if (stageNum < stages.Length - 1)
+        //{
             warpZone.gameObject.SetActive(true);
-        }
-        else if (!warpZone.gameObject.activeSelf)
-        {
-            gameclear.SetActive(true);
-            Time.timeScale = 0.0f;
-            //リトライボタンが押されたらMainシーンを再読み込み
-            if (Input.GetButtonDown("Decision"))
-            {
-                Time.timeScale = 1.0f;
-                SceneManager.LoadScene("Title");
-            }
-        }
+        //}
+        //else if (!warpZone.gameObject.activeSelf)
+        //{
+        //    gameclear.SetActive(true);
+        //    Time.timeScale = 0.0f;
+        //    //リトライボタンが押されたらMainシーンを再読み込み
+        //    if (Input.GetButtonDown("Decision"))
+        //    {
+        //        Time.timeScale = 1.0f;
+        //        SceneManager.LoadScene("Title");
+        //    }
+        //}
     }
 
     /// <summary>
