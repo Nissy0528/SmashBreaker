@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CircleBullet : BossBullet
 {
+    private bool isPlayer;
+
     /// <summary>
     /// 初期化
     /// </summary>
@@ -32,7 +34,8 @@ public class CircleBullet : BossBullet
         {
             Destroy(gameObject);
         }
-        if (layer == "Player")
+
+        if (layer == "Player" && !isPlayer)
         {
             var p = col.gameObject.GetComponent<Player>();
             if (!p.IsState(Player.State.DASH))
@@ -50,5 +53,12 @@ public class CircleBullet : BossBullet
     {
         set { speed = value; }
         get { return speed; }
+    }
+
+
+    public bool IsPlayer
+    {
+        set { isPlayer = value; }
+        get { return isPlayer; }
     }
 }

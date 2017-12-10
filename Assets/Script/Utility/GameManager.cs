@@ -94,10 +94,12 @@ public class GameManager : MonoBehaviour
     {
         if (bossObj != null || !mainCamera.IsShakeFinish) return;
 
-        //if (stageNum < stages.Length - 1)
-        //{
+        GameObject bossDeadEffect = GameObject.FindGameObjectWithTag("DeadEffect");
+
+        if (bossDeadEffect == null)
+        {
             warpZone.gameObject.SetActive(true);
-        //}
+        }
         //else if (!warpZone.gameObject.activeSelf)
         //{
         //    gameclear.SetActive(true);

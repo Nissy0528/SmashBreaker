@@ -19,16 +19,10 @@ public class WeakPoint : MonoBehaviour
     /// <param name="col"></param>
     void OnTriggerEnter2D(Collider2D col)
     {
-        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-        if (col.transform.tag == "Player" && col.gameObject.GetComponent<Player>().IsState(Player.State.DASH))
+        if (col.tag == "PlayerBullet")
         {
-            boss_class.Shoot();
+            //boss_class.Shoot(0, true);
+            Destroy(gameObject);
         }
-    }
-
-
-    public void Dead()
-    {
-        boss_class.Shoot();
     }
 }

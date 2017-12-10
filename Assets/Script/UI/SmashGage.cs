@@ -18,35 +18,35 @@ public class SmashGage : MonoBehaviour
     {
         slider = GetComponent<Slider>();
         player = GameObject.Find("Chara").GetComponent<Player>();
-        //max = player.GetParam.maxSP;
+        max = player.GetParam.maxSP;
         isMax = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //SmashPoint();
+        SmashPoint();
         GageColor();
     }
 
     /// <summary>
     /// プレイヤーのスマッシュポイントを表示
     /// </summary>
-    //private void SmashPoint()
-    //{
-    //    sp = player.GetParam.sp;
-    //    slider.value = sp / max;
+    private void SmashPoint()
+    {
+        sp = player.GetParam.sp;
+        slider.value = sp / max;
 
-    //    if (sp >= player.GetParam.maxSP)
-    //    {
-    //        isMax = true;
-    //    }
+        if (sp >= player.GetParam.maxSP)
+        {
+            isMax = true;
+        }
 
-    //    if (isMax && sp <= 0.0f)
-    //    {
-    //        isMax = false;
-    //    }
-    //}
+        if (isMax && sp <= 0.0f)
+        {
+            isMax = false;
+        }
+    }
 
     /// <summary>
     /// ゲージの色変更
