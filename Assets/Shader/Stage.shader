@@ -12,7 +12,7 @@
 		ZWrite Off
 		Cull off
 
-		//ステンシルバッファを１で塗りつぶす
+		//ステンシルバッファを0で塗りつぶす
 		Pass
 	{
 		Stencil
