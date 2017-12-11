@@ -19,5 +19,10 @@ public class DebugCommand : MonoBehaviour
 			Destroy(FindObjectOfType<Boss>().gameObject);
 		}
 
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            FindObjectOfType<Player>().AddSP(10);
+        }
+
 	}
 }

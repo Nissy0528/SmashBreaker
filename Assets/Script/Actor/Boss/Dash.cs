@@ -7,8 +7,11 @@ public class Dash : MonoBehaviour
     public float dashInterval;//突撃間隔
     public float chargeTime;//突進の溜め時間
     public float dashSpeed;//突撃速度
+    public float rotateSpeed;//回転速度
 
     private GameObject player;
+    private Vector3 playerVec;//プレイヤーの方向
+    private Vector3 lookPos;//見る方向
     private Rigidbody2D rigid;
     private MainCamera mainCamera;
     private float dashCount;
@@ -70,6 +73,22 @@ public class Dash : MonoBehaviour
                 isDash = false;
             }
         }
+        else
+        {
+            Rotate();
+        }
+    }
+
+    /// <summary>
+    /// プレイヤーの方向を向く
+    /// </summary>
+    private void Rotate()
+    {
+        lookPos = player.transform.position;//向く方向の座標
+        playerVec = (lookPos - transform.position).normalized;//向く方向を正規化
+        float angle = (Mathf.Atan2(-playerVec.y, -playerVec.x) * Mathf.Rad2Deg) - 90.0f;
+        Quaternion newRota = Quaternion.Euler(0.0f, 0.0f, angle);//プレイヤーの方向を設定
+        transform.rotation = Quaternion.Slerp(transform.rotation, newRota, rotateSpeed * Time.deltaTime);//プレイヤーの方向にゆっくり向く
     }
 
     /// <summary>

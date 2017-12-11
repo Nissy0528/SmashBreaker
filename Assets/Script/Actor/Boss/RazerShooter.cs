@@ -174,11 +174,6 @@ public class RazerShooter : MonoBehaviour
         {
             col.GetComponent<Player>().Damage();
         }
-
-        if (col.gameObject.tag == "Weak")
-        {
-            col.GetComponent<WeakPoint>().Dead();
-        }
     }
 
     /// <summary>

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-
     [SerializeField]
     protected GameObject bonusText;
     [SerializeField]
@@ -13,15 +12,21 @@ public class Enemy : MonoBehaviour
     protected float shootSpeed;//吹き飛ぶ速度
     [SerializeField]
     protected float speed;//移動速度
+    [SerializeField]
+    protected int maxHp;//最大体力
 
     protected GameObject player;//プレイヤー
-    protected Vector3 playerVec;//プレイヤーの方向
-    protected Vector3 lookPos;//見る方向
     protected bool isStan;//気絶フラグ
+
+    public GameObject dead_effect;//死亡時エフェクト
 
     private MainCamera mainCamera;//カメラ
     private Collider2D col;
+    private SmashGage smashGage;
     private Vector3 size;//サイズ
+    private Vector3 playerVec;//プレイヤーの方向
+    private Vector3 lookPos;//見る方向
+    private int hp;//体力
 
     // Use this for initialization
     void Start()
@@ -37,14 +42,18 @@ public class Enemy : MonoBehaviour
     {
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
         player = GameObject.Find("Chara");//プレイヤーを探す
+        smashGage = GameObject.Find("SmashGage").GetComponent<SmashGage>();
         isStan = false;
         size = transform.localScale;
         col = GetComponent<Collider2D>();
+        hp = maxHp;
     }
 
     // Update is called once per frame
     private void Update()
     {
+        lookPos = player.transform.position;//向く方向の座標
+        playerVec = (lookPos - transform.position).normalized;//向く方向を正規化
         EnemyUpdate();
     }
 
@@ -53,8 +62,6 @@ public class Enemy : MonoBehaviour
     /// </summary>
     protected virtual void EnemyUpdate()
     {
-        lookPos = player.transform.position;//向く方向の座標
-        playerVec = (lookPos - transform.position).normalized;//向く方向を正規化
         Dead();//消滅
     }
 
@@ -85,16 +92,25 @@ public class Enemy : MonoBehaviour
     {
         if (isStan) return;
 
-        //Rigidbody2D rigid = GetComponent<Rigidbody2D>();
-        //rigid.bodyType = RigidbodyType2D.Dynamic;
-        //rigid.mass = 1.0f;
-        //rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);//後ろに吹き飛ぶ
-        //isStan = true;//気絶フラグtrue
-        //player.GetComponent<Player>().AddSP(point);//プレイヤーのスマッシュポイント加算
-        //Time.timeScale = 0.0f;//ゲーム停止
-        //col.isTrigger = true;//あたり判定のトリガーオン
-        Destroy(gameObject);
-        mainCamera.Stop();
+        Rigidbody2D rigid = GetComponent<Rigidbody2D>();
+        rigid.bodyType = RigidbodyType2D.Dynamic;
+        rigid.mass = 1.0f;
+        rigid.drag = 0.0f;
+        rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);//後ろに吹き飛ぶ
+        isStan = true;//気絶フラグtrue
+        player.GetComponent<Player>().AddSP(point);//プレイヤーのスマッシュポイント加算
+        Time.timeScale = 0.0f;//ゲーム停止
+        col.isTrigger = true;//あたり判定のトリガーオン
+
+        //hp = Mathf.Max(hp - damage, 0);
+        //if (hp <= 0 || isDead)
+        //{
+        //    hp = 0;
+        //    GameObject effect = Instantiate(dead_effect);
+        //    effect.transform.position = transform.position;
+        //    Destroy(gameObject);
+        //    mainCamera.Stop();
+        //}
     }
 
     /// <summary>
@@ -105,36 +121,89 @@ public class Enemy : MonoBehaviour
         get { return isStan; }
     }
 
-    ///// <summary>
-    ///// あたり判定（トリガー）
-    ///// </summary>
-    //void OnTriggerEnter2D(Collider2D col)
-    //{
-    //    //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-    //    if (col.transform.tag == "Player" && col.GetComponent<Player>().IsState(Player.State.DASH))
-    //    {
-    //        Shoot();
-    //    }
-    //}
-    //void OnTriggerStay2D(Collider2D col)
-    //{ 
-    //    //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-    //    if (col.transform.tag == "Player" && col.GetComponent<Player>().IsState(Player.State.DASH))
-    //    {
-    //        Shoot();
-    //    }
-    //}
+    /// <summary>
+    /// 体力
+    /// </summary>
+    public int HP
+    {
+        get { return hp; }
+    }
 
-    ///// <summary>
-    ///// あたり判定
-    ///// </summary>
-    ///// <param name="col"></param>
+    /// <summary>
+    /// 最大体力
+    /// </summary>
+    public int MaxHP
+    {
+        get { return maxHp; }
+    }
+
+    /// <summary>
+    /// あたり判定（トリガー）
+    /// </summary>
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        //if (col.transform.tag == "PlayerBullet")
+        //{
+        //    Player player_class = player.GetComponent<Player>();
+        //    float bulletSize = col.transform.localScale.x;
+        //    int damage = (int)(bulletSize);
+        //    if (bulletSize < player_class.GetParam.bulletMaxSize)
+        //    {
+        //        Shoot(damage, false);
+        //    }
+        //    else
+        //    {
+        //        Shoot(damage, true);
+        //    }
+        //    Destroy(col.gameObject);
+        //}
+
+        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
+        if (col.transform.tag == "Attack")
+        {
+            if (tag != "Boss")
+            {
+                Shoot();
+            }
+            else if (smashGage.IsMax)
+            {
+                Shoot();
+            }
+        }
+    }
+    void OnTriggerStay2D(Collider2D col)
+    {
+        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
+        if (col.transform.tag == "Attack")
+        {
+            if (tag != "Boss")
+            {
+                Shoot();
+            }
+            else if (smashGage.IsMax)
+            {
+                Shoot();
+            }
+        }
+    }
+
+    /// <summary>
+    /// あたり判定
+    /// </summary>
+    /// <param name="col"></param>
     //void OnCollisionEnter2D(Collision2D col)
     //{
     //    //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-    //    if (col.transform.tag == "Player" && col.gameObject.GetComponent<Player>().IsState(Player.State.DASH))
+    //    if (col.transform.tag == "Attack")
     //    {
-    //        Shoot();
+    //        if (tag != "Boss")
+    //        {
+    //            Shoot();
+    //        }
+    //        else if (smashGage.IsMax)
+    //        {
+    //            Shoot();
+    //        }
     //    }
     //}
     //void OnCollisionStay2D(Collision2D col)

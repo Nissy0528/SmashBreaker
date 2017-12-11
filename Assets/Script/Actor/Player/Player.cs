@@ -10,22 +10,22 @@ public class Player : MonoBehaviour
     {
         //public int hp;//体力
         //public int maxHP;//最大体力
-        //public int maxSP;//最大スマッシュポイント
+        public int maxSP;//最大スマッシュポイント
         public float speed;//移動速度
-        //public float sp;//スマシュポイント
-        //public float spDifTime;//スマッシュポイントが減るまでの時間（設定用）
-        //public float spDifSpeed;//スマッシュポイントが減る速度
-        public float dashInterval;
-        public float dashSpeed;
-        public float shootInterval;
-        public float bulletGrawSpeed;
-        public float bulletMaxSize;
+        public float sp;//スマシュポイント
+        public float spDifTime;//スマッシュポイントが減るまでの時間（設定用）
+        public float spDifSpeed;//スマッシュポイントが減る速度
+        public float dashInterval;//ダッシュのインターバル
+        public float dashSpeed;//ダッシュ速度
+        //public float shootInterval;
+        //public float bulletGrawSpeed;
+        //public float bulletMaxSize;
     }
 
     //public GameObject damageEffect;//ダメージエフェクト
     //public GameObject warp;//ワープゾーン
-    //public SmashGage smashGage;
-    public GameObject bullet;
+    public SmashGage smashGage;
+    //public GameObject bullet;
     public GameObject muzzle;
 
     private Parameter parameter;//パラメータ
@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     private float y_axis;//縦の入力値
     private float spDifCount;//スマッシュポイントが減るまでの時間
     private float dashCount;
+    //private float shootCount;
     private bool isDamage;//ダメージフラグ
 
     /// <summary>
@@ -71,9 +72,10 @@ public class Player : MonoBehaviour
         state = State.IDEL;//最初は待機状態
 
         isDamage = false;
-        //parameter.sp = 0.0f;
+        parameter.sp = 0.0f;
         spDifCount = 0.0f;
         dashCount = 0.0f;
+        //shootCount = 0.0f;
     }
 
     // Update is called once per frame
@@ -87,10 +89,10 @@ public class Player : MonoBehaviour
             Move();//移動
             Rotate();//向き変更
             //DamageEffect();//ダメージ演出
-            //SmashPoint();
+            SmashPoint();
             Dash();//ダッシュ
-            BulletShoot();
-            //CreateWarp();
+                   //BulletShoot();
+                   //CreateWarp();
         }
         //Clamp();//移動制限
     }
@@ -168,15 +170,13 @@ public class Player : MonoBehaviour
 
         if (state != State.DASH)
         {
-            if (vec == Vector3.zero && dashCount <= 0.0f
-                && (Input.GetButtonDown("Smash") || Mathf.Abs(Input.GetAxisRaw("Smash")) >= 0.5f))
+            if (vec == Vector3.zero && dashCount <= 0.0f && Input.GetButtonDown("Decision"))
             {
                 vec = (lookPos - transform.position).normalized;//向く方向を正規化
                 rigid.AddForce(vec * parameter.dashSpeed, ForceMode2D.Impulse);
                 state = State.DASH;
             }
-            if (vec != Vector3.zero
-                && (Input.GetButtonUp("Smash") || Mathf.Abs(Input.GetAxisRaw("Smash")) == 0.0f))
+            if (vec != Vector3.zero && Input.GetButtonUp("Decision"))
             {
                 vec = Vector3.zero;
             }
@@ -184,7 +184,7 @@ public class Player : MonoBehaviour
 
         if (state == State.DASH)
         {
-            if (rigid.velocity.magnitude <= parameter.dashSpeed / 2)
+            if (rigid.velocity.magnitude <= 25)
             {
                 dashPos = Vector3.zero;
                 rigid.velocity = Vector2.zero;
@@ -221,33 +221,60 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 弾発射
     /// </summary>
-    private void BulletShoot()
-    {
-        if (Input.GetButton("Decision"))
-        {
-            state = State.ATTACK;
-            if (bulletObj == null)
-            {
-                bulletObj = Instantiate(bullet, muzzle.transform);
-                bullet.transform.localPosition = new Vector3(0, 0.18f, 0);
-            }
-            else
-            {
-                Vector3 bulletSize = muzzle.transform.localScale;
-                bulletSize += new Vector3(parameter.bulletGrawSpeed, parameter.bulletGrawSpeed, 1.0f);
-                bulletSize.x = Mathf.Clamp(bulletSize.x, 0.0f, parameter.bulletMaxSize);
-                bulletSize.y = Mathf.Clamp(bulletSize.y, 0.0f, parameter.bulletMaxSize);
-                muzzle.transform.localScale = bulletSize;
-            }
-        }
-        if (Input.GetButtonUp("Decision") && bulletObj != null)
-        {
-            bullet.transform.parent = null;
-            bulletObj.AddComponent<CircleBullet>();
-            bulletObj.GetComponent<CircleBullet>().Speed = 10;
-            state = State.IDEL;
-        }
-    }
+    //private void BulletShoot()
+    //{
+    //    SpawnBullt();//弾生成
+    //    GrowBullet();//弾を大きくする
+
+    //    if (Input.GetButtonUp("Decision") && bulletObj != null)
+    //    {
+    //        bulletObj.transform.parent = null;
+    //        bulletObj.AddComponent<CircleCollider2D>();
+    //        bulletObj.GetComponent<CircleCollider2D>().radius = 0.16f;
+    //        bulletObj.GetComponent<CircleCollider2D>().isTrigger = true;
+    //        bulletObj.AddComponent<CircleBullet>();
+    //        bulletObj.GetComponent<CircleBullet>().Speed = 20;
+    //        bulletObj.GetComponent<CircleBullet>().IsPlayer = true;
+    //        muzzle.transform.localScale = Vector3.one;
+    //        bulletObj = null;
+    //        state = State.IDEL;
+    //    }
+    //}
+    /// <summary>
+    /// 弾生成
+    /// </summary>
+    //private void SpawnBullt()
+    //{
+    //    if (shootCount > 0.0f)
+    //    {
+    //        shootCount -= Time.deltaTime;
+    //        return;
+    //    }
+
+    //    if (Input.GetButtonDown("Decision"))
+    //    {
+    //        bulletObj = Instantiate(bullet, muzzle.transform);
+    //        bullet.transform.localPosition = new Vector3(0, 0.18f, 0);
+    //        shootCount = parameter.shootInterval;
+    //    }
+    //}
+    /// <summary>
+    /// 弾を大きくする
+    /// </summary>
+    //private void GrowBullet()
+    //{
+    //    if (bulletObj == null) return;
+
+    //    if (Input.GetButton("Decision"))
+    //    {
+    //        state = State.ATTACK;
+    //        Vector3 bulletSize = muzzle.transform.localScale;
+    //        bulletSize += new Vector3(parameter.bulletGrawSpeed, parameter.bulletGrawSpeed, 1.0f);
+    //        bulletSize.x = Mathf.Clamp(bulletSize.x, 0.0f, parameter.bulletMaxSize);
+    //        bulletSize.y = Mathf.Clamp(bulletSize.y, 0.0f, parameter.bulletMaxSize);
+    //        muzzle.transform.localScale = bulletSize;
+    //    }
+    //}
 
     /// <summary>
     /// ワープゾーン生成
@@ -264,16 +291,16 @@ public class Player : MonoBehaviour
     /// <summary>
     /// スマッシュポイント
     /// </summary>
-    //private void SmashPoint()
-    //{
-    //    if (spDifCount > 0.0f)
-    //    {
-    //        spDifCount -= Time.deltaTime;
-    //        return;
-    //    }
+    private void SmashPoint()
+    {
+        if (spDifCount > 0.0f)
+        {
+            spDifCount -= Time.deltaTime;
+            return;
+        }
 
-    //    parameter.sp = Mathf.Max(parameter.sp - Time.deltaTime * parameter.spDifSpeed, 0.0f);
-    //}
+        parameter.sp = Mathf.Max(parameter.sp - Time.deltaTime * parameter.spDifSpeed, 0.0f);
+    }
 
     /// <summary>
     /// 体力回復
@@ -288,17 +315,17 @@ public class Player : MonoBehaviour
     /// <summary>
     /// スマッシュポイント変動
     /// </summary>
-    //public void AddSP(int value)
-    //{
-    //    if (smashGage.IsMax) return;
+    public void AddSP(int value)
+    {
+        if (smashGage.IsMax) return;
 
-    //    if (value > 0)
-    //    {
-    //        //value *= spRate.spRates[parameter.hp - 1];
-    //        parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
-    //        spDifCount = parameter.spDifTime;
-    //    }
-    //}
+        if (value > 0)
+        {
+            //value *= spRate.spRates[parameter.hp - 1];
+            parameter.sp = Mathf.Min(parameter.sp + value, parameter.maxSP);
+            spDifCount = parameter.spDifTime;
+        }
+    }
 
     /// <summary>
     /// パラメータ取得
@@ -324,22 +351,22 @@ public class Player : MonoBehaviour
         switch (i)
         {
             case 0:
-                parameter.speed = value;
+                parameter.maxSP = (int)value;
                 break;
             case 1:
-                parameter.dashInterval = value;
+                parameter.speed = value;
                 break;
             case 2:
-                parameter.dashSpeed = value;
+                parameter.spDifTime = value;
                 break;
             case 3:
-                parameter.shootInterval = value;
+                parameter.spDifSpeed = value;
                 break;
             case 4:
-                parameter.bulletGrawSpeed = value;
+                parameter.dashInterval = value;
                 break;
             case 5:
-                parameter.bulletMaxSize = value;
+                parameter.dashSpeed = value;
                 break;
             default:
                 break;

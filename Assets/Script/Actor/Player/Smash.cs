@@ -7,13 +7,13 @@ public class Smash : MonoBehaviour
     public struct Parameter
     {
         public float length;//飛ぶ距離
-        public int power;//威力
+        public float smashSpeed;//拳を飛ばす速度
         public int maxScale;//ワンパン状態の拳の大きさ
     }
 
-    public GameObject player;//プレイヤー
+    public Player player;//プレイヤー
     public SmashGage playerSP;//プレイヤーのスマッシュゲージ
-    public float smashSpeed;//拳を飛ばす速度
+    //public float smashSpeed;//拳を飛ばす速度
 
     private Parameter parameter;//パラメータ
     private GameObject smash;//攻撃オブジェクト
@@ -38,12 +38,12 @@ public class Smash : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.GetComponent<Player>().IsDead()) return;//プレイヤーが死亡状態なら何もしない
+        if (player.IsDead()) return;//プレイヤーが死亡状態なら何もしない
 
-        //Attack();//攻撃
+        Attack();//攻撃
         Move();//移動
         Rotate();//回転
-        //ChangeScale();//拳の大きさ変更
+        ChangeScale();//拳の大きさ変更
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class Smash : MonoBehaviour
         transform.position = player.transform.position;//常にプレイヤーに追従
         if (!isAttack) return;//攻撃フラグがfalseならこれ以降何もしない
 
-        smash.transform.position = Vector3.MoveTowards(smash.transform.position, moveToPos, smashSpeed * Time.deltaTime);//設定された方向に平行移動
+        smash.transform.position = Vector3.MoveTowards(smash.transform.position, moveToPos, parameter.smashSpeed * Time.deltaTime);//設定された方向に平行移動
         returnPos = transform.position + offset;//戻る座標設定
 
         //戻るフラグがtureなら
@@ -110,7 +110,7 @@ public class Smash : MonoBehaviour
     /// </summary>
     private void Rotate()
     {
-        if (isAttack || Time.timeScale == 0.0f) return;//攻撃中なら何もしない
+        if (Time.timeScale == 0.0f) return;//攻撃中なら何もしない
 
         //右スティックの入力値を取得
         float x_axis = Input.GetAxisRaw("Smash_H");
@@ -162,7 +162,7 @@ public class Smash : MonoBehaviour
                 parameter.length = value;
                 break;
             case 7:
-                parameter.power = (int)value;
+                parameter.smashSpeed = value;
                 break;
             case 8:
                 parameter.maxScale = (int)value;

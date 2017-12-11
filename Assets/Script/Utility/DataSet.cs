@@ -7,7 +7,7 @@ public class DataSet : MonoBehaviour
     public CharaDataSet[] charaData;
     public GameObject boss;
     public Player player;
-    //public Smash smash;
+    public Smash smash;
 
     // Use this for initialization
     void Awake()
@@ -24,7 +24,7 @@ public class DataSet : MonoBehaviour
         for (int i = 0; i < charaData[0].player_list.Count; i++)
         {
             player.SetParam(charaData[0].player_list[i].param, i);
-            //smash.SetParam(charaData[0].player_list[i].param, i);
+            smash.SetParam(charaData[0].player_list[i].param, i);
         }
     }
 
