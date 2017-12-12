@@ -8,8 +8,10 @@ public class Dash : MonoBehaviour
     public float chargeTime;//突進の溜め時間
     public float dashSpeed;//突撃速度
     public float rotateSpeed;//回転速度
+    public int frashTime;//点滅時間
 
     private GameObject player;
+    private GameObject chara;
     private Vector3 playerVec;//プレイヤーの方向
     private Vector3 lookPos;//見る方向
     private Rigidbody2D rigid;
@@ -19,10 +21,11 @@ public class Dash : MonoBehaviour
     private bool isDash;//突撃フラグ
 
     // Use this for initialization
-    void Start()
+    public void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        chara = transform.Find("Chara").gameObject;
         rigid = GetComponent<Rigidbody2D>();
         dashCount = dashInterval;
         chargeCount = chargeTime;

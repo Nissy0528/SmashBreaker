@@ -16,7 +16,7 @@ public class NormalEnemy : MonoBehaviour
     /// <summary>
     /// 初期化
     /// </summary>
-    void Start()
+    public void Start()
     {
         player = GameObject.Find("Chara");//プレイヤーを探す
     }

@@ -21,12 +21,14 @@ public class Enemy : MonoBehaviour
     public GameObject dead_effect;//死亡時エフェクト
 
     private MainCamera mainCamera;//カメラ
+    private GameManager gameManager;//ゲーム管理クラス
     private Collider2D col;
     private SmashGage smashGage;
     private Vector3 size;//サイズ
     private Vector3 playerVec;//プレイヤーの方向
     private Vector3 lookPos;//見る方向
     private int hp;//体力
+    private bool isDamage;//ダメージフラグ
 
     // Use this for initialization
     void Start()
@@ -43,7 +45,9 @@ public class Enemy : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
         player = GameObject.Find("Chara");//プレイヤーを探す
         smashGage = GameObject.Find("SmashGage").GetComponent<SmashGage>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         isStan = false;
+        isDamage = false;
         size = transform.localScale;
         col = GetComponent<Collider2D>();
         hp = maxHp;
@@ -52,8 +56,6 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        lookPos = player.transform.position;//向く方向の座標
-        playerVec = (lookPos - transform.position).normalized;//向く方向を正規化
         EnemyUpdate();
     }
 
@@ -63,6 +65,10 @@ public class Enemy : MonoBehaviour
     protected virtual void EnemyUpdate()
     {
         Dead();//消滅
+        if (tag == "Boss")
+        {
+            //Debug.Log(isDamage);
+        }
     }
 
     /// <summary>
@@ -70,7 +76,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     protected virtual void Dead()
     {
-        if (!isStan) return;
+        if (!isStan || tag == "Boss") return;
 
         Vector3 pos = transform.position;
         Vector3 screenMinPos = mainCamera.ScreenMin;//画面の左下の座標
@@ -80,7 +86,9 @@ public class Enemy : MonoBehaviour
         if (pos.x <= screenMinPos.x - size.x / 2 || pos.x >= screenMaxPos.x + size.x / 2
             || pos.y <= screenMinPos.y - size.y / 2 || pos.y >= screenMaxPos.y + size.y / 2)
         {
-            mainCamera.SetShake(true, 0.0f);//画面振動
+            GameObject effect = Instantiate(dead_effect);
+            effect.transform.position = transform.position;
+
             Destroy(gameObject);//消滅
         }
     }
@@ -88,29 +96,42 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// 吹き飛ぶ
     /// </summary>
-    public virtual void Shoot()
+    private void Shoot()
     {
         if (isStan) return;
 
+        lookPos = player.transform.position;//向く方向の座標
+        playerVec = (lookPos - transform.position).normalized;//向く方向を正規化
         Rigidbody2D rigid = GetComponent<Rigidbody2D>();
         rigid.bodyType = RigidbodyType2D.Dynamic;
         rigid.mass = 1.0f;
         rigid.drag = 0.0f;
         rigid.AddForce(-playerVec * shootSpeed, ForceMode2D.Impulse);//後ろに吹き飛ぶ
-        isStan = true;//気絶フラグtrue
-        player.GetComponent<Player>().AddSP(point);//プレイヤーのスマッシュポイント加算
+        player.GetComponent<Player>().AddSP(point, false);//プレイヤーのスマッシュポイント加算
         Time.timeScale = 0.0f;//ゲーム停止
         col.isTrigger = true;//あたり判定のトリガーオン
+        isStan = true;//気絶フラグtrue
+    }
 
-        //hp = Mathf.Max(hp - damage, 0);
-        //if (hp <= 0 || isDead)
-        //{
-        //    hp = 0;
-        //    GameObject effect = Instantiate(dead_effect);
-        //    effect.transform.position = transform.position;
-        //    Destroy(gameObject);
-        //    mainCamera.Stop();
-        //}
+    /// <summary>
+    /// ダメージ
+    /// </summary>
+    /// <param name="damage"></param>
+    private void Damage(Transform smashCol)
+    {
+        if (!smashGage.IsMax || isDamage) return;
+
+        //ダメージ
+        Smash smash = smashCol.parent.parent.GetComponent<Smash>();
+        int damage = smash.GetParam.power;
+        hp = Mathf.Max(hp - damage, 0);
+        isStan = true;
+        if (hp <= 0)
+        {
+            hp = 0;
+            mainCamera.Stop();
+        }
+        isDamage = true;
     }
 
     /// <summary>
@@ -161,11 +182,11 @@ public class Enemy : MonoBehaviour
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
         if (col.transform.tag == "Attack")
         {
-            if (tag != "Boss")
+            if (tag == "Boss")
             {
-                Shoot();
+                Damage(col.transform);
             }
-            else if (smashGage.IsMax)
+            if (tag == "Enemy")
             {
                 Shoot();
             }
@@ -176,11 +197,11 @@ public class Enemy : MonoBehaviour
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
         if (col.transform.tag == "Attack")
         {
-            if (tag != "Boss")
+            if (tag == "Boss")
             {
-                Shoot();
+                Damage(col.transform);
             }
-            else if (smashGage.IsMax)
+            if (tag == "Enemy")
             {
                 Shoot();
             }

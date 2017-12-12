@@ -9,19 +9,22 @@ public class Smash : MonoBehaviour
         public float length;//飛ぶ距離
         public float smashSpeed;//拳を飛ばす速度
         public int maxScale;//ワンパン状態の拳の大きさ
+        public int power;//拳の威力
     }
 
     public Player player;//プレイヤー
     public SmashGage playerSP;//プレイヤーのスマッシュゲージ
-    //public float smashSpeed;//拳を飛ばす速度
+    public GameObject maxHitEffect;//ワンパン攻撃時のエフェクト
 
     private Parameter parameter;//パラメータ
     private GameObject smash;//攻撃オブジェクト
     private GameObject smashCol;//攻撃あたり判定
+    private MainCamera mainCamera;//カメラクラス
     private Vector3 returnPos;//戻る座標
     private Vector3 offset;//プレイヤーとの距離
     private Vector3 moveToPos;//飛ぶ方向
     private Vector3 smashIniScale;
+    private Vector3 def;
     private bool isAttack;//攻撃フラグ
     private bool isReturn;//戻るフラグ
 
@@ -31,8 +34,10 @@ public class Smash : MonoBehaviour
         smash = transform.Find("Smash").gameObject;//攻撃オブジェクト取得
         smashIniScale = smash.transform.localScale;
         smashCol = smash.transform.GetChild(0).gameObject;
+        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
         isAttack = false;
         isReturn = false;
+        def = transform.localRotation.eulerAngles;
     }
 
     // Update is called once per frame
@@ -54,7 +59,7 @@ public class Smash : MonoBehaviour
         if (isAttack) return;
 
         //攻撃コマンドが入力されたら押下フラグをtureに
-        if (Input.GetButtonDown("Smash") || Mathf.Abs(Input.GetAxisRaw("Smash")) >= 0.5f)
+        if (Input.GetButtonDown("Smash") || Input.GetAxisRaw("Smash") >= 0.5f)
         {
             smashCol.GetComponent<CircleCollider2D>().isTrigger = true;//あたり判定を有効に
             moveToPos = smash.transform.position + smash.transform.up * parameter.length;//攻撃を飛ばす方向を設定
@@ -70,7 +75,6 @@ public class Smash : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        transform.position = player.transform.position;//常にプレイヤーに追従
         if (!isAttack) return;//攻撃フラグがfalseならこれ以降何もしない
 
         smash.transform.position = Vector3.MoveTowards(smash.transform.position, moveToPos, parameter.smashSpeed * Time.deltaTime);//設定された方向に平行移動
@@ -97,7 +101,7 @@ public class Smash : MonoBehaviour
                 return;
             }
             //戻るフラグがtrueなら攻撃フラグと戻るフラグをfalseに
-            if (isReturn && (Input.GetButtonUp("Smash") || Mathf.Abs(Input.GetAxisRaw("Smash")) == 0.0f))
+            if (isReturn && (Input.GetButtonUp("Smash") || Input.GetAxisRaw("Smash") == 0.0f))
             {
                 isAttack = false;
                 isReturn = false;
@@ -110,7 +114,7 @@ public class Smash : MonoBehaviour
     /// </summary>
     private void Rotate()
     {
-        if (Time.timeScale == 0.0f) return;//攻撃中なら何もしない
+        if (isAttack || Time.timeScale == 0.0f) return;//攻撃中なら何もしない
 
         //右スティックの入力値を取得
         float x_axis = Input.GetAxisRaw("Smash_H");
@@ -139,8 +143,22 @@ public class Smash : MonoBehaviour
         }
         else
         {
-            smash.transform.localScale = new Vector3(smashIniScale.x * parameter.maxScale, smashIniScale.y * parameter.maxScale, 1);
+            smash.transform.localScale = new Vector3(parameter.maxScale, parameter.maxScale, 1);
         }
+    }
+
+    /// <summary>
+    /// 親オブジェクト回転の影響を受けない
+    /// </summary>
+    private void DontRotate()
+    {
+        Vector3 parentAngle = transform.parent.transform.localRotation.eulerAngles;
+
+        float x = parentAngle.z + def.x;
+        float y = parentAngle.x + def.y;
+        float z = parentAngle.y + def.z;
+
+        smash.transform.localRotation = Quaternion.Euler(new Vector3(x, y, z));
     }
 
     /// <summary>
@@ -167,6 +185,9 @@ public class Smash : MonoBehaviour
             case 8:
                 parameter.maxScale = (int)value;
                 break;
+            case 9:
+                parameter.power = (int)value;
+                break;
             default:
                 break;
 
@@ -181,6 +202,26 @@ public class Smash : MonoBehaviour
         if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
         {
             smashCol.GetComponent<CircleCollider2D>().isTrigger = false;//あたり判定を有効に
+            if (playerSP.IsMax && col.transform.tag == "Boss")
+            {
+                maxHitEffect.SetActive(true);
+                mainCamera.SetShake(false, 0.5f);
+                player.AddSP(0, true);
+            }
+            isReturn = true;
+        }
+    }
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
+        {
+            smashCol.GetComponent<CircleCollider2D>().isTrigger = false;//あたり判定を有効に
+            if (playerSP.IsMax && col.transform.tag == "Boss")
+            {
+                maxHitEffect.SetActive(true);
+                mainCamera.SetShake(false, 0.5f);
+                player.AddSP(0, true);
+            }
             isReturn = true;
         }
     }

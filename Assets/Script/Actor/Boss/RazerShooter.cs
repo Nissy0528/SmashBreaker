@@ -31,7 +31,7 @@ public class RazerShooter : MonoBehaviour
     public float time;//レーザー発射時間
     private List<Razer> razerList;//レーザーのリスト
     private Razer warpRazer;//ワープしたレーザーのリスト
-    private List<GameObject> muzzle = new List<GameObject>();//発射口のリスト
+    private List<GameObject> muzzle;//発射口のリスト
     private Boss boss_class;//ボスクラス
     private GameObject boss_muzzle;//レーザー口
     private GameObject warpRazerObj;
@@ -42,6 +42,7 @@ public class RazerShooter : MonoBehaviour
     public void Start()
     {
         GameObject[] muzzles = GameObject.FindGameObjectsWithTag("Muzzle");
+        muzzle = new List<GameObject>();
         for (int i = 0; i < muzzles.Length; i++)
         {
             if (muzzles[i].transform.parent == transform)

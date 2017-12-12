@@ -12,8 +12,8 @@ public class PlayerParameter
     private ParameterMenu menu;
     private Vector2 scrollPos = Vector2.zero;
     private Rect windowRect;
-    private string[] names = new string[9];//パラメータ名の配列
-    private float[] parameters = new float[9];//パラメータの配列
+    private string[] names = new string[10];//パラメータ名の配列
+    private float[] parameters = new float[10];//パラメータの配列
     private const string file = "Assets/Data/Excel/PlayerParameter.xls";//読み込むExcelファイルのパス
 
     /// <summary>

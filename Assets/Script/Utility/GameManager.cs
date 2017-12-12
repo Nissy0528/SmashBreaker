@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     public float stopTime;//ゲームストップの長さ
     public GameObject gameover;//ゲームオーバーUI
     public GameObject gameclear;//ゲームクリアUI
-    public GameObject smashText;//スマッシュUI
     public GameObject pauseText;//ポーズUI
     public GameObject[] stages;//ステージの配列
 
@@ -59,7 +58,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void GameStart()
     {
-        if (Time.timeScale >= 1.0f || smashText.activeSelf) return;
+        if (Time.timeScale >= 1.0f) return;
 
         //指定した時間まで達したらゲーム再開
         stopDelay -= 0.1f;
@@ -138,5 +137,14 @@ public class GameManager : MonoBehaviour
         }
 
         pauseText.SetActive(isPause);
+    }
+
+    /// <summary>
+    /// 停止カウント
+    /// </summary>
+    public void Slow(float delay, float time)
+    {
+        Time.timeScale = time;
+        stopDelay = delay;
     }
 }

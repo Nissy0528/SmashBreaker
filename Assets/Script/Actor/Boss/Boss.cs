@@ -4,24 +4,25 @@ using UnityEngine;
 
 public class Boss : Enemy
 {
-    //private GameObject smashText;//スマッシュUI
-    //private SmashGage playerSP;//プレイヤー体力UI
+    public float stanTime;//硬直時間
+
     private Animator anim;//アニメーション
     private NormalEnemy followClass;
     private Dash dashClass;
     private RazerShooter razerClass;
+    private GameManager gameManager;
+    private float stanDelay;//硬直カウント
 
     // Use this for initialization
     void Start()
     {
-        //playerSP = GameObject.Find("SmashGage").GetComponent<SmashGage>();
-        //smashText = GameObject.Find("SmashText");
-        //smashText.SetActive(false);
         anim = transform.Find("Chara").GetComponent<Animator>();
         followClass = GetComponent<NormalEnemy>();
         dashClass = GetComponent<Dash>();
         razerClass = GetComponent<RazerShooter>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         Initialize();
+        stanDelay = stanTime;
     }
 
     // Update is called once per frame
@@ -29,6 +30,8 @@ public class Boss : Enemy
     {
         EnemyUpdate();
         AI();
+        Stan();//硬直
+        BossDead();//消滅
     }
 
     /// <summary>
@@ -47,12 +50,47 @@ public class Boss : Enemy
             followClass.enabled = !dashClass.IsDash();
         }
 
-        if (isStan)
+        //if (isStan)
+        //{
+        //    followClass.Start();
+        //    dashClass.Start();
+        //    razerClass.Start();
+        //}
+
+        if (HP <= 0)
         {
             followClass.enabled = false;
             dashClass.enabled = false;
             razerClass.enabled = false;
         }
+    }
+
+    /// <summary>
+    /// 硬直
+    /// </summary>
+    private void Stan()
+    {
+        if (!isStan) return;
+
+        stanDelay -= Time.deltaTime;
+        if (stanDelay <= 0.0f)
+        {
+            isStan = false;
+            stanDelay = stanTime;
+        }
+    }
+
+    /// <summary>
+    /// 消滅
+    /// </summary>
+    private void BossDead()
+    {
+        if (HP > 0) return;
+        isStan = true;
+        GameObject effect = Instantiate(dead_effect);
+        effect.transform.position = transform.position;
+        gameManager.Slow(10.0f, 0.25f);
+        Destroy(gameObject);
     }
 
     /// <summary>

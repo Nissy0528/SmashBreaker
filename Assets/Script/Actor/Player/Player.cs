@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     public SmashGage smashGage;
     //public GameObject bullet;
     public GameObject muzzle;
+    public GameObject spMaxEffect;
 
     private Parameter parameter;//パラメータ
     private MainCamera mainCamera;//カメラ
@@ -170,13 +171,15 @@ public class Player : MonoBehaviour
 
         if (state != State.DASH)
         {
-            if (vec == Vector3.zero && dashCount <= 0.0f && Input.GetButtonDown("Decision"))
+            if (vec == Vector3.zero && dashCount <= 0.0f
+                && (Input.GetButtonDown("Dash") || Input.GetAxisRaw("Dash") <= -0.5f))
             {
                 vec = (lookPos - transform.position).normalized;//向く方向を正規化
                 rigid.AddForce(vec * parameter.dashSpeed, ForceMode2D.Impulse);
                 state = State.DASH;
             }
-            if (vec != Vector3.zero && Input.GetButtonUp("Decision"))
+            if (vec != Vector3.zero
+                && (Input.GetButtonUp("Dash") || Input.GetAxisRaw("Dash") == 0.0f))
             {
                 vec = Vector3.zero;
             }
@@ -300,6 +303,8 @@ public class Player : MonoBehaviour
         }
 
         parameter.sp = Mathf.Max(parameter.sp - Time.deltaTime * parameter.spDifSpeed, 0.0f);
+
+        spMaxEffect.SetActive(smashGage.IsMax);
     }
 
     /// <summary>
@@ -315,9 +320,16 @@ public class Player : MonoBehaviour
     /// <summary>
     /// スマッシュポイント変動
     /// </summary>
-    public void AddSP(int value)
+    public void AddSP(int value, bool isReset)
     {
-        if (smashGage.IsMax) return;
+        if (smashGage.IsMax)
+        {
+            if (isReset)
+            {
+                parameter.sp = 0.0f;
+            }
+            return;
+        }
 
         if (value > 0)
         {
