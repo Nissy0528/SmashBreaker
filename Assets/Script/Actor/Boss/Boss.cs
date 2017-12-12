@@ -21,6 +21,8 @@ public class Boss : Enemy
         dashClass = GetComponent<Dash>();
         razerClass = GetComponent<RazerShooter>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+	//影
+        ShadowSet();
         Initialize();
         stanDelay = stanTime;
     }
@@ -115,4 +117,14 @@ public class Boss : Enemy
         AnimatorStateInfo animState = anim.GetCurrentAnimatorStateInfo(0);
         return animState.IsName(name) && animState.normalizedTime >= 1;
     }
+
+	/// <summary>
+	/// 影の設定を有効にする
+	/// </summary>
+	private void ShadowSet()
+	{
+		var child = transform.GetChild(0);
+		var sr = child.GetComponent<SpriteRenderer>();
+		sr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+	}
 }
