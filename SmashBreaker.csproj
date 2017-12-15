@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.3f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -113,6 +115,7 @@
     <Compile Include="Assets\Script\UI\BossTargeter.cs" />
     <Compile Include="Assets\Script\UI\GameClaer.cs" />
     <Compile Include="Assets\Script\UI\GameClear.cs" />
+    <Compile Include="Assets\Script\UI\Option.cs" />
     <Compile Include="Assets\Script\UI\PlayerHP.cs" />
     <Compile Include="Assets\Script\UI\SmashGage.cs" />
     <Compile Include="Assets\Script\UI\SmashText.cs" />
@@ -125,6 +128,7 @@
     <Compile Include="Assets\Script\Utility\GameManager.cs" />
     <Compile Include="Assets\Script\Utility\MapReader.cs" />
     <Compile Include="Assets\Script\Utility\SceneWarpZone.cs" />
+    <Compile Include="Assets\Script\Utility\SoundVolume.cs" />
     <Compile Include="Assets\Script\Utility\SpRate.cs" />
     <Compile Include="Assets\Script\Utility\TranslationPositionSet.cs" />
   </ItemGroup>

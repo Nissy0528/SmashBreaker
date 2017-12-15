@@ -2,49 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using System;
 
-public class Title : MonoBehaviour
+/// <summary>
+/// オプション画面
+/// </summary>
+public class Option : MonoBehaviour
 {
 	/// <summary>
 	/// タイプ一覧
 	/// </summary>
 	private enum BType
 	{
-		start,
-		option,
+		close,
+		save,
 	}
 
 
-	/// <summary>
-	/// 移動先のscene
-	/// </summary>
 	[SerializeField]
 	private string nextScene;
+
+	/// <summary>
+	/// 音量情報の一時変数
+	/// </summary>
+	private SoundVolume volumeLog;
+
 
 	/// <summary>
 	/// ボタン一覧
 	/// </summary>
 	private Dictionary<BType, Button> buttons;
 
-	/// <summary>
-	/// オプションのUIグループ
-	/// </summary>
-	private GameObject optionGroup;
-
-
 	// Use this for initialization
 	void Start()
 	{
 		ButtonSet();
-		GameManager.stageNum = 0;
-		GameManager.time = 0.0f;
+		gameObject.SetActive(false);
 	}
 
-	/// <summary>
-	/// ボタンを設定
-	/// </summary>
 	private void ButtonSet()
 	{
 		buttons = new Dictionary<BType, Button>();
@@ -63,13 +58,13 @@ public class Title : MonoBehaviour
 	/// <param name="type"></param>
 	private void ButtonPush(BType type)
 	{
-		if(type == BType.start)
+		if (type == BType.close)
 		{
-			StartPush();
+			Close();
 		}
-		if (type == BType.option)
+		if (type == BType.save)
 		{
-			OptionPush();
+			Save();
 		}
 		else
 		{
@@ -77,19 +72,18 @@ public class Title : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// ゲーム開始処理
-	/// </summary>
-	private void StartPush()
+	private void OnEnable()
 	{
-		SceneManager.LoadSceneAsync(nextScene);
+		volumeLog = GameManager.SoundVolume;
+	}
+	
+	private void Close()
+	{
+
 	}
 
-	/// <summary>
-	/// オプション
-	/// </summary>
-	private void OptionPush()
+	private void Save()
 	{
-		optionGroup.SetActive(true);
+		GameManager.SoundVolume = volumeLog;
 	}
 }
