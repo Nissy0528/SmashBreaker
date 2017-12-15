@@ -108,8 +108,8 @@ public class Dash : MonoBehaviour
 		///水晶に当たった場合の処理
 		if(col.transform.tag == "Attack" && isDash)
 		{
-			mainCamera.SetShake(true, 0.0f);
-			//
+			var p = player.GetComponent<Player>();
+			p.SetBrown();
 		}
 	}
 
