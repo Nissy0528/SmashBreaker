@@ -16,7 +16,6 @@ public class Title : MonoBehaviour
 		option,
 	}
 
-
 	/// <summary>
 	/// 移動先のscene
 	/// </summary>
@@ -27,12 +26,6 @@ public class Title : MonoBehaviour
 	/// ボタン一覧
 	/// </summary>
 	private Dictionary<BType, Button> buttons;
-
-	/// <summary>
-	/// オプションのUIグループ
-	/// </summary>
-	private GameObject optionGroup;
-
 
 	// Use this for initialization
 	void Start()
@@ -55,6 +48,7 @@ public class Title : MonoBehaviour
 			b.onClick.AddListener(() => ButtonPush(t));
 			buttons.Add(t, b);
 		}
+		buttons[BType.start].Select();
 	}
 
 	/// <summary>
@@ -67,7 +61,7 @@ public class Title : MonoBehaviour
 		{
 			StartPush();
 		}
-		if (type == BType.option)
+		else if (type == BType.option)
 		{
 			OptionPush();
 		}
@@ -90,6 +84,14 @@ public class Title : MonoBehaviour
 	/// </summary>
 	private void OptionPush()
 	{
+		foreach(var b in buttons.Values)
+		{
+			b.gameObject.SetActive(false);
+		}
+		GameObject.Find("titleCaption").SetActive(false);
+
+		GameObject canvas = GameObject.Find("Canvas");
+		var optionGroup = canvas.transform.Find("optiongroup").gameObject;
 		optionGroup.SetActive(true);
 	}
 }

@@ -9,12 +9,46 @@ using System.Text;
 /// </summary>
 public struct SoundVolume
 {
-	public float bgmVolume;
-	public float seVolume;
+	private float bgmVolume;
+	private float seVolume;
+
+	public float BgmVolume
+	{
+		get
+		{
+			return bgmVolume;
+		}
+
+		set
+		{
+			bgmVolume = value;
+		}
+	}
+
+	public float SeVolume
+	{
+		get
+		{
+			return seVolume;
+		}
+
+		set
+		{
+			seVolume = value;
+		}
+	}
 
 	public SoundVolume(float bgm, float se)
 	{
 		bgmVolume = bgm;
 		seVolume = se;
+	}
+
+	public SoundVolume Zero
+	{
+		get
+		{
+			return new SoundVolume(0, 0);
+		}
 	}
 }

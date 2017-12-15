@@ -25,23 +25,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private SceneWarpZone warpZone;
 
-	/// <summary>
-	/// 音量
-	/// </summary>
-	private static SoundVolume soundVolume;
-
-	public static SoundVolume SoundVolume
-	{
-		get
-		{
-			return soundVolume;
-		}
-
-		set
-		{
-			soundVolume = value;
-		}
-	}
+	
 
 
 	// Use this for initialization
