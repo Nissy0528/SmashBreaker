@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Diagnostics;
-
 public class DebugCommand : MonoBehaviour
 {
 
@@ -25,4 +24,10 @@ public class DebugCommand : MonoBehaviour
         }
 
     }
+
+	[Conditional("UNITY_EDITOR")]
+	public static void DebugLog(string text)
+	{
+		UnityEngine.Debug.Log(text);
+	}
 }

@@ -131,12 +131,13 @@ public class Dash : AI
             mainCamera.SetShake(true, 0.0f);
         }
 
-        ///水晶に当たった場合の処理
-        if (col.transform.tag == "Attack" && isDash)
-        {
-            mainCamera.SetShake(true, 0.0f);
-        }
-    }
+		///水晶に当たった場合の処理
+		if(col.transform.tag == "Attack" && isDash)
+		{
+			var p = player.GetComponent<Player>();
+			p.SetBrown();
+		}
+	}
 
     /// <summary>
     /// 突撃開始フラグ
