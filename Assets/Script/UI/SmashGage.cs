@@ -17,7 +17,7 @@ public class SmashGage : MonoBehaviour
     void Start()
     {
         slider = GetComponent<Slider>();
-        player = GameObject.Find("Chara").GetComponent<Player>();
+        player = GameObject.Find("Player").GetComponent<Player>();
         max = player.GetParam.maxSP;
         isMax = false;
     }

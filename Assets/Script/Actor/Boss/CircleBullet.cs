@@ -37,11 +37,11 @@ public class CircleBullet : BossBullet
 
         if (layer == "Player" && !isPlayer)
         {
-            var p = col.gameObject.GetComponent<Player>();
+            var p = col.GetComponent<Player>();
             if (!p.IsState(Player.State.DASH))
             {
                 Destroy(gameObject);
-                p.Damage();
+                FindObjectOfType<PlayerDamage>().Damage();
             }
         }
     }

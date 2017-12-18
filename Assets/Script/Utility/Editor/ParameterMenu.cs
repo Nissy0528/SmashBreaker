@@ -40,7 +40,7 @@ public class ParameterMenu
 
         if (GUILayout.Button("ボスの設定を開く"))
         {
-            boss_param = new BossParameter(null);
+            boss_param = new BossParameter();
             SceneView.onSceneGUIDelegate -= MenuOnSceneGUI;
         }
         EditorGUILayout.Space();

@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
     private Vector3 size;//大きさ
     private Vector3 dashPos;//後ろに下がる座標
     private Vector3 vec;//ダッシュの方向
+    private List<SpriteRenderer> sprites = new List<SpriteRenderer>();
     private float x_axis;//横の入力値
     private float y_axis;//縦の入力値
     private float spDifCount;//スマッシュポイントが減るまでの時間
@@ -66,8 +67,9 @@ public class Player : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
-        anim = transform.Find("body").GetComponent<Animator>();
+        mainCamera = FindObjectOfType<MainCamera>();
+        Transform body = transform.Find("body");
+        anim = body.GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         size = transform.localScale;//大きさ取得
         state = State.IDEL;//最初は待機状態
@@ -77,6 +79,14 @@ public class Player : MonoBehaviour
         spDifCount = 0.0f;
         dashCount = 0.0f;
         //shootCount = 0.0f;
+
+        sprites.Add(body.GetComponent<SpriteRenderer>());
+        sprites.Add(GameObject.FindGameObjectWithTag("Attack").GetComponent<SpriteRenderer>());
+        for (int i = 0; i < body.childCount; i++)
+        {
+            Transform parts = body.GetChild(i);
+            sprites.Add(parts.GetComponent<SpriteRenderer>());
+        }
     }
 
     // Update is called once per frame
@@ -177,6 +187,7 @@ public class Player : MonoBehaviour
                 vec = (lookPos - transform.position).normalized;//向く方向を正規化
                 rigid.AddForce(vec * parameter.dashSpeed, ForceMode2D.Impulse);
                 state = State.DASH;
+                AlphaChange(0.5f);
             }
             if (vec != Vector3.zero
                 && (Input.GetButtonUp("Dash") || Input.GetAxisRaw("Dash") == 0.0f))
@@ -193,7 +204,22 @@ public class Player : MonoBehaviour
                 rigid.velocity = Vector2.zero;
                 dashCount = parameter.dashInterval;
                 state = State.IDEL;
+                AlphaChange(1.0f);
             }
+        }
+    }
+
+    /// <summary>
+    /// 透明度変更
+    /// </summary>
+    /// <param name="alpha"></param>
+    private void AlphaChange(float alpha)
+    {
+        for (int i = 0; i < sprites.Count; i++)
+        {
+            Color color = sprites[i].material.color;
+            color.a = alpha;
+            sprites[i].material.color = color;
         }
     }
 
@@ -356,6 +382,14 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
+    /// 状態設定
+    /// </summary>
+    public void SetState(State state)
+    {
+        this.state = state;
+    }
+
+    /// <summary>
     /// パラメータ設定
     /// </summary>
     public void SetParam(float value, int i)
@@ -395,42 +429,17 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// ダメージ
-    /// </summary>
-    public void Damage()
-    {
-        GameObject boss = GameObject.FindGameObjectWithTag("Boss");
-        if (state == State.DASH || boss == null) return;
-
-        //if (parameter.hp > 0 && !isDamage)
-        //{
-        //    ChangeHp(-1);
-        //    isDamage = true;
-        //}
-        //if (parameter.hp <= 0 && state != State.DEAD)
-        //{
-        //    parameter.hp = 0;
-        state = State.DEAD;
-        //}
-    }
-
-    /// <summary>
     /// あたり判定
     /// </summary>
     /// <param name="col"></param>
     void OnCollisionStay2D(Collision2D col)
     {
-        //敵に当たったらダメージ
-        if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
-        {
-            Damage();
-        }
-
         if (col.transform.tag == "Wall" && state == State.DASH)
         {
             dashPos = Vector3.zero;
             rigid.velocity = Vector2.zero;
             state = State.IDEL;
+            AlphaChange(1.0f);
         }
     }
 }

@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] stages;//ステージの配列
 
     private float stopDelay;//ゲーム停止時間
+    private float controllerShakeTime;
+    private float gameTime;
     private bool isPause;//ポーズフラグ
     private Player player;//プレイヤー
     private GameObject bossObj;//ボス
@@ -31,12 +33,14 @@ public class GameManager : MonoBehaviour
         //Instantiate(stages[stageNum]);
 
         stopDelay = stopTime;
-        player = GameObject.Find("Chara").GetComponent<Player>();
+        player = GameObject.Find("Player").GetComponent<Player>();
         bossObj = GameObject.FindGameObjectWithTag("Boss");
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
 
         warpZone = FindObjectOfType<SceneWarpZone>();
         warpZone.gameObject.SetActive(false);
+
+        gameTime = Time.deltaTime;
     }
 
     // Update is called once per frame
@@ -46,6 +50,7 @@ public class GameManager : MonoBehaviour
         ShowGameOver();//ゲームオーバー表示
         ShowGameClear();//ゲームクリア表示
         Pause();//ポーズ
+        C_Shake();
 
         if (!warpZone.gameObject.activeSelf && !gameclear.activeSelf)
         {
@@ -61,7 +66,7 @@ public class GameManager : MonoBehaviour
         if (Time.timeScale >= 1.0f) return;
 
         //指定した時間まで達したらゲーム再開
-        stopDelay -= 0.1f;
+        stopDelay -= gameTime;
         if (stopDelay <= 0.0f)
         {
             stopDelay = stopTime;
@@ -121,7 +126,7 @@ public class GameManager : MonoBehaviour
         {
             if (!isPause)
             {
-                ControllerShake.Shake(0.0f, 0.0f);
+                ControllerShake.Shake(0.0f);
                 isPause = true;
             }
             else
@@ -140,11 +145,44 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 停止カウント
+    /// コントローラー振動時間カウント
+    /// </summary>
+    private void C_Shake()
+    {
+        if (controllerShakeTime <= 0.0f)
+        {
+            ControllerShake.Shake(0.0f);
+            return;
+        }
+
+        controllerShakeTime -= Time.deltaTime;
+    }
+
+    /// <summary>
+    /// スロー
     /// </summary>
     public void Slow(float delay, float time)
     {
         Time.timeScale = time;
         stopDelay = delay;
+    }
+
+    /// <summary>
+    /// コントローラー振動
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="time"></param>
+    public void ShakeController(float value, float time)
+    {
+        ControllerShake.Shake(value);
+        controllerShakeTime = time;
+    }
+
+    /// <summary>
+    /// ゲーム時間
+    /// </summary>
+    public float GameTime
+    {
+        get { return gameTime; }
     }
 }

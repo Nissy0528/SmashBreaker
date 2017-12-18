@@ -5,6 +5,8 @@ using UnityEngine;
 public class Boss : Enemy
 {
     public float stanTime;//硬直時間
+    public GameObject cutIn;
+    public GameObject deadUI;//死亡時の演出UI
 
     private Animator anim;//アニメーション
     private NormalEnemy followClass;
@@ -20,8 +22,8 @@ public class Boss : Enemy
         followClass = GetComponent<NormalEnemy>();
         dashClass = GetComponent<Dash>();
         razerClass = GetComponent<RazerShooter>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-	//影
+        gameManager = FindObjectOfType<GameManager>();
+        //影
         ShadowSet();
         Initialize();
         stanDelay = stanTime;
@@ -41,10 +43,10 @@ public class Boss : Enemy
     /// </summary>
     private void AI()
     {
-        if (razerClass.GetEnable)
+        if (razerClass.IsActive)
         {
-            followClass.enabled = false;
-            dashClass.enabled = false;
+            followClass.Stop();
+            dashClass.Stop();
         }
         else
         {
@@ -52,18 +54,18 @@ public class Boss : Enemy
             followClass.enabled = !dashClass.IsDash();
         }
 
-        //if (isStan)
-        //{
-        //    followClass.Start();
-        //    dashClass.Start();
-        //    razerClass.Start();
-        //}
+        if (isStan)
+        {
+            followClass.Stop();
+            dashClass.Stop();
+            razerClass.Stop();
+        }
 
         if (HP <= 0)
         {
-            followClass.enabled = false;
-            dashClass.enabled = false;
-            razerClass.enabled = false;
+            followClass.Stop();
+            dashClass.Stop();
+            razerClass.Stop();
         }
     }
 
@@ -74,9 +76,16 @@ public class Boss : Enemy
     {
         if (!isStan) return;
 
+        if (stanDelay == stanTime)
+        {
+            AnimBool("Razer", false);
+            AnimBool("Hit", true);
+        }
         stanDelay -= Time.deltaTime;
+
         if (stanDelay <= 0.0f)
         {
+            AnimBool("Hit", false);
             isStan = false;
             stanDelay = stanTime;
         }
@@ -88,11 +97,21 @@ public class Boss : Enemy
     private void BossDead()
     {
         if (HP > 0) return;
-        isStan = true;
-        GameObject effect = Instantiate(dead_effect);
-        effect.transform.position = transform.position;
-        gameManager.Slow(10.0f, 0.25f);
-        Destroy(gameObject);
+
+        if (cutIn != null)
+        {
+            cutIn.SetActive(true);
+            cutIn.GetComponent<CutIn>().SetBossDeadUI(deadUI);
+        }
+
+        if (deadUI == null)
+        {
+            GameObject effect = Instantiate(dead_effect);
+            effect.transform.position = transform.position;
+            gameManager.Slow(2.0f, 0.25f);
+            gameManager.ShakeController(1.0f, 0.5f);
+            Destroy(gameObject);
+        }
     }
 
     /// <summary>
@@ -118,13 +137,13 @@ public class Boss : Enemy
         return animState.IsName(name) && animState.normalizedTime >= 1;
     }
 
-	/// <summary>
-	/// 影の設定を有効にする
-	/// </summary>
-	private void ShadowSet()
-	{
-		var child = transform.GetChild(0);
-		var sr = child.GetComponent<SpriteRenderer>();
-		sr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-	}
+    /// <summary>
+    /// 影の設定を有効にする
+    /// </summary>
+    private void ShadowSet()
+    {
+        var child = transform.GetChild(0);
+        var sr = child.GetComponent<SpriteRenderer>();
+        sr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+    }
 }

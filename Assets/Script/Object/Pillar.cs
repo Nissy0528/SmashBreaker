@@ -13,7 +13,7 @@ public class Pillar : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        player = GameObject.Find("Chara");//プレイヤー取得
+        player = GameObject.Find("Player");//プレイヤー取得
         child = transform.GetChild(0).gameObject;//比較する座標取得
         sprite = GetComponent<SpriteRenderer>();//スプライト取得
     }

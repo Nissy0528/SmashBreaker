@@ -21,7 +21,7 @@ public class SceneWarpZone : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.GetComponent<Player>() != null)
+		if (collision.GetComponent<PlayerDamage>() != null)
 		{
 			Warp();
 

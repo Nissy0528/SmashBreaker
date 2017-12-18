@@ -48,9 +48,12 @@ public class GrowBullet : BossBullet
         }
         if (layer == "Player")
         {
-            var p = col.gameObject.GetComponent<Player>();
-            Destroy(gameObject);
-            p.Damage();
+            var p = col.GetComponent<Player>();
+            if (!p.IsState(Player.State.DASH))
+            {
+                Destroy(gameObject);
+                FindObjectOfType<PlayerDamage>().Damage();
+            }
         }
         //base.Collision(col);
     }

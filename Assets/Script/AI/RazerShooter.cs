@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// レーザーの管理
 /// </summary>
-public class RazerShooter : MonoBehaviour
+public class RazerShooter : AI
 {
     /// <summary>
     /// 爆破
@@ -39,8 +39,20 @@ public class RazerShooter : MonoBehaviour
     private float razerCount;
     private bool isEnable;//レーザーのアクティブフラグ
 
-    public void Start()
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    public override void Initialize()
     {
+        GameObject[] razers = GameObject.FindGameObjectsWithTag("Razer");
+        if(razers.Length>0)
+        {
+            foreach(var r in razers)
+            {
+                Destroy(r);
+            }
+        }
+
         GameObject[] muzzles = GameObject.FindGameObjectsWithTag("Muzzle");
         muzzle = new List<GameObject>();
         for (int i = 0; i < muzzles.Length; i++)
@@ -57,14 +69,6 @@ public class RazerShooter : MonoBehaviour
         boss_muzzle = transform.Find("Muzzle").Find("Boss2_Muzzle").gameObject;
         boss_muzzle.SetActive(false);
 
-        Init();
-    }
-
-    /// <summary>
-    /// 初期化
-    /// </summary>
-    public void Init()
-    {
         razerList = new List<Razer>();
         for (int i = 0; i < muzzle.Count; i++)
         {
@@ -72,13 +76,13 @@ public class RazerShooter : MonoBehaviour
         }
         razerCount = 0.0f;
         isEnable = false;
-        Stop();
+        Reset();
     }
 
     /// <summary>
     /// 更新
     /// </summary>
-    public void Update()
+    public override void AIUpdate()
     {
         foreach (var r in razerList)
         {
@@ -128,7 +132,7 @@ public class RazerShooter : MonoBehaviour
         if (boss_class.AnimFinish("Boss_Razer"))
         {
             isEnable = !isEnable;
-            Stop();
+            Reset();
             razerCount = 0.0f;
             boss_muzzle.SetActive(isEnable);
         }
@@ -173,7 +177,7 @@ public class RazerShooter : MonoBehaviour
     {
         if (col.gameObject.tag == "Player")
         {
-            col.GetComponent<Player>().Damage();
+            FindObjectOfType<PlayerDamage>().Damage();
         }
     }
 
@@ -214,7 +218,7 @@ public class RazerShooter : MonoBehaviour
     /// <summary>
     /// 停止
     /// </summary>
-    public void Stop()
+    public void Reset()
     {
         foreach (var r in razerList)
         {
@@ -234,9 +238,9 @@ public class RazerShooter : MonoBehaviour
     }
 
     /// <summary>
-    /// レーザーフラグ
+    /// アクティブフラグ
     /// </summary>
-    public bool GetEnable
+    public override bool IsActive
     {
         get { return isEnable; }
     }

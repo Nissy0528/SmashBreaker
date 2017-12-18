@@ -32,6 +32,7 @@ public class Razer
     {
         //空オブジェクトの生成
         origin = new GameObject("shooter");
+        origin.tag = "Razer";
         var transform = origin.transform;
         transform.SetParent(shooter);
         transform.localPosition = Vector3.zero;

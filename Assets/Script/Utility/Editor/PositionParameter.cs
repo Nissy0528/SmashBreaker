@@ -42,7 +42,7 @@ public class PositionParameter
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("設定"))
         {
-            boss_param = new BossParameter(positionObj.GetComponent<TranslationPositionSet>().GetPositions);
+            boss_param = new BossParameter();
             GameObject.DestroyImmediate(positionObj);
             SceneView.onSceneGUIDelegate -= PositionOnSceneGUI;
         }

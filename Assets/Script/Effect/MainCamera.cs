@@ -25,7 +25,7 @@ public class MainCamera : MonoBehaviour
     void Start()
     {
         parent = transform.parent.gameObject;
-        player = GameObject.Find("Chara");
+        player = GameObject.Find("Player");
         offset = transform.position - player.transform.position;
         cam = GetComponent<Camera>();
         screenMinPos = cam.ScreenToWorldPoint(Vector3.zero);//画面の左下の座標

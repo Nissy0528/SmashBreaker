@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour
     public virtual void Initialize()
     {
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
-        player = GameObject.Find("Chara");//プレイヤーを探す
+        player = GameObject.Find("Player");//プレイヤーを探す
         smashGage = GameObject.Find("SmashGage").GetComponent<SmashGage>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         isStan = false;
@@ -65,10 +65,6 @@ public class Enemy : MonoBehaviour
     protected virtual void EnemyUpdate()
     {
         Dead();//消滅
-        if (tag == "Boss")
-        {
-            //Debug.Log(isDamage);
-        }
     }
 
     /// <summary>
@@ -117,12 +113,11 @@ public class Enemy : MonoBehaviour
     /// ダメージ
     /// </summary>
     /// <param name="damage"></param>
-    private void Damage(Transform smashCol)
+    private void Damage(Smash smash)
     {
-        if (!smashGage.IsMax || isDamage) return;
+        if (!smashGage.IsMax) return;
 
         //ダメージ
-        Smash smash = smashCol.parent.parent.GetComponent<Smash>();
         int damage = smash.GetParam.power;
         hp = Mathf.Max(hp - damage, 0);
         isStan = true;
@@ -131,7 +126,6 @@ public class Enemy : MonoBehaviour
             hp = 0;
             mainCamera.Stop();
         }
-        isDamage = true;
     }
 
     /// <summary>
@@ -182,14 +176,16 @@ public class Enemy : MonoBehaviour
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
         if (col.transform.tag == "Attack")
         {
+            Smash smash = col.transform.parent.parent.GetComponent<Smash>();
             if (tag == "Boss")
             {
-                Damage(col.transform);
+                Damage(smash);
             }
             if (tag == "Enemy")
             {
                 Shoot();
             }
+            smash.Hit(tag);
         }
     }
     void OnTriggerStay2D(Collider2D col)
@@ -197,14 +193,16 @@ public class Enemy : MonoBehaviour
         //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
         if (col.transform.tag == "Attack")
         {
+            Smash smash = col.transform.parent.parent.GetComponent<Smash>();
             if (tag == "Boss")
             {
-                Damage(col.transform);
+                Damage(smash);
             }
             if (tag == "Enemy")
             {
                 Shoot();
             }
+            smash.Hit(tag);
         }
     }
 

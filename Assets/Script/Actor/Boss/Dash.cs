@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dash : MonoBehaviour
+public class Dash : AI
 {
     public float dashInterval;//突撃間隔
     public float chargeTime;//突進の溜め時間
@@ -11,32 +11,35 @@ public class Dash : MonoBehaviour
     public int frashTime;//点滅時間
 
     private GameObject player;
-    private GameObject chara;
     private Vector3 playerVec;//プレイヤーの方向
     private Vector3 lookPos;//見る方向
     private Rigidbody2D rigid;
     private MainCamera mainCamera;
     private float dashCount;
     private float chargeCount;
+    private int frashCnt;
     private bool isDash;//突撃フラグ
 
     // Use this for initialization
-    public void Start()
+    public override void Initialize()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
-        chara = transform.Find("Chara").gameObject;
+        mainCamera = FindObjectOfType<MainCamera>();
         rigid = GetComponent<Rigidbody2D>();
         dashCount = dashInterval;
         chargeCount = chargeTime;
-        dashSpeed *= rigid.mass;
+        SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
+        Color color = sprite.material.color;
+        color.a = 1.0f;
+        sprite.material.color = color;
     }
 
     // Update is called once per frame
-    void Update()
+    public override void AIUpdate()
     {
         DashCount();
         DashMove();
+        Frash();
     }
 
     /// <summary>
@@ -64,11 +67,11 @@ public class Dash : MonoBehaviour
         {
             if (rigid.velocity.magnitude == 0.0f && !isDash)
             {
-                rigid.AddForce(-transform.up * dashSpeed, ForceMode2D.Impulse);
+                rigid.AddForce(-transform.up * (dashSpeed* rigid.mass), ForceMode2D.Impulse);
                 isDash = true;
             }
 
-            if (rigid.velocity.magnitude <= dashSpeed / (2f * rigid.mass) && isDash)
+            if (rigid.velocity.magnitude <= (dashSpeed * rigid.mass) / (2f * rigid.mass) && isDash)
             {
                 rigid.velocity = Vector2.zero;
                 dashCount = dashInterval;
@@ -95,6 +98,29 @@ public class Dash : MonoBehaviour
     }
 
     /// <summary>
+    /// 点滅
+    /// </summary>
+    private void Frash()
+    {
+        if (dashCount > 0.0f)
+        {
+            frashCnt = 0;
+            return;
+        }
+
+        SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
+        Color color = sprite.material.color;
+
+        frashCnt += 1;
+        color.a = (frashCnt / frashTime) % 2;
+        if (chargeCount <= 0.0f)
+        {
+            color.a = 1.0f;
+        }
+        sprite.material.color = color;
+    }
+
+    /// <summary>
     /// あたり判定
     /// </summary>
     /// <param name="col"></param>
@@ -105,13 +131,12 @@ public class Dash : MonoBehaviour
             mainCamera.SetShake(true, 0.0f);
         }
 
-		///水晶に当たった場合の処理
-		if(col.transform.tag == "Attack" && isDash)
-		{
-			mainCamera.SetShake(true, 0.0f);
-			//
-		}
-	}
+        ///水晶に当たった場合の処理
+        if (col.transform.tag == "Attack" && isDash)
+        {
+            mainCamera.SetShake(true, 0.0f);
+        }
+    }
 
     /// <summary>
     /// 突撃開始フラグ

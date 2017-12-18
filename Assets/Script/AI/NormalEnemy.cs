@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalEnemy : MonoBehaviour
+public class NormalEnemy : AI
 {
     [SerializeField]
     private float rotateSpeed;//回転速度
@@ -16,15 +16,15 @@ public class NormalEnemy : MonoBehaviour
     /// <summary>
     /// 初期化
     /// </summary>
-    public void Start()
+    public override void Initialize()
     {
-        player = GameObject.Find("Chara");//プレイヤーを探す
+        player = GameObject.Find("Player");//プレイヤーを探す
     }
 
     /// <summary>
     /// 更新
     /// </summary>
-    void Update()
+    public override void AIUpdate()
     {
         Move();
         Rotate();

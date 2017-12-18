@@ -24,7 +24,7 @@ public class Smash : MonoBehaviour
     private Vector3 offset;//プレイヤーとの距離
     private Vector3 moveToPos;//飛ぶ方向
     private Vector3 smashIniScale;
-    private Vector3 def;
+    private float angle;
     private bool isAttack;//攻撃フラグ
     private bool isReturn;//戻るフラグ
 
@@ -34,10 +34,9 @@ public class Smash : MonoBehaviour
         smash = transform.Find("Smash").gameObject;//攻撃オブジェクト取得
         smashIniScale = smash.transform.localScale;
         smashCol = smash.transform.GetChild(0).gameObject;
-        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        mainCamera = FindObjectOfType<MainCamera>();
         isAttack = false;
         isReturn = false;
-        def = transform.localRotation.eulerAngles;
     }
 
     // Update is called once per frame
@@ -49,6 +48,7 @@ public class Smash : MonoBehaviour
         Move();//移動
         Rotate();//回転
         ChangeScale();//拳の大きさ変更
+        transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);//入力された方向に向く
     }
 
     /// <summary>
@@ -127,8 +127,7 @@ public class Smash : MonoBehaviour
 
             Vector3 lookPos = new Vector3(transform.position.x + x_axis, transform.position.y + y_axis * -1, 0);//向く方向の座標
             Vector3 vec = (lookPos - transform.position).normalized;//向く方向を正規化
-            float angle = (Mathf.Atan2(vec.y, vec.x) * Mathf.Rad2Deg) - 90.0f;
-            transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);//入力された方向に向く
+            angle = (Mathf.Atan2(vec.y, vec.x) * Mathf.Rad2Deg) - 90.0f;
         }
     }
 
@@ -145,20 +144,6 @@ public class Smash : MonoBehaviour
         {
             smash.transform.localScale = new Vector3(parameter.maxScale, parameter.maxScale, 1);
         }
-    }
-
-    /// <summary>
-    /// 親オブジェクト回転の影響を受けない
-    /// </summary>
-    private void DontRotate()
-    {
-        Vector3 parentAngle = transform.parent.transform.localRotation.eulerAngles;
-
-        float x = parentAngle.z + def.x;
-        float y = parentAngle.x + def.y;
-        float z = parentAngle.y + def.z;
-
-        smash.transform.localRotation = Quaternion.Euler(new Vector3(x, y, z));
     }
 
     /// <summary>
@@ -195,34 +180,18 @@ public class Smash : MonoBehaviour
     }
 
     /// <summary>
-    /// あたり判定
+    ///　敵に当たったときの処理
     /// </summary>
-    void OnTriggerEnter2D(Collider2D col)
+    public void Hit(string colTag)
     {
-        if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
+        smashCol.GetComponent<CircleCollider2D>().isTrigger = false;//あたり判定を有効に
+        if (playerSP.IsMax && colTag == "Boss")
         {
-            smashCol.GetComponent<CircleCollider2D>().isTrigger = false;//あたり判定を有効に
-            if (playerSP.IsMax && col.transform.tag == "Boss")
-            {
-                maxHitEffect.SetActive(true);
-                mainCamera.SetShake(false, 0.5f);
-                player.AddSP(0, true);
-            }
-            isReturn = true;
+            maxHitEffect.SetActive(true);
+            mainCamera.SetShake(false, 0.5f);
+            player.AddSP(0, true);
+            FindObjectOfType<GameManager>().ShakeController(1.0f, 0.3f);
         }
-    }
-    void OnTriggerStay2D(Collider2D col)
-    {
-        if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
-        {
-            smashCol.GetComponent<CircleCollider2D>().isTrigger = false;//あたり判定を有効に
-            if (playerSP.IsMax && col.transform.tag == "Boss")
-            {
-                maxHitEffect.SetActive(true);
-                mainCamera.SetShake(false, 0.5f);
-                player.AddSP(0, true);
-            }
-            isReturn = true;
-        }
+        isReturn = true;
     }
 }

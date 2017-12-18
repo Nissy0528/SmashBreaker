@@ -10,6 +10,7 @@ Shader "Shadow"
 	Pass
 	{
 		Tags{ "RenderType" = "Opaque" "LightMode" = "ForwardBase" }
+	}
 
 		CGPROGRAM
 #pragma vertex vert
