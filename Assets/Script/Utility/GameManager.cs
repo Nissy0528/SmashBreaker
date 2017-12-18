@@ -25,8 +25,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private SceneWarpZone warpZone;
 
-    // Use this for initialization
-    void Awake()
+	
+
+
+	// Use this for initialization
+	void Awake()
     {
         //Instantiate(stages[stageNum]);
 
