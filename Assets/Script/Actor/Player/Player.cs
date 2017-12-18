@@ -447,7 +447,7 @@ public class Player : MonoBehaviour
 
 		vec = (lookPos - transform.position).normalized * -1;//向く方向を正規化
 		rigid.AddForce(vec * parameter.dashSpeed, ForceMode2D.Impulse);
-		if (rigid.velocity.magnitude <= 25)
+		if (rigid.velocity.magnitude <= 10f)
 		{
 			rigid.velocity = Vector2.zero;
 			state = State.IDEL;
@@ -459,6 +459,7 @@ public class Player : MonoBehaviour
 	/// </summary>
 	public void SetBrown()
 	{
+		if (state == State.DASH) return;
 		state = State.BROWN;
 	}
 }

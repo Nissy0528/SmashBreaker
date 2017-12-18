@@ -102,6 +102,17 @@ public class Option : MonoBehaviour
 	private void Close()
 	{
 		SoundManager.SoundVolume = volumeSave;
+
+		GameObject.Find("Title").GetComponent<Title>().ButtonOn();
+
+		foreach (var b in buttons.Values)
+		{
+			b.gameObject.SetActive(false);
+		}
+		Transform canvas = GameObject.Find("Canvas").transform;
+
+		canvas.Find(Title.titleCaptions).gameObject.SetActive(true);
+
 		gameObject.SetActive(false);
 	}
 
