@@ -154,13 +154,12 @@ public class Title : MonoBehaviour
 		{
 			foreach (var b in buttons.Values)
 			{
-
 				Transform canvas = GameObject.Find("Canvas").transform;
 
 				for (var c = 0; c < canvas.childCount; c++)
 				{
 					var g = canvas.GetChild(c);
-					if(g.name != "knuckle")
+					if(g.name != "knuckle" && g.name != "Back")
 					{
 						g.gameObject.SetActive(false);
 					}
