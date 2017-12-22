@@ -133,6 +133,7 @@
     <Compile Include="Assets\Script\Utility\MapReader.cs" />
     <Compile Include="Assets\Script\Utility\SceneWarpZone.cs" />
     <Compile Include="Assets\Script\Utility\SoundManager.cs" />
+    <Compile Include="Assets\Script\Utility\SoundUtility.cs" />
     <Compile Include="Assets\Script\Utility\SoundVolume.cs" />
     <Compile Include="Assets\Script\Utility\SpRate.cs" />
     <Compile Include="Assets\Script\Utility\Title\CustomStandaloneInputModule.cs" />

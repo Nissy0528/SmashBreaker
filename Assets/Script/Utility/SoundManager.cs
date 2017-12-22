@@ -1,35 +1,16 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UnityEngine;
 
-public class SoundManager
-{
-	/// <summary>
-	/// 消音
-	/// </summary>
-	private bool isMute;
+public class SoundManager : MonoBehaviour {
 
-	/// <summary>
-	/// 音量
-	/// </summary>
-	private static SoundVolume soundVolume;
-
-	public static SoundVolume SoundVolume
-	{
-		get
-		{
-			return soundVolume;
-		}
-
-		set
-		{
-			soundVolume = value;
-		}
+	// Use this for initialization
+	void Start () {
+		
 	}
-
-	private void Mute()
-	{
-		isMute = true;
+	
+	// Update is called once per frame
+	void Update () {
+		
 	}
 }
