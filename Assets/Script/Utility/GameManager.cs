@@ -22,13 +22,11 @@ public class GameManager : MonoBehaviour
     private GameObject bossObj;//ボス
     private MainCamera mainCamera;//カメラ
 
+
     /// <summary>
     /// ワープゾーン
     /// </summary>
     private SceneWarpZone warpZone;
-
-	
-
 
 	// Use this for initialization
 	void Awake()

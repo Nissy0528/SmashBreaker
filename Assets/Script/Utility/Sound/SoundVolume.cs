@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 
 
+
+/// <summary>
+/// 音量
+/// </summary>
 public struct SoundVolume
-#pragma warning restore CS0660 // 型は演算子 == または演算子 != を定義しますが、Object.Equals(object o) をオーバーライドしません
-#pragma warning restore CS0661 // 型は演算子 == または演算子 != を定義しますが、Object.GetHashCode() をオーバーライドしません
 {
 	//音量
 	private float bgmVolume;

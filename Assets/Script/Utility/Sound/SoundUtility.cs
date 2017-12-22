@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Sound;
 
 public static class SoundUtility
 {
@@ -54,4 +55,27 @@ public static class SoundUtility
 			}
 		}
 	}
+
+	/// <summary>
+	/// BGM音量
+	/// </summary>
+	public static float BGMVolume
+	{
+		get
+		{
+			return soundVolume.BgmVolume;
+		}
+	}
+
+	/// <summary>
+	/// BGM音量
+	/// </summary>
+	public static float SEVolume
+	{
+		get
+		{
+			return soundVolume.SeVolume;
+		}
+	}
+
 }

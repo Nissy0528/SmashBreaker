@@ -110,7 +110,6 @@ namespace TitleUtility
 			var rect = smashSprite.GetComponent<RectTransform>();
 			rect.localScale = Vector3.Lerp(Vector3.zero, new Vector3(1f, 1f), count);
 			count += Time.deltaTime / 2f;
-
 		}
 
 
