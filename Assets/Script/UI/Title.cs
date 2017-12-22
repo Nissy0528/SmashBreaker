@@ -62,6 +62,7 @@ public class Title : MonoBehaviour
 			buttons.Add(t, b);
 		}
 		buttons[BType.start].Select();
+
 	}
 
 	/// <summary>

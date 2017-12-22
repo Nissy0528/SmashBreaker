@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TitleUtility;
 
+
 public class TitleAnim
 {
 	/// <summary>
@@ -88,11 +89,11 @@ public class TitleAnim
 	/// </summary>
 	private void OpenAnime()
 	{
-		if(State != AnimState.open)
+		if (State != AnimState.open)
 		{
 			return;
 		}
-		else if (count > 1f)
+		else if (count > 1f || Input.GetButton("Smash"))
 		{
 			var mainCamera = GameObject.Find("Main Camera").GetComponent<TitleCamera>();
 			mainCamera.SetShake(0.3f);
