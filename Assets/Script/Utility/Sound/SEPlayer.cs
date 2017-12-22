@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-
 namespace Sound
 {
 	/// <summary>
@@ -15,12 +14,17 @@ namespace Sound
 		private bool loop;
 		private AudioSource source;
 
+		private void Start()
+		{
+			source = GetComponent<AudioSource>();
+		}
+
 		private void Update()
 		{
 			source.volume = SoundUtility.SEVolume;
 			source.loop = loop;
 
-			if (source.isPlaying)
+			if (source.isPlaying && !loop)
 			{
 				Destroy(gameObject);
 			}
