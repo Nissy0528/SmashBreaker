@@ -39,7 +39,10 @@ public class Dash : AI
     {
         DashCount();
         DashMove();
-        Frash();
+        if (Time.timeScale > 0.0f)
+        {
+            Frash();
+        }
     }
 
     /// <summary>
@@ -67,7 +70,7 @@ public class Dash : AI
         {
             if (rigid.velocity.magnitude == 0.0f && !isDash)
             {
-                rigid.AddForce(-transform.up * (dashSpeed* rigid.mass), ForceMode2D.Impulse);
+                rigid.AddForce(-transform.up * (dashSpeed * rigid.mass), ForceMode2D.Impulse);
                 isDash = true;
             }
 
@@ -126,18 +129,19 @@ public class Dash : AI
     /// <param name="col"></param>
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.transform.tag == "Wall" && isDash)
+        if (col.transform.tag == "Wall" && tag == "Boss"
+            && isDash)
         {
             mainCamera.SetShake(true, 0.0f);
         }
 
-		///水晶に当たった場合の処理
-		if(col.transform.tag == "Attack" && isDash)
-		{
-			var p = player.GetComponent<Player>();
-			p.SetBrown();
-		}
-	}
+        ///水晶に当たった場合の処理
+        if (col.transform.tag == "Attack" && isDash)
+        {
+            var p = player.GetComponent<Player>();
+            p.SetBrown();
+        }
+    }
 
     /// <summary>
     /// 突撃開始フラグ

@@ -194,4 +194,17 @@ public class Smash : MonoBehaviour
         }
         isReturn = true;
     }
+
+    /// <summary>
+    /// あたり判定
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Wall")
+        {
+            Debug.Log("hit");
+            Hit(collision.tag);
+        }
+    }
 }
