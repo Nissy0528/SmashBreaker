@@ -71,6 +71,7 @@ public class Title : MonoBehaviour
 	/// <param name="type"></param>
 	private void ButtonPush(BType type)
 	{
+		SoundManager.PlaySound(SoundType.SE, "title_selectSE");
 
 		if (type == BType.start)
 		{
