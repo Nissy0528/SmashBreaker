@@ -4,7 +4,6 @@ using UnityEngine;
 using System.Diagnostics;
 public class DebugCommand : MonoBehaviour
 {
-
     private void Update()
     {
         GameClear();

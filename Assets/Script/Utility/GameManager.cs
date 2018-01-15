@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     private Vector2 stageMinPos;//ステージの左下
     private Vector2 stageMaxPos;//ステージの右上
 
+
     /// <summary>
     /// ワープゾーン
     /// </summary>
@@ -95,6 +96,7 @@ public class GameManager : MonoBehaviour
         if (!player.IsState(Player.State.DEAD)) return;
 
         BGM.Stop();
+        gameover.SetActive(true);
         Time.timeScale = 0.0f;
         Animator playerAnim = player.GetComponentInChildren<Animator>();
         AnimatorStateInfo playerAnimState = playerAnim.GetCurrentAnimatorStateInfo(0);

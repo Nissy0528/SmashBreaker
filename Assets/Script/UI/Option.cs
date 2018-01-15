@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Sound;
 
 /// <summary>
 /// オプション画面
@@ -93,7 +94,7 @@ public class Option : MonoBehaviour
 
 	private void OnEnable()
 	{
-		volumeSave = SoundManager.SoundVolume;
+		volumeSave = SoundUtility.Volume;
 	}
 
 	/// <summary>
@@ -101,7 +102,7 @@ public class Option : MonoBehaviour
 	/// </summary>
 	private void Close()
 	{
-		SoundManager.SoundVolume = volumeSave;
+		SoundUtility.Volume = volumeSave;
 
 		GameObject.Find("Title").GetComponent<Title>().ButtonOn();
 
@@ -121,7 +122,7 @@ public class Option : MonoBehaviour
 	/// </summary>
 	private void Save()
 	{
-		volumeSave = SoundManager.SoundVolume;
+		volumeSave = SoundUtility.Volume;
 	}
 
 	/// <summary>
@@ -129,7 +130,7 @@ public class Option : MonoBehaviour
 	/// </summary>
 	private void BGMChange(float value)
 	{
-		SoundManager.SoundVolume = new SoundVolume(value, SoundManager.SoundVolume.SeVolume);
+		SoundUtility.Volume = new SoundVolume(value, SoundUtility.Volume.SeVolume);
 	}
 
 	/// <summary>
@@ -137,7 +138,6 @@ public class Option : MonoBehaviour
 	/// </summary>
 	private void SEChange(float value)
 	{
-		SoundManager.SoundVolume = new SoundVolume(value, SoundManager.SoundVolume.SeVolume);
-
+		SoundUtility.Volume = new SoundVolume(SoundUtility.Volume.BgmVolume, value);
 	}
 }

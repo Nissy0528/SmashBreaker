@@ -40,6 +40,7 @@ public class SmashGage : MonoBehaviour
         if (isSpawn && spEffectObjcts.Count == 0)
         {
             gameManager.SetTimeScale(gameManager.stopTime, 1.0f);
+            //FindObjectOfType<GameManager>().Game(true);
             maxBG.SetActive(false);
             FindObjectOfType<Canvas>().sortingLayerName = "High";
         }
@@ -107,6 +108,8 @@ public class SmashGage : MonoBehaviour
         if (num == 1)
         {
             spEffect_class.radius *= -1;
+            //FindObjectOfType<GameManager>().Game(false);
+            maxBG.SetActive(true);
             isSpawn = true;
         }
     }
@@ -119,4 +122,20 @@ public class SmashGage : MonoBehaviour
         get { return isMax; }
         set { isMax = value; }
     }
+
+	public float Sp
+	{
+		get
+		{
+			return sp;
+		}
+	}
+
+	public float Max
+	{
+		get
+		{
+			return max;
+		}
+	}
 }

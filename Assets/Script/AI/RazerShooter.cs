@@ -77,6 +77,7 @@ public class RazerShooter : AI
         razerCount = 0.0f;
         isEnable = false;
         Reset();
+		isEnd = false;
     }
 
     /// <summary>
@@ -135,6 +136,7 @@ public class RazerShooter : AI
             Reset();
             razerCount = 0.0f;
             boss_muzzle.SetActive(isEnable);
+			isEnd = true;
         }
     }
 
@@ -244,4 +246,10 @@ public class RazerShooter : AI
     {
         get { return isEnable; }
     }
+
+	private bool isEnd = false;
+	public bool IsEnd()
+	{
+		return isEnd;
+	}
 }

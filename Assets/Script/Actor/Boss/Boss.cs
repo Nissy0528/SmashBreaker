@@ -182,7 +182,7 @@ public class Boss : MonoBehaviour
     /// アニメーション切り替え
     /// </summary>
     /// <param name="name">切り替えるフラグの名前</param>
-    public void AnimBool(string name, bool frag)
+    public virtual void AnimBool(string name, bool frag)
     {
         if (!anim.enabled) return;
 
@@ -193,7 +193,7 @@ public class Boss : MonoBehaviour
     /// アニメーション終了判定
     /// </summary>
     /// <returns></returns>
-    public bool AnimFinish(string name)
+    public virtual bool AnimFinish(string name)
     {
         if (!anim.enabled) return false;
 
