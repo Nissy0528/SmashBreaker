@@ -5,8 +5,6 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
-    protected GameObject bonusText;
-    [SerializeField]
     protected int point;//倒されたときのポイント
     [SerializeField]
     protected float shootSpeed;//吹き飛ぶ速度
@@ -187,6 +185,18 @@ public class Enemy : MonoBehaviour
             }
             smash.Hit(tag);
         }
+
+        if (col.transform.tag == "Barrier" || col.transform.tag == "BarrierPoint")
+        {
+            GameObject effect = Instantiate(dead_effect);
+            effect.transform.position = transform.position;
+
+            if (col.transform.tag == "BarrierPoint")
+            {
+                Destroy(col.gameObject);
+            }
+            Destroy(gameObject);//消滅
+        }
     }
     void OnTriggerStay2D(Collider2D col)
     {
@@ -205,27 +215,4 @@ public class Enemy : MonoBehaviour
             smash.Hit(tag);
         }
     }
-
-    /// <summary>
-    /// あたり判定
-    /// </summary>
-    /// <param name="col"></param>
-    //void OnCollisionEnter2D(Collision2D col)
-    //{
-    //    //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
-    //    if (col.transform.tag == "Attack")
-    //    {
-    //        if (tag != "Boss")
-    //        {
-    //            Shoot();
-    //        }
-    //        else if (smashGage.IsMax)
-    //        {
-    //            Shoot();
-    //        }
-    //    }
-    //}
-    //void OnCollisionStay2D(Collision2D col)
-    //{
-    //}
 }

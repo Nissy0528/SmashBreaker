@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Assets\Script\AI\AI.cs" />
     <Compile Include="Assets\Script\AI\AreaEnemy.cs" />
+    <Compile Include="Assets\Script\AI\Barrier.cs" />
     <Compile Include="Assets\Script\AI\BossBulletShooter.cs" />
     <Compile Include="Assets\Script\AI\CircleBulletShooter.cs" />
     <Compile Include="Assets\Script\AI\DistanseEnemy.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Assets\Script\Effect\Effect.cs" />
     <Compile Include="Assets\Script\Effect\MainCamera.cs" />
     <Compile Include="Assets\Script\Effect\RazerEffect.cs" />
+    <Compile Include="Assets\Script\Effect\SPEffect.cs" />
     <Compile Include="Assets\Script\Effect\Sandstorm.cs" />
     <Compile Include="Assets\Script\Object\Pillar.cs" />
     <Compile Include="Assets\Script\Object\Warp.cs" />

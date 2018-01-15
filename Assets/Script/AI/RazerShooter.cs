@@ -177,7 +177,7 @@ public class RazerShooter : AI
     {
         if (col.gameObject.tag == "Player")
         {
-            FindObjectOfType<PlayerDamage>().Damage();
+            col.GetComponent<PlayerDamage>().Damage();
         }
     }
 

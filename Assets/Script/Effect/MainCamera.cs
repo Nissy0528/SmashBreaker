@@ -42,6 +42,7 @@ public class MainCamera : MonoBehaviour
 
         Shake();//振動
         Follow();//プレイヤー追従
+        Clamp();
     }
 
     /// <summary>
@@ -94,10 +95,25 @@ public class MainCamera : MonoBehaviour
     /// </summary>
     private void Follow()
     {
+        if (isShake) return;
+
         Vector3 newPosition = transform.position;
         newPosition.x = player.transform.position.x + offset.x;
         newPosition.y = player.transform.position.y + offset.y;
         transform.position = Vector3.Lerp(transform.position, newPosition, followSpeed * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// 移動範囲制限
+    /// </summary>
+    private void Clamp()
+    {
+        if (isShake) return;
+
+        Vector3 position = transform.position;
+        position.x = 0.0f;
+        position.y = Mathf.Clamp(position.y, -3.0f, 3.0f);
+        transform.position = position;
     }
 
     /// <summary>

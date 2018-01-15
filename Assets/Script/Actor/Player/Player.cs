@@ -422,12 +422,6 @@ public class Player : MonoBehaviour
 	/// <param name="col"></param>
 	void OnCollisionStay2D(Collision2D col)
 	{
-		//敵に当たったらダメージ
-		if (col.transform.tag == "Enemy" || col.transform.tag == "Boss")
-		{
-			Damage();
-		}
-
 		if (col.transform.tag == "Wall" && state == State.DASH)
 		{
 			dashPos = Vector3.zero;

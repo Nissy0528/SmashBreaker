@@ -35,7 +35,7 @@ public class PlayerDamage : MonoBehaviour
         //if (parameter.hp <= 0 && state != State.DEAD)
         //{
         //    parameter.hp = 0;
-        player.SetState(Player.State.DEAD);
+        player.Damage();
         //}
     }
 }
