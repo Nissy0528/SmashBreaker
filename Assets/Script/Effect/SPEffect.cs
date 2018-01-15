@@ -12,18 +12,19 @@ public class SPEffect : MonoBehaviour
     public GameObject spObj;//スマッシュポイントオブジェクト
     public GameObject chargeObj;
 
+    private ParticleSystem particle;//パーティクル
     private Vector2 endPoint;//移動先の座標
     private Vector2[] p = new Vector2[3];//曲線用の三点
     private Vector2[] b = new Vector2[3];//三点の線分上の座標
     private float t;
-    private float gameTime;
 
     // Use this for initialization
     void Start()
     {
         SetPoints();
         t = 0.0f;
-        gameTime = FindObjectOfType<GameManager>().GameTime;
+        particle = GetComponentInChildren<ParticleSystem>();
+        chargeObj.SetActive(false);
     }
 
     // Update is called once per frame
@@ -31,6 +32,7 @@ public class SPEffect : MonoBehaviour
     {
         SetPoints();
         Lerp();
+        ParticleSimulate();
     }
 
     /// <summary>
@@ -62,8 +64,8 @@ public class SPEffect : MonoBehaviour
     /// </summary>
     private void Lerp()
     {
-        t += gameTime * speed;
-        
+        t += Time.unscaledDeltaTime * speed;
+
 
         b[0] = (1 - t) * p[0] + t * p[2];//p0、p2の線分上の座標
         b[1] = (1 - t) * p[2] + t * p[1];//p2、p1の線分上の座標
@@ -74,15 +76,33 @@ public class SPEffect : MonoBehaviour
 
         if (t >= 1.0f)
         {
-            spObj.SetActive(false);
-            chargeObj.SetActive(true);
-            chargeObj.transform.position = endPoint;
-
-            if (!chargeObj.GetComponent<ParticleSystem>().isPlaying)
+            FinishParticle();
+            if (t >= 1.7f)
             {
                 Destroy(gameObject);
             }
         }
+    }
+
+    /// <summary>
+    /// 終了パーティクル
+    /// </summary>
+    private void FinishParticle()
+    {
+        if (chargeObj.activeSelf) return;
+
+        spObj.SetActive(false);
+        chargeObj.SetActive(true);
+        chargeObj.transform.position = endPoint;
+    }
+
+    /// <summary>
+    /// TimeScaleを無視してパーティクル再生
+    /// </summary>
+    private void ParticleSimulate()
+    {
+        particle = GetComponentInChildren<ParticleSystem>();
+        particle.Simulate(Time.unscaledDeltaTime, true, false);
     }
 
     /// <summary>

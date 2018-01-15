@@ -43,7 +43,7 @@ public class RotEnemy : Enemy
 
 		TurnBack();
 
-		transform.Translate(-transform.up * speed * Time.deltaTime, Space.World);
+		//transform.Translate(-transform.up * speed * Time.deltaTime, Space.World);
 	}
 
 	/// <summary>
@@ -75,14 +75,14 @@ public class RotEnemy : Enemy
 		transform.RotateAround(target.position, axis, angle);
 	}
 
-	/// <summary>
-	/// プレイヤーの方向を向く
-	/// </summary>
-	//private void Rotate()
-	//{
-	//	if (isStan) return;
-	//	float angle = (Mathf.Atan2(-playerVec.y, -playerVec.x) * Mathf.Rad2Deg) - 90.0f;
-	//	Quaternion newRota = Quaternion.Euler(0.0f, 0.0f, angle);//プレイヤーの方向を設定
-	//	transform.rotation = Quaternion.Slerp(transform.rotation, newRota, rotateSpped * Time.deltaTime);//プレイヤーの方向にゆっくり向く
-	//}
+    /// <summary>
+    /// プレイヤーの方向を向く
+    /// </summary>
+    //private void Rotate()
+    //{
+    //	if (isStan) return;
+    //	float angle = (Mathf.Atan2(-playerVec.y, -playerVec.x) * Mathf.Rad2Deg) - 90.0f;
+    //	Quaternion newRota = Quaternion.Euler(0.0f, 0.0f, angle);//プレイヤーの方向を設定
+    //	transform.rotation = Quaternion.Slerp(transform.rotation, newRota, rotateSpped * Time.deltaTime);//プレイヤーの方向にゆっくり向く
+    //}
 }

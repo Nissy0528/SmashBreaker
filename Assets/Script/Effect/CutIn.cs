@@ -1,27 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CutIn : MonoBehaviour
 {
+    public Image[] sprites;
     public float time;
     public float speed;
 
     private GameObject bossDeadUI;
     private RectTransform rect;
     private float cnt;
-    private float gameTime;
     private bool isDead;
 
     // Use this for initialization
     void Start()
     {
-        FindObjectOfType<GameManager>().Slow(10, 0.0f);
+        FindObjectOfType<GameManager>().SetTimeScale(10, 0.0f);
         ControllerShake.Shake(0.0f);
         rect = GetComponent<RectTransform>();
         isDead = false;
         cnt = 0.0f;
-        gameTime = FindObjectOfType<GameManager>().GameTime;
+        for (int i = 0; i < 2; i++)
+        {
+            sprites[i].enabled = true;
+        }
     }
 
     // Update is called once per frame
@@ -50,7 +54,7 @@ public class CutIn : MonoBehaviour
 
         if (isDead && pos.x >= (Screen.width + Screen.width / 2))
         {
-            bossDeadUI.SetActive(true);
+            bossDeadUI.GetComponent<BossDown>().enabled = true;
             Destroy(gameObject);
         }
     }
@@ -62,7 +66,7 @@ public class CutIn : MonoBehaviour
     {
         if (cnt < 0.0f) return;
 
-        cnt -= gameTime;
+        cnt -= Time.unscaledDeltaTime;
     }
 
     /// <summary>

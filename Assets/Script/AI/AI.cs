@@ -25,7 +25,7 @@ public class AI : MonoBehaviour
     /// <summary>
     /// 更新
     /// </summary>
-    public virtual void AIUpdate() { }
+    protected virtual void AIUpdate() { }
 
     /// <summary>
     /// アクティブフラグ

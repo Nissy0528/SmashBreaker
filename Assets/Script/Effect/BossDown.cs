@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class BossDown : MonoBehaviour
 {
+    public Image[] sprites;
     public GameObject boss;//ボス画像オブジェクト
     public GameObject smash;//拳画像オブジェクト
     public Sprite[] bossImage;//切り替えるボス画像の配列
@@ -12,7 +13,6 @@ public class BossDown : MonoBehaviour
     public float scaleSpeed;//拳の画像が大きくなる速度
 
     private float changeCnt;//ボスと拳の画像を切り替える時間
-    private float time;//ゲーム時間
     private int bossImageNum;//表示するボス画像の配列番号
     private bool isDead;//消滅フラグ
 
@@ -21,10 +21,13 @@ public class BossDown : MonoBehaviour
     {
         changeCnt = changeTime;
         bossImageNum = 0;
-        time = FindObjectOfType<GameManager>().GameTime;
         boss.SetActive(false);
         smash.SetActive(true);
         isDead = false;
+        for (int i = 0; i < 3; i++)
+        {
+            sprites[i].enabled = true;
+        }
     }
 
     // Update is called once per frame
@@ -42,7 +45,7 @@ public class BossDown : MonoBehaviour
     {
         if (changeCnt > 0.0f)
         {
-            changeCnt -= time;
+            changeCnt -= Time.unscaledDeltaTime;
             return;
         }
 

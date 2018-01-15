@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerDamage : MonoBehaviour
 {
     public Player player;
+    public GameObject audio;
+    public AudioClip se;
 
     /// <summary>
     /// あたり判定
@@ -24,8 +26,7 @@ public class PlayerDamage : MonoBehaviour
     /// </summary>
     public void Damage()
     {
-        GameObject boss = GameObject.FindGameObjectWithTag("Boss");
-        if (player.IsState(Player.State.DASH) || boss == null) return;
+        if (player.IsState(Player.State.DASH)) return;
 
         //if (parameter.hp > 0 && !isDamage)
         //{
@@ -36,6 +37,8 @@ public class PlayerDamage : MonoBehaviour
         //{
         //    parameter.hp = 0;
         player.Damage();
+        GameObject audioObj = Instantiate(audio);
+        audioObj.GetComponent<SE>().SetClip(se);
         //}
     }
 }

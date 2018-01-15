@@ -2,92 +2,95 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boss : Enemy
+public class Boss : MonoBehaviour
 {
-    public float stanTime;//硬直時間
-    public GameObject cutIn;
-    public GameObject deadUI;//死亡時の演出UI
+    [SerializeField]
+    protected int maxHp;//最大体力
+    [SerializeField]
+    protected AI[] ai_classes;//人工知能用配列
+    [SerializeField]
+    protected float stanTime;//硬直時間
 
+    protected GameManager gameManager;
+    protected GameObject player;//プレイヤー
+    protected bool isStan;//気絶フラグ
+    protected float stanDelay;//硬直カウント
+
+    public GameObject dead_effect;//死亡時エフェクト
+    public float deadTime;//消滅演出時間
+    public float deadShakeTime;//消滅時のコントローラー振動時間
+
+    private MainCamera mainCamera;//カメラ
+    private SmashGage smashGage;
     private Animator anim;//アニメーション
-    private NormalEnemy followClass;
-    private Dash dashClass;
-    private RazerShooter razerClass;
-    private GameManager gameManager;
-    private float stanDelay;//硬直カウント
+    private GameObject cutIn;//死亡時のカットイン
+    private GameObject deadUI;//死亡時の演出UI
+    private int hp;//体力
+    private bool isDamage;//ダメージフラグ
 
     // Use this for initialization
     void Start()
     {
-        anim = transform.Find("Chara").GetComponent<Animator>();
-        followClass = GetComponent<NormalEnemy>();
-        dashClass = GetComponent<Dash>();
-        razerClass = GetComponent<RazerShooter>();
+        mainCamera = FindObjectOfType<MainCamera>();
+        player = GameObject.Find("Player");//プレイヤーを探す
+        smashGage = FindObjectOfType<SmashGage>();
         gameManager = FindObjectOfType<GameManager>();
-        //影
-        ShadowSet();
-        Initialize();
+        cutIn = FindObjectOfType<CutIn>().gameObject;
+        deadUI = FindObjectOfType<BossDown>().gameObject;
+        anim = GetComponentInChildren<Animator>();
+        isStan = false;
+        isDamage = false;
+        hp = maxHp;
         stanDelay = stanTime;
+        //ShadowSet();//影
+        Initialize();
     }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    public virtual void Initialize() { }
 
     // Update is called once per frame
     void Update()
     {
-        EnemyUpdate();
+        BossUpdate();
+        Stan();
         AI();
-        Stan();//硬直
-        BossDead();//消滅
+        BossDead();
     }
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    public virtual void BossUpdate() { }
 
     /// <summary>
     /// 人工知能
     /// </summary>
-    private void AI()
-    {
-        if (razerClass.IsActive)
-        {
-            followClass.Stop();
-            dashClass.Stop();
-        }
-        else
-        {
-            dashClass.enabled = true;
-            followClass.enabled = !dashClass.IsDash();
-        }
-
-        if (isStan)
-        {
-            followClass.Stop();
-            dashClass.Stop();
-            razerClass.Stop();
-        }
-
-        if (HP <= 0)
-        {
-            followClass.Stop();
-            dashClass.Stop();
-            razerClass.Stop();
-        }
-    }
+    public virtual void AI() { }
 
     /// <summary>
     /// 硬直
     /// </summary>
-    private void Stan()
+    public virtual void Stan() { }
+
+    /// <summary>
+    /// ダメージ
+    /// </summary>
+    /// <param name="damage"></param>
+    private void Damage(Smash smash)
     {
-        if (!isStan) return;
+        if (!smashGage.IsMax) return;
 
-        if (stanDelay == stanTime)
+        //ダメージ
+        int damage = smash.GetParam.power;
+        hp = Mathf.Max(hp - damage, 0);
+        isStan = true;
+        if (hp <= 0)
         {
-            AnimBool("Razer", false);
-            AnimBool("Hit", true);
-        }
-        stanDelay -= Time.deltaTime;
-
-        if (stanDelay <= 0.0f)
-        {
-            AnimBool("Hit", false);
-            isStan = false;
-            stanDelay = stanTime;
+            hp = 0;
+            mainCamera.Stop();
         }
     }
 
@@ -96,22 +99,83 @@ public class Boss : Enemy
     /// </summary>
     private void BossDead()
     {
-        if (HP > 0) return;
+        if (hp > 0) return;
 
         if (cutIn != null)
         {
-            cutIn.SetActive(true);
+            cutIn.GetComponent<CutIn>().enabled = true;
             cutIn.GetComponent<CutIn>().SetBossDeadUI(deadUI);
         }
 
         if (deadUI == null)
         {
+            GameObject charaPrefab = Instantiate(transform.Find("Chara").gameObject);
+            charaPrefab.transform.position = transform.position;
+            charaPrefab.transform.localScale = transform.localScale;
+            if (charaPrefab.GetComponent<Animator>() != null)
+            {
+                charaPrefab.GetComponent<Animator>().enabled = false;
+            }
+
             GameObject effect = Instantiate(dead_effect);
-            effect.transform.position = transform.position;
-            gameManager.Slow(2.0f, 0.25f);
-            gameManager.ShakeController(1.0f, 0.5f);
+            effect.transform.parent = charaPrefab.transform;
+            effect.transform.localPosition = Vector3.zero;
+            effect.transform.localScale = new Vector3(0.05f, 0.05f, 1);
+
+            gameManager.SetTimeScale(deadTime, 0.25f);
+            gameManager.ShakeController(1.0f, deadShakeTime);
             Destroy(gameObject);
         }
+    }
+
+    /// <summary>
+    /// 影の設定を有効にする
+    /// </summary>
+    //private void ShadowSet()
+    //{
+    //    var child = transform.GetChild(0);
+    //    var sr = child.GetComponent<SpriteRenderer>();
+    //    sr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+    //}
+
+    /// <summary>
+    /// あたり判定（トリガー）
+    /// </summary>
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
+        if (col.transform.tag == "Attack")
+        {
+            Smash smash = FindObjectOfType<Smash>();
+            if (tag == "Boss")
+            {
+                Damage(smash);
+            }
+            smash.Hit(tag);
+        }
+    }
+    void OnTriggerStay2D(Collider2D col)
+    {
+        //プレイヤーに攻撃されたらプレイヤーが向いてる方向に吹き飛ぶ
+        if (col.transform.tag == "Attack")
+        {
+            Smash smash = FindObjectOfType<Smash>();
+            if (tag == "Boss")
+            {
+                Damage(smash);
+            }
+            smash.Hit(tag);
+        }
+    }
+
+    /// 消滅
+    /// </summary>
+    public void Dead()
+    {
+        GameObject effect = Instantiate(dead_effect);
+        effect.transform.position = transform.position;
+
+        Destroy(gameObject);//消滅
     }
 
     /// <summary>
@@ -138,12 +202,27 @@ public class Boss : Enemy
     }
 
     /// <summary>
-    /// 影の設定を有効にする
+    /// 気絶フラグ
     /// </summary>
-    private void ShadowSet()
+    public bool IsStan
     {
-        var child = transform.GetChild(0);
-        var sr = child.GetComponent<SpriteRenderer>();
-        sr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+        get { return isStan; }
+    }
+
+    /// <summary>
+    /// 最大体力
+    /// </summary>
+    public int MaxHP
+    {
+        get { return maxHp; }
+    }
+
+    /// <summary>
+    /// 体力
+    /// </summary>
+    public int HP
+    {
+        get { return hp; }
+        set { hp = value; }
     }
 }

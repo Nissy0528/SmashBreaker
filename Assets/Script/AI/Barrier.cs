@@ -5,15 +5,16 @@ using UnityEngine;
 public class Barrier : MonoBehaviour
 {
     public GameObject pointObj;
-    public GameObject boss;
     public int pointCount;
     public float radius;
 
     private List<GameObject> pointList = new List<GameObject>();
+    private GameObject boss;
 
     // Use this for initialization
     void Start()
     {
+        boss = GameObject.FindGameObjectWithTag("Boss");
         CreatePoint();
         SetCollision();
     }
@@ -21,9 +22,11 @@ public class Barrier : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(boss==null)
+        boss = GameObject.FindGameObjectWithTag("Boss");
+        if (boss == null)
         {
             Destroy(gameObject);
+            return;
         }
         transform.position = boss.transform.position;
         CreateBarrier();

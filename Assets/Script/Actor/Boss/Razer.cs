@@ -52,6 +52,8 @@ public class Razer
         shotRay.direction = velocity.normalized;
         //マテリアル設定
         lineRenderer.material = mat;
+        lineRenderer.startColor = Color.blue;
+        lineRenderer.endColor = Color.blue;
 
         this.wallLayer = wallLayer;
     }
