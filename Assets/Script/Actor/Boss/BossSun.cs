@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossSun : Enemy
+public class BossSun : Boss
 {
-	public float stanTime;//硬直時間
-	public GameObject cutIn;
-	public GameObject deadUI;//死亡時の演出UI
+	//public float stanTime;//硬直時間
+	//public GameObject cutIn;
+	//public GameObject deadUI;//死亡時の演出UI
 
 	private Animator anim;//アニメーション
 	private NormalEnemy followClass;
 	private Dash dashClass;
 	private RazerShooter razerClass;
-
-	private List<AI> move;
-	private List<AI> attack;
 
 	private State state;
 	private SmashGage gage;
@@ -31,7 +28,8 @@ public class BossSun : Enemy
 	/// <summary>
 	/// 攻撃の時間
 	/// </summary>
-	private readonly float attackTime = 10f;
+	[SerializeField]
+	private float attackTime = 10f;
 
 
 	// Use this for initialization
@@ -40,17 +38,10 @@ public class BossSun : Enemy
 		gameObject.tag = "Boss";
 		anim = transform.Find("Chara").GetComponent<Animator>();
 
-		state = State.wait;
-		move = new List<AI>()
-		{
-			GetComponent<NormalEnemy>()
-		};
-
-		attack = new List<AI>
-		{
-			GetComponent<Dash>(),
-			GetComponent<RazerShooter>(),
-		};
+		followClass = GetComponent<NormalEnemy>();
+		dashClass = GetComponent<Dash>();
+		dashClass.dashInterval = 0f;
+		razerClass = GetComponent<RazerShooter>();
 
 		gameManager = FindObjectOfType<GameManager>();
 		//影
@@ -59,17 +50,21 @@ public class BossSun : Enemy
 		stanDelay = stanTime;
 
 		gage = player.GetComponent<Player>().smashGage;
+		state = State.move;
 	}
-	
+
+	private void Update()
+	{
+		EnemyUpdate();
+	}
+
 	protected override void EnemyUpdate()
 	{
 		Move();
 		Attack();
-
-		//Stan();//硬直
+		Stan();//硬直
 		BossDead();//消滅
 	}
-
 
 	/// <summary>
 	/// 移動
@@ -78,27 +73,32 @@ public class BossSun : Enemy
 	{
 		if (!Check(State.move))
 		{
-			foreach (var m in move)
-			{
-				m.Stop();
-			}
+			followClass.Stop();
 			return;
 		}
 
 		if (!gage.IsMax)
 		{
-			move[0].enabled = true;
+			followClass.enabled = true;
 		}
 		else
 		{
 
 		}
 
+		AttackCount();
+	}
+
+	/// <summary>
+	/// 攻撃までの時間
+	/// </summary>
+	private void AttackCount()
+	{
 		attackCount += Time.deltaTime;
-		if(attackCount >= attackTime)
+		if (attackCount >= attackTime)
 		{
 			attackCount = 0;
-			StateChange(State.attack);
+			state = State.attack;
 		}
 	}
 
@@ -107,15 +107,67 @@ public class BossSun : Enemy
 	/// </summary>
 	private void Attack()
 	{
-		if (!Check(State.attack))
+		if (Check(State.attackWait))
 		{
-			foreach (var a in attack)
+			if (dashClass.enabled & dashClass.IsEnd())
 			{
-				a.Stop();
+				dashClass.Stop();
+				state = State.move;
+				return;
 			}
+			if (razerClass.enabled & razerClass.IsEnd())
+			{
+				state = State.move;
+				razerClass.Stop();
+				return;
+			}
+		}
+		else if (!Check(State.attack))
+		{
+			dashClass.Stop();
+			razerClass.Stop();
 			return;
 		}
 
+		AttackSelect();
+
+		state = State.attackWait;
+	}
+
+	/// <summary>
+	/// 攻撃の決定
+	/// </summary>
+	private void AttackSelect()
+	{
+		//ゲージ満タン時
+		if (gage.IsMax)
+		{
+			switch (DistanceCheck())
+			{
+				case Distance.near:
+					break;
+				case Distance.far:
+					break;
+				case Distance.middle:
+					break;
+			}
+		}
+		//それ以外
+		else
+		{
+			switch (DistanceCheck())
+			{
+				case Distance.near:
+					dashClass.enabled = true;
+					break;
+				case Distance.far:
+					razerClass.enabled = true;
+					break;
+				case Distance.middle:
+					dashClass.enabled = true;
+					break;
+			}
+		}
 
 
 	}
@@ -171,7 +223,7 @@ public class BossSun : Enemy
 	/// アニメーション切り替え
 	/// </summary>
 	/// <param name="name">切り替えるフラグの名前</param>
-	public void AnimBool(string name, bool frag)
+	public override void AnimBool(string name, bool frag)
 	{
 		if (!anim.enabled) return;
 
@@ -182,7 +234,7 @@ public class BossSun : Enemy
 	/// アニメーション終了判定
 	/// </summary>
 	/// <returns></returns>
-	public bool AnimFinish(string name)
+	public override bool AnimFinish(string name)
 	{
 		if (!anim.enabled) return false;
 
@@ -201,17 +253,56 @@ public class BossSun : Enemy
 	}
 
 	/// <summary>
+	/// 距離
+	/// </summary>
+	private enum Distance
+	{
+		near,
+		middle,
+		far,
+	}
+
+	/// <summary>
+	/// 距離の確認
+	/// </summary>
+	/// <returns></returns>
+	private Distance DistanceCheck()
+	{
+		var pPos = player.transform.position;
+		var mPos = transform.position;
+
+		var distance = Vector2.Distance(pPos, mPos);
+
+		if (distance < 5f)
+		{
+			return Distance.near;
+		}
+		else if (distance < 10f)
+		{
+			return Distance.middle;
+		}
+		else
+		{
+			return Distance.far;
+		}
+
+
+
+	}
+
+	/// <summary>
 	/// 状態
 	/// </summary>
-	public enum State
+	private enum State
 	{
 		dead = 0,
 		wait = 1,
 		move = 2,
 		attack = 4,
+		attackWait = 5,
 		escape = 8,
 	}
-	
+
 	/// <summary>
 	/// 状態確認
 	/// </summary>
@@ -219,15 +310,6 @@ public class BossSun : Enemy
 	private bool Check(State check)
 	{
 		return state == check;
-	}
-
-	/// <summary>
-	/// ステートを変える
-	/// </summary>
-	/// <param name="value"></param>
-	private void StateChange(State value)
-	{
-		state = value;
 	}
 
 }
