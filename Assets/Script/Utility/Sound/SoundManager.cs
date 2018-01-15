@@ -2,19 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sound;
+using System;
 
 public class SoundManager
 {
-	/// <summary>
-	/// 音があるパス
-	/// </summary>
-	private static string audioPass = @"Sound\";
-
-	/// <summary>
-	/// オーディオ
-	/// </summary>
-	private static List<AudioSource> audioPlayers;
-
 	/// <summary>
 	/// BGMリスト
 	/// </summary>
@@ -29,32 +20,48 @@ public class SoundManager
 	/// </summary>
 	private static bool isLoad;
 
-
 	/// <summary>
 	/// 読み込み
 	/// </summary>
 	public static void Load()
 	{
-		var bgm = Resources.LoadAll<AudioClip>(audioPass + "BGM");
+		var load = Resources.LoadAll<AudioClip>(SoundUtility.GetPath(SoundType.BGM));
 
 		bgms = new Dictionary<string, AudioClip>();
 
-		foreach (var b in bgm)
+		foreach (var b in load)
 		{
 			bgms.Add(b.name, b);
 		}
 
-
-		var se = Resources.LoadAll<AudioClip>(audioPass + "SE");
+		load = Resources.LoadAll<AudioClip>(SoundUtility.GetPath(SoundType.SE));
 
 		ses = new Dictionary<string, AudioClip>();
 
-		foreach (AudioClip s in se)
+		foreach (AudioClip s in load)
 		{
 			ses.Add(s.name, s);
 		}
 
 		isLoad = true;
+	}
+
+
+	public static void PlaySound(SoundType type, string name)
+	{
+		if (!isLoad)
+		{
+			Load();
+		}
+
+		if(type == SoundType.BGM)
+		{
+
+		}
+		else if(type == SoundType.SE)
+		{
+			PlaySE(name);
+		}
 	}
 
 	/// <summary>
@@ -63,24 +70,17 @@ public class SoundManager
 	/// <param name="name"></param>
 	/// <param name="isLoop"></param>
 	/// <returns>オーディオ</returns>
-	public static AudioSource PlaySE(string name, bool isLoop = false)
+	private static void PlaySE(string name, bool isLoop = false)
 	{
-		if (!isLoad)
-		{
-			Load();
-		}
-
 		var se = new GameObject("se");
 
 		se.hideFlags = HideFlags.HideInHierarchy;
 
 		var source = se.AddComponent<AudioSource>();
-		var play = se.AddComponent<SEPlayer>();
-		play.SetLoop(isLoop);
+		var play = se.AddComponent<SoundPlayer>();
 
 		source.clip = ses[name];
 
-		return source;
 	}
 
 	/// <summary>
@@ -88,13 +88,6 @@ public class SoundManager
 	/// </summary>
 	public static void PlayBGM(string name)
 	{
-		if (!isLoad)
-		{
-			Load();
-		}
-
 		var bgm = new GameObject("bgm");
 	}
-
-
 }

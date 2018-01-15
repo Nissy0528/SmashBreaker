@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.6.3f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -94,6 +92,7 @@
     <Compile Include="Assets\Script\AI\Translation.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Boss.cs" />
     <Compile Include="Assets\Script\Actor\Boss\BossBullet.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\BossSun.cs" />
     <Compile Include="Assets\Script\Actor\Boss\BulletShooter.cs" />
     <Compile Include="Assets\Script\Actor\Boss\CircleBullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Dash.cs" />
@@ -137,6 +136,8 @@
     <Compile Include="Assets\Script\Utility\Sound\BGMPlayer.cs" />
     <Compile Include="Assets\Script\Utility\Sound\SEPlayer.cs" />
     <Compile Include="Assets\Script\Utility\Sound\SoundManager.cs" />
+    <Compile Include="Assets\Script\Utility\Sound\SoundPlayer.cs" />
+    <Compile Include="Assets\Script\Utility\Sound\SoundType.cs" />
     <Compile Include="Assets\Script\Utility\Sound\SoundUtility.cs" />
     <Compile Include="Assets\Script\Utility\Sound\SoundVolume.cs" />
     <Compile Include="Assets\Script\Utility\SpRate.cs" />

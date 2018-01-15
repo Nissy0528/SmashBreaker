@@ -8,8 +8,8 @@ namespace Sound
 {
 	class BGMPlayer:MonoBehaviour
 	{
-		
 
+		
 		public void Update()
 		{
 			

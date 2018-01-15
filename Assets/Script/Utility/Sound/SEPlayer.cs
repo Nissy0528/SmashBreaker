@@ -9,34 +9,24 @@ namespace Sound
 	/// <summary>
 	/// SEの再生コンポーネント
 	/// </summary>
-	class SEPlayer:MonoBehaviour
+	class SEPlayer:SoundPlayer
 	{
-		private bool loop;
-		private AudioSource source;
-
-		private void Start()
+		protected override void PlayerStart()
 		{
-			source = GetComponent<AudioSource>();
+			base.PlayerStart();
 		}
 
 		private void Update()
 		{
 			source.volume = SoundUtility.SEVolume;
-			source.loop = loop;
+			source.loop = isLoop;
 
-			if (source.isPlaying && !loop)
+			if (source.isPlaying && !isLoop)
 			{
 				Destroy(gameObject);
 			}
 		}
 
-		/// <summary>
-		/// ループの設定
-		/// </summary>
-		/// <param name="value"></param>
-		public void SetLoop(bool value)
-		{
-			loop = value;
-		}
+		
 	}
 }

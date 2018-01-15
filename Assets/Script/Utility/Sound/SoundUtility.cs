@@ -4,77 +4,74 @@ using System.Linq;
 using System.Text;
 using Sound;
 
-public static class SoundUtility
+namespace Sound
 {
-	/// <summary>
-	/// 消音前音量
-	/// </summary>
-	private static SoundVolume preVolume;
-	/// <summary>
-	/// 音量
-	/// </summary>
-	private static SoundVolume soundVolume;
-
-	/// <summary>
-	/// 音量
-	/// </summary>
-	public static SoundVolume SoundVolume
+	public static class SoundUtility
 	{
-		get
-		{
-			return soundVolume;
-		}
+		/// <summary>
+		/// 音があるパス
+		/// </summary>
+		private static string audioPass = @"Sound\";
 
-		set
-		{
-			soundVolume = value;
-		}
-	}
-	/// <summary>
-	/// 消音
-	/// </summary>
-	public static bool IsMute
-	{
-		get
-		{
-			return soundVolume.IsMute;
-		}
+		/// <summary>
+		/// 音量
+		/// </summary>
+		private static SoundVolume soundVolume;
 
-		set
+		/// <summary>
+		/// 音量
+		/// </summary>
+		public static SoundVolume Volume
 		{
-			///消音に変更
-			if (value)
+			get
 			{
-				preVolume = soundVolume;
-				soundVolume = SoundVolume.Mute;
+				return soundVolume;
 			}
-			///消音だったときのみ
-			else if (IsMute)
+
+			set
 			{
-				soundVolume = preVolume;
+				soundVolume = value;
 			}
 		}
-	}
 
-	/// <summary>
-	/// BGM音量
-	/// </summary>
-	public static float BGMVolume
-	{
-		get
+		/// <summary>
+		/// パスの取得
+		/// </summary>
+		/// <returns></returns>
+		public static string GetPath(SoundType type)
 		{
-			return soundVolume.BgmVolume;
+			return audioPass + type.ToString();
 		}
-	}
 
-	/// <summary>
-	/// BGM音量
-	/// </summary>
-	public static float SEVolume
-	{
-		get
+		/// <summary>
+		/// 消音設定の変更
+		/// </summary>
+		/// <param name="value"></param>
+		public static void ChangeMute(SoundType type, bool value)
 		{
-			return soundVolume.SeVolume;
+			soundVolume.SetMute(type, value);
+		}
+
+		/// <summary>
+		/// BGM音量
+		/// </summary>
+		public static float BGMVolume
+		{
+			get
+			{
+				return soundVolume.BgmVolume;
+			}
+		}
+
+		/// <summary>
+		/// BGM音量
+		/// </summary>
+		public static float SEVolume
+		{
+			get
+			{
+				return soundVolume.SeVolume;
+			}
 		}
 	}
 
