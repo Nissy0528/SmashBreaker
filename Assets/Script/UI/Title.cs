@@ -62,6 +62,7 @@ public class Title : MonoBehaviour
 			buttons.Add(t, b);
 		}
 		buttons[BType.start].Select();
+
 	}
 
 	/// <summary>
@@ -70,6 +71,8 @@ public class Title : MonoBehaviour
 	/// <param name="type"></param>
 	private void ButtonPush(BType type)
 	{
+		SoundManager.PlaySound(SoundType.SE, "title_selectSE");
+
 		if (type == BType.start)
 		{
 			StartPush();
@@ -179,6 +182,9 @@ public class Title : MonoBehaviour
 
 	}
 
+	/// <summary>
+	/// ボタンの有効化
+	/// </summary>
 	public void ButtonOn()
 	{
 		foreach (var b in buttons.Values)
@@ -187,6 +193,9 @@ public class Title : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// scene変更
+	/// </summary>
 	private void SceneChange()
 	{
 		SceneManager.LoadSceneAsync(nextScene);

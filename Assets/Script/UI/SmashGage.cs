@@ -37,7 +37,7 @@ public class SmashGage : MonoBehaviour
         spEffectObjcts.RemoveAll(x => x == null);
         if (isSpawn && spEffectObjcts.Count == 0)
         {
-            FindObjectOfType<GameManager>().Game(true);
+            //FindObjectOfType<GameManager>().Game(true);
             maxBG.SetActive(false);
         }
     }
@@ -94,7 +94,7 @@ public class SmashGage : MonoBehaviour
         if (num == 1)
         {
             spEffect_class.radius *= -1;
-            FindObjectOfType<GameManager>().Game(false);
+            //FindObjectOfType<GameManager>().Game(false);
             maxBG.SetActive(true);
             isSpawn = true;
         }
@@ -108,4 +108,20 @@ public class SmashGage : MonoBehaviour
         get { return isMax; }
         set { isMax = value; }
     }
+
+	public float Sp
+	{
+		get
+		{
+			return sp;
+		}
+	}
+
+	public float Max
+	{
+		get
+		{
+			return max;
+		}
+	}
 }

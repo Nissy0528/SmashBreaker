@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public float stopTime;//ゲームストップの長さ
     public GameObject gameover;//ゲームオーバーUI
     public GameObject gameclear;//ゲームクリアUI
-    public GameObject pauseText;//ポーズUI]
+    public GameObject pauseText;//ポーズUI
     public GameObject[] stages;//ステージの配列
 
     private float stopDelay;//ゲーム停止時間
@@ -22,16 +22,14 @@ public class GameManager : MonoBehaviour
     private GameObject bossObj;//ボス
     private MainCamera mainCamera;//カメラ
 
+
     /// <summary>
     /// ワープゾーン
     /// </summary>
     private SceneWarpZone warpZone;
 
-
-
-
-    // Use this for initialization
-    void Awake()
+	// Use this for initialization
+	void Awake()
     {
         //Instantiate(stages[stageNum]);
 
@@ -84,7 +82,6 @@ public class GameManager : MonoBehaviour
     {
         if (!player.IsState(Player.State.DEAD)) return;
 
-        FindObjectOfType<Canvas>().sortingLayerName = "High";
         gameover.SetActive(true);
         Time.timeScale = 0.0f;
         //リトライボタンが押されたらMainシーンを再読み込み
@@ -188,28 +185,5 @@ public class GameManager : MonoBehaviour
     public float GameTime
     {
         get { return gameTime; }
-    }
-
-    /// <summary>
-    /// ゲーム操作（一時停止か再開）
-    /// </summary>
-    public void Game(bool enabled)
-    {
-        MonoBehaviour[] gameObjects = FindObjectsOfType<MonoBehaviour>();
-        Animator[] animObjects = FindObjectsOfType<Animator>();
-
-        foreach (var obj in gameObjects)
-        {
-            if (obj.GetComponent<GameManager>() != null
-                || obj.GetComponent<SPEffect>() != null
-                || obj.GetComponent<SmashGage>()) continue;
-
-            obj.enabled = enabled;
-        }
-
-        foreach (var anim in animObjects)
-        {
-            anim.enabled = enabled;
-        }
     }
 }

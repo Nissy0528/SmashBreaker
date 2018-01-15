@@ -78,7 +78,7 @@ public class Dash : AI
             {
                 rigid.velocity = Vector2.zero;
                 dashCount = dashInterval;
-                chargeCount = chargeTime;
+                //chargeCount = chargeTime;
                 isDash = false;
             }
         }
@@ -151,4 +151,9 @@ public class Dash : AI
     {
         return dashCount <= 0.0f;
     }
+
+	public bool IsEnd()
+	{
+		return !isDash && chargeCount <= 0.0f;
+	}
 }
