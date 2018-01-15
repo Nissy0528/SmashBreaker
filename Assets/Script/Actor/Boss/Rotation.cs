@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Rotation : MonoBehaviour
+public class Rotation : AI
 {
     /// <summary>
     /// 回転のモード
@@ -12,7 +12,8 @@ public class Rotation : MonoBehaviour
     {
         ROUND,//一回転
         PENDULUM,//振り子
-        CHANGE//切り替え
+        CHANGE,//切り替え
+        TARGET,//軸回転
     }
 
     /// <summary>
@@ -26,37 +27,35 @@ public class Rotation : MonoBehaviour
     public float rightAngle;//右の最大角度
     public float leftAngle;//左の最大角度
     public float changeTime;//角度切り替え時間
+    public string targetTag;//回転軸にするオブジェクトのタグ
 
-    private List<GameObject> muzzle = new List<GameObject>();
     private Enemy enemyClass;//エネミークラス
-    private float changeCount;
-    private float[] iniAngles;//初期角度
+    private Vector2 targetPos;//回転軸の座標
+    private Transform target;
+    private float changeCount;//回転切り替えカウント
+    private float iniAngle;//初期角度
 
     // Use this for initialization
-    void Start()
+    public override void Initialize()
     {
         enemyClass = GetComponent<Enemy>();
-        GameObject[] muzzles = GameObject.FindGameObjectsWithTag("Muzzle");
-        iniAngles = new float[muzzles.Length];
-        for (int i = 0; i < muzzles.Length; i++)
-        {
-            if (muzzles[i].transform.parent == transform)
-            {
-                muzzle.Add(muzzles[i]);
-            }
-            iniAngles[i] = muzzles[i].transform.eulerAngles.z;
-        }
+        iniAngle = transform.eulerAngles.z;
 
         changeCount = changeTime;
+        if (GetComponent<Collider2D>() != null)
+        {
+            GetComponent<Collider2D>().enabled = false;
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void AIUpdate()
     {
         if (enemyClass.IsStan) return;
 
         Move();
         AngleChange();
+        TargetRotate();
     }
 
     /// <summary>
@@ -68,21 +67,17 @@ public class Rotation : MonoBehaviour
 
         Vector3 rotation = Vector3.forward * rotSpeed * Time.deltaTime;
         var riv = rivers ? -1f : 1f;
-
-        for (int i = 0; i < muzzle.Count; i++)
-        {
-            muzzle[i].transform.Rotate(rotation * riv);
-            MovePendulum(i);
-        }
+        transform.Rotate(rotation * riv);
+        MovePendulum();
     }
     /// <summary>
     /// 振り子
     /// </summary>
-    private void MovePendulum(int i)
+    private void MovePendulum()
     {
         if (mode != Mode.PENDULUM) return;
 
-        float angleZ = muzzle[i].transform.eulerAngles.z;
+        float angleZ = transform.eulerAngles.z;
         float rotateZ = 0.0f;
         //ラジアン単位に変換
         if (angleZ > 180)
@@ -126,18 +121,7 @@ public class Rotation : MonoBehaviour
     /// </summary>
     private void Change()
     {
-        for (int i = 0; i < muzzle.Count; i++)
-        {
-            SetAngle(i);
-        }
-    }
-    /// <summary>
-    /// 角度設定
-    /// </summary>
-    /// <param name="i"></param>
-    private void SetAngle(int i)
-    {
-        Vector3 angle = muzzle[i].transform.eulerAngles;
+        Vector3 angle = transform.eulerAngles;
         Vector3 rotate = Vector3.zero;
         if (angle.z > 180)
         {
@@ -148,21 +132,21 @@ public class Rotation : MonoBehaviour
             rotate.z = angle.z;
         }
 
-        if (rotate.z == iniAngles[i])
+        if (rotate.z == iniAngle)
         {
-            IniToLR(rotate, i);
+            IniToLR(rotate);
             return;
         }
         else
         {
-            LRToIni(rotate, i);
+            LRToIni(rotate);
         }
     }
     /// <summary>
     /// 初期角度から右か左の角度に
     /// </summary>
     /// <param name="rotate"></param>
-    private void IniToLR(Vector3 rotate, int i)
+    private void IniToLR(Vector3 rotate)
     {
         if (!rivers)
         {
@@ -173,13 +157,13 @@ public class Rotation : MonoBehaviour
             rotate.z = leftAngle;
         }
 
-        muzzle[i].transform.eulerAngles = rotate;
+        transform.eulerAngles = rotate;
     }
     /// <summary>
     /// 右か左から初期角度に
     /// </summary>
     /// <param name="rotate"></param>
-    private void LRToIni(Vector3 rotate, int i)
+    private void LRToIni(Vector3 rotate)
     {
         if (rotate.z == rightAngle)
         {
@@ -189,7 +173,26 @@ public class Rotation : MonoBehaviour
         {
             rivers = false;
         }
-        rotate.z = iniAngles[i];
-        muzzle[i].transform.eulerAngles = rotate;
+        rotate.z = iniAngle;
+        transform.eulerAngles = rotate;
+    }
+
+    /// <summary>
+    /// 軸回転
+    /// </summary>
+    private void TargetRotate()
+    {
+        if (mode != Mode.TARGET) return;
+
+        Transform target = GameObject.FindGameObjectWithTag(targetTag).transform;
+        targetPos = target.position;
+        transform.parent = target;
+
+        Vector3 axis = transform.TransformDirection(Vector3.forward);
+        transform.RotateAround(targetPos, axis, rotSpeed * Time.deltaTime);
+
+        Vector3 rotate = transform.eulerAngles;
+        rotate.z = 0.0f;
+        transform.eulerAngles = rotate;
     }
 }

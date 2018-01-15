@@ -13,14 +13,17 @@ public class GameManager : MonoBehaviour
     public GameObject gameclear;//ゲームクリアUI
     public GameObject pauseText;//ポーズUI
     public GameObject[] stages;//ステージの配列
+    public AudioSource BGM;
 
     private float stopDelay;//ゲーム停止時間
     private float controllerShakeTime;
-    private float gameTime;
     private bool isPause;//ポーズフラグ
+    private bool isDebug;//デバックフラグ
     private Player player;//プレイヤー
     private GameObject bossObj;//ボス
     private MainCamera mainCamera;//カメラ
+    private Vector2 stageMinPos;//ステージの左下
+    private Vector2 stageMaxPos;//ステージの右上
 
 
     /// <summary>
@@ -28,20 +31,30 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private SceneWarpZone warpZone;
 
-	// Use this for initialization
-	void Awake()
+    // Use this for initialization
+    void Awake()
     {
-        //Instantiate(stages[stageNum]);
+        if (!isDebug)
+        {
+            Instantiate(stages[stageNum]);
+        }
 
         stopDelay = stopTime;
-        player = GameObject.Find("Player").GetComponent<Player>();
+        player = FindObjectOfType<Player>();
         bossObj = GameObject.FindGameObjectWithTag("Boss");
-        mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
+        mainCamera = FindObjectOfType<MainCamera>();
+        if (stageNum >= 1 || isDebug)
+        {
+            mainCamera.followSpeed = 0.0f;
+            mainCamera.gameObject.transform.position = new Vector3(0.0f, 0.0f, -10.0f);
+            BGM.gameObject.SetActive(true);
+        }
 
         warpZone = FindObjectOfType<SceneWarpZone>();
-        warpZone.gameObject.SetActive(false);
 
-        gameTime = Time.deltaTime;
+        Time.timeScale = 1.0f;
+
+        SetStageRange();
     }
 
     // Update is called once per frame
@@ -51,9 +64,9 @@ public class GameManager : MonoBehaviour
         ShowGameOver();//ゲームオーバー表示
         ShowGameClear();//ゲームクリア表示
         Pause();//ポーズ
-        C_Shake();
+        C_Shake();//コントローラー振動
 
-        if (!warpZone.gameObject.activeSelf && !gameclear.activeSelf)
+        if (!warpZone.IsNext && !gameclear.activeSelf)
         {
             time += Time.deltaTime;
         }
@@ -67,7 +80,7 @@ public class GameManager : MonoBehaviour
         if (Time.timeScale >= 1.0f) return;
 
         //指定した時間まで達したらゲーム再開
-        stopDelay -= gameTime;
+        stopDelay -= Time.unscaledDeltaTime;
         if (stopDelay <= 0.0f)
         {
             stopDelay = stopTime;
@@ -82,13 +95,21 @@ public class GameManager : MonoBehaviour
     {
         if (!player.IsState(Player.State.DEAD)) return;
 
+        BGM.Stop();
         gameover.SetActive(true);
         Time.timeScale = 0.0f;
-        //リトライボタンが押されたらMainシーンを再読み込み
-        if (Input.GetButtonDown("Decision"))
+        Animator playerAnim = player.GetComponentInChildren<Animator>();
+        AnimatorStateInfo playerAnimState = playerAnim.GetCurrentAnimatorStateInfo(0);
+        if (playerAnimState.normalizedTime >= 1.0f && playerAnimState.IsName("Player_Dead"))
         {
-            Time.timeScale = 1.0f;
-            SceneManager.LoadScene("Main");
+            playerAnim.enabled = false;
+            gameover.SetActive(true);
+            //リトライボタンが押されたらMainシーンを再読み込み
+            if (Input.GetButtonDown("Decision"))
+            {
+                Time.timeScale = 1.0f;
+                SceneManager.LoadScene("Main");
+            }
         }
     }
 
@@ -103,7 +124,7 @@ public class GameManager : MonoBehaviour
 
         if (bossDeadEffect == null)
         {
-            warpZone.gameObject.SetActive(true);
+            warpZone.StartAnimation();
         }
         //else if (!warpZone.gameObject.activeSelf)
         //{
@@ -156,16 +177,35 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        controllerShakeTime -= Time.deltaTime;
+        controllerShakeTime -= Time.unscaledDeltaTime;
     }
 
     /// <summary>
-    /// スロー
+    /// ステージの範囲設定
     /// </summary>
-    public void Slow(float delay, float time)
+    private void SetStageRange()
     {
-        Time.timeScale = time;
+        if (stageNum < 1&&!isDebug) return;
+
+        GameObject under = GameObject.Find("Under");
+        GameObject left = GameObject.Find("Left");
+        GameObject top = GameObject.Find("Top");
+        GameObject right = GameObject.Find("Right");
+
+        Vector2 underleft = new Vector2(left.transform.position.x, under.transform.position.y);
+        Vector2 topright = new Vector2(right.transform.position.x, top.transform.position.y);
+
+        stageMinPos = new Vector2(underleft.x, underleft.y);
+        stageMaxPos = new Vector2(topright.x, topright.y);
+    }
+
+    /// <summary>
+    /// TimeScale変更
+    /// </summary>
+    public void SetTimeScale(float delay, float scale)
+    {
         stopDelay = delay;
+        Time.timeScale = scale;
     }
 
     /// <summary>
@@ -180,10 +220,41 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ゲーム時間
+    /// レイヤー同士ののあたり判定
     /// </summary>
-    public float GameTime
+    /// <param name="name"></param>
+    /// <param name="otherName"></param>
+    /// <param name="isCollision"></param>
+    public void LayerCollision(string name, string otherName, bool isCollision)
     {
-        get { return gameTime; }
+        int layer = LayerMask.NameToLayer(name);
+        int otherLayer = LayerMask.NameToLayer(otherName);
+
+        Physics2D.IgnoreLayerCollision(layer, otherLayer, isCollision);
+    }
+
+    /// <summary>
+    /// ステージの左下
+    /// </summary>
+    public Vector2 StageMinPos
+    {
+        get { return stageMinPos; }
+    }
+
+    /// <summary>
+    /// ステージの右上
+    /// </summary>
+    public Vector2 StageMaxPos
+    {
+        get { return stageMaxPos; }
+    }
+
+    /// <summary>
+    /// デバッグフラグ
+    /// </summary>
+    public bool IsDebug
+    {
+        get { return isDebug; }
+        set { isDebug = value; }
     }
 }

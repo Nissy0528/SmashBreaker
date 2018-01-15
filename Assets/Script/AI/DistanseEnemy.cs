@@ -18,7 +18,7 @@ public class DistanseEnemy : Enemy
 	/// </summary>
 	private bool isWall;
 
-	protected override void EnemyUpdate()
+	public override void EnemyUpdate()
 	{
 		base.EnemyUpdate();
 		Move();

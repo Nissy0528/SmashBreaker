@@ -42,7 +42,7 @@ public class Effect : MonoBehaviour
         }
         if (mode == Mode.ACTIVE)
         {
-            gameObject.SetActive(false);
+            anim.enabled = false;
         }
     }
 }

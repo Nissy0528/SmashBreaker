@@ -63,7 +63,7 @@ public class AreaEnemy : Enemy
 	/// <summary>
 	/// 更新
 	/// </summary>
-	protected override void EnemyUpdate()
+	public override void EnemyUpdate()
 	{
 		base.EnemyUpdate();
 		Wait();
@@ -133,13 +133,4 @@ public class AreaEnemy : Enemy
 	//	Quaternion newRota = Quaternion.Euler(0.0f, 0.0f, angle);//プレイヤーの方向を設定
 	//	transform.rotation = Quaternion.Slerp(transform.rotation, newRota, rotateSpeed * Time.deltaTime);//プレイヤーの方向にゆっくり向く
 	//}
-
-
-	/// <summary>
-	/// 死亡時
-	/// </summary>
-	protected override void Dead()
-	{
-		base.Dead();
-	}
 }

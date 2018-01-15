@@ -15,6 +15,7 @@ public class SmashGage : MonoBehaviour
     private bool isSpawn;//エフェクト生成フラグ
     private Slider slider;
     private Player player;
+    private GameManager gameManager;
     private List<GameObject> spEffectObjcts;
 
     // Use this for initialization
@@ -22,6 +23,7 @@ public class SmashGage : MonoBehaviour
     {
         slider = GetComponent<Slider>();
         player = FindObjectOfType<Player>();
+        gameManager = FindObjectOfType<GameManager>();
         spEffectObjcts = new List<GameObject>();
         max = player.GetParam.maxSP;
         isMax = false;
@@ -37,8 +39,10 @@ public class SmashGage : MonoBehaviour
         spEffectObjcts.RemoveAll(x => x == null);
         if (isSpawn && spEffectObjcts.Count == 0)
         {
+            gameManager.SetTimeScale(gameManager.stopTime, 1.0f);
             //FindObjectOfType<GameManager>().Game(true);
             maxBG.SetActive(false);
+            FindObjectOfType<Canvas>().sortingLayerName = "High";
         }
     }
 
@@ -84,13 +88,23 @@ public class SmashGage : MonoBehaviour
     {
         if (isSpawn || !isMax) return;
 
-        spEffectObjcts.Add(Instantiate(spEffect));
+        gameManager.SetTimeScale(100, 0.0f);
+        maxBG.SetActive(true);
+        FindObjectOfType<Canvas>().sortingLayerName = "Middle";
+
+        spEffectObjcts.Add(Instantiate(spEffect));//エフェクト生成
         int num = spEffectObjcts.Count - 1;
-        RectTransform rect = GetComponent<RectTransform>();
-        Vector3 pos = FindObjectOfType<Camera>().ScreenToWorldPoint(rect.position);
+
+        //生成位置設定（SPゲージの位置）
+        Vector3 pos = FindObjectOfType<Camera>().ScreenToWorldPoint(transform.position);
+        pos.y += 4;
         spEffectObjcts[num].transform.position = new Vector2(-pos.x, pos.y);
+
+        //向かう座標を設定（プレイヤーの位置）
         SPEffect spEffect_class = spEffectObjcts[num].GetComponent<SPEffect>();
         spEffect_class.SetEndPoint(player.transform.position);
+
+        //二つ目は左右反転させる
         if (num == 1)
         {
             spEffect_class.radius *= -1;

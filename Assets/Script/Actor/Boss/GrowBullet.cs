@@ -8,7 +8,11 @@ public class GrowBullet : BossBullet
     /// <summary>
     /// 大きくなるスピード
     /// </summary>
-    private float growSpeed = 4;
+    public float growSpeed = 4;
+    public float growRange = 10;
+
+    private Rigidbody2D rigid;
+    private Vector3 vec;//向く方向
 
     /// <summary>
     /// 弾丸初期化
@@ -16,8 +20,20 @@ public class GrowBullet : BossBullet
     protected override void BulletInit()
     {
         base.BulletInit();
-        GetComponent<Rigidbody2D>().freezeRotation = true;
-        GetComponent<CircleCollider2D>().isTrigger = true;
+        rigid = GetComponent<Rigidbody2D>();
+        rigid.freezeRotation = true;
+        //GetComponent<CircleCollider2D>().isTrigger = true;
+        float x = 0f, y = 0f;
+        while (x == 0f)
+        {
+            x = Random.Range(-1f, 1f);
+        }
+        while (y == 0f)
+        {
+            y = Random.Range(-1f, 1f);
+        }
+        Vector2 velocity = new Vector2(x, y);
+        rigid.AddForce(velocity * speed, ForceMode2D.Impulse);
     }
 
     /// <summary>
@@ -26,8 +42,7 @@ public class GrowBullet : BossBullet
     protected override void BulletUpdate()
     {
         Growing();
-
-        Move();
+        Rotate();
     }
 
 
@@ -36,33 +51,48 @@ public class GrowBullet : BossBullet
     /// </summary>
     private void Growing()
     {
-        transform.localScale += new Vector3(1, 1, 0) * (growSpeed * Time.deltaTime);
+        Vector3 size = transform.localScale;
+        size += new Vector3(1, 1, 0) * (growSpeed * Time.deltaTime);
+        size.x = Mathf.Clamp(size.x, 4.0f, growRange);
+        size.y = Mathf.Clamp(size.y, 4.0f, growRange);
+        transform.localScale = size;
     }
 
-    private void Hit(Collider2D col)
+    /// <summary>
+    /// 反射した方向に向く
+    /// </summary>
+    private void Rotate()
+    {
+        vec = rigid.velocity.normalized;//向く方向の座標
+        float angle = (Mathf.Atan2(vec.y, vec.x) * Mathf.Rad2Deg) - 90.0f;
+        Quaternion newRota = Quaternion.Euler(0.0f, 0.0f, angle);
+        transform.rotation = newRota;
+    }
+
+    private void Hit(Collision2D col)
     {
         string layer = LayerMask.LayerToName(col.gameObject.layer);
+        Debug.Log(layer);
         if (layer == "Wall")
         {
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
         if (layer == "Player")
         {
-            var p = col.GetComponent<Player>();
-            if (!p.IsState(Player.State.DASH))
-            {
+            //var p = FindObjectOfType<Player>();
+            //if (!p.IsState(Player.State.DASH))
+            //{
                 Destroy(gameObject);
                 FindObjectOfType<PlayerDamage>().Damage();
-            }
+            //}
         }
-        //base.Collision(col);
     }
 
     /// <summary>
     /// 当たり判定
     /// </summary>
     /// <param name="col"></param>
-    protected override void Trigger(Collider2D col)
+    protected override void Collision(Collision2D col)
     {
         Hit(col);
     }

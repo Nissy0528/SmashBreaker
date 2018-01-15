@@ -2,23 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CircleBulletShooter : MonoBehaviour
+public class CircleBulletShooter : AI
 {
     public GameObject bullet;//弾オブジェクト
     public int bulletCount;//弾の数
     public float radius;//生成する円状の広さ
     public float shootTime;//発射時間（設定用）
+    public bool setRotate;//角度設定フラグ
 
     private List<GameObject> bulletList = new List<GameObject>();//弾のリスト
     private float shootCount;//発射時間
+    private bool isCreate;//弾生成完了フラグ
 
-    void Start()
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    public override void Initialize()
     {
+        ResetBullet();
         shootCount = shootTime;
+        isCreate = false;
     }
 
-
-    void Update()
+    /// <summary>
+    /// 更新
+    /// </summary>
+    protected override void AIUpdate()
     {
         Shoot();//弾を発射
 
@@ -28,7 +37,7 @@ public class CircleBulletShooter : MonoBehaviour
     /// <summary>
     /// 弾を円状に配置
     /// </summary>
-    private void CreateBullets()
+    public void CreateBullets()
     {
         bulletList = new List<GameObject>();
 
@@ -42,16 +51,30 @@ public class CircleBulletShooter : MonoBehaviour
         //円状に配置
         for (int i = 0; i < bulletList.Count; i++)
         {
-            Vector2 bulletPos = transform.position;
-
-            float angle = (90 - angleDiff * i) * Mathf.Deg2Rad;
-            bulletPos.x += radius * Mathf.Cos(angle);
-            bulletPos.y += radius * Mathf.Sin(angle);
-
             if (bulletList[i] == null) continue;
 
+            SetTransfrom(i, angleDiff);
+        }
+
+        isCreate = true;
+    }
+
+    /// <summary>
+    /// 角度設定
+    /// </summary>
+    private void SetTransfrom(int i, float angleDiff)
+    {
+        float angle = (90 - angleDiff * i) * Mathf.Deg2Rad;
+        Vector2 bulletPos = transform.position;
+
+        bulletPos.x += radius * Mathf.Cos(angle);
+        bulletPos.y += radius * Mathf.Sin(angle);
+
+        bulletList[i].transform.position = bulletPos;
+
+        if (setRotate)
+        {
             bulletList[i].transform.Rotate(0, 0, -(angleDiff * i));
-            bulletList[i].transform.position = bulletPos;
         }
     }
 
@@ -68,5 +91,28 @@ public class CircleBulletShooter : MonoBehaviour
 
         CreateBullets();
         shootCount = shootTime;
+    }
+
+    /// <summary>
+    /// 弾リストクリア
+    /// </summary>
+    private void ResetBullet()
+    {
+        foreach (var b in bulletList)
+        {
+            Destroy(b);
+        }
+        bulletList.Clear();
+    }
+
+    /// <summary>
+    /// 完了フラグ
+    /// </summary>
+    public override bool IsActive
+    {
+        get
+        {
+            return isCreate;
+        }
     }
 }

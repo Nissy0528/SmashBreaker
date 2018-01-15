@@ -35,7 +35,7 @@ public class BossTargeter : MonoBehaviour
 	{
 		if (target == null)
 		{
-			target = FindObjectOfType<Boss>().gameObject;
+			target = FindObjectOfType<BarrierBoss>().gameObject;
 		}
 
 		player = FindObjectOfType<Player>().gameObject;

@@ -14,12 +14,18 @@ public class DebugCommand : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.U))
         {
-            Destroy(FindObjectOfType<Boss>().gameObject);
+            Boss boss = GameObject.FindGameObjectWithTag("Boss").GetComponent<Boss>();
+            boss.HP = 0;
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.M))
         {
             FindObjectOfType<Player>().AddSP(10, false);
+        }
+
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            FindObjectOfType<Player>().Damage();
         }
 
     }

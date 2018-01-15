@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class BossBullet : MonoBehaviour
+public class BossBullet : AI
 {
 	/// <summary>
 	/// 速度
 	/// </summary>
+    [SerializeField]
 	protected float speed = 5f;
 
-	// Use this for initialization
-	void Start()
+    // Use this for initialization
+    public override void Initialize()
 	{
 		GetComponent<Rigidbody2D>().gravityScale = 0;
 		BulletInit();
@@ -21,10 +22,11 @@ public class BossBullet : MonoBehaviour
 	/// </summary>
 	protected virtual void BulletInit() { }
 
-	// Update is called once per frame
-	void Update()
+    // Update is called once per frame
+    protected override void AIUpdate()
 	{
-		BulletUpdate();
+
+        BulletUpdate();
 	}
 
 	/// <summary>
@@ -44,7 +46,7 @@ public class BossBullet : MonoBehaviour
 
 
 	/// <summary>
-	/// 当たり判定
+	/// 当たり判定（トリガー）
 	/// </summary>
 	/// <param name="collision"></param>
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -53,4 +55,15 @@ public class BossBullet : MonoBehaviour
     }
 
 	protected virtual void Trigger(Collider2D col) { }
+
+    /// <summary>
+    /// あたり判定
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Collision(collision);
+    }
+
+    protected virtual void Collision(Collision2D col) { }
 }

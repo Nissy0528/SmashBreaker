@@ -7,6 +7,7 @@ public class MainCamera : MonoBehaviour
     public float shakeTime;//振動時間（設定用）
     public float shakeRange;//振動の幅
     public float followSpeed;//追従速度
+    public Color[] backColor;
 
     private GameObject parent;//親オブジェクト
     private GameObject player;//プレイヤー
@@ -32,6 +33,15 @@ public class MainCamera : MonoBehaviour
         screenMaxPos = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 1));//画面の右下の座標
         savePosition = parent.transform.position;//振動前の座標取得
         lifeTime = 0.0f;
+
+        if (GameManager.stageNum < 1)
+        {
+            cam.backgroundColor = backColor[1];
+        }
+        else
+        {
+            cam.backgroundColor = backColor[0];
+        }
     }
 
     // Update is called once per frame
@@ -42,7 +52,7 @@ public class MainCamera : MonoBehaviour
 
         Shake();//振動
         Follow();//プレイヤー追従
-        Clamp();
+        //Clamp();
     }
 
     /// <summary>

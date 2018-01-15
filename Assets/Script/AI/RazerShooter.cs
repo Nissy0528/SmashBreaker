@@ -83,7 +83,7 @@ public class RazerShooter : AI
     /// <summary>
     /// 更新
     /// </summary>
-    public override void AIUpdate()
+    protected override void AIUpdate()
     {
         foreach (var r in razerList)
         {

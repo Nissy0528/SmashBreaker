@@ -157,6 +157,7 @@
     <None Include="Assets\Shader\SandStorm.shader" />
     <None Include="Assets\Shader\Shadow.shader" />
     <None Include="Assets\Shader\Stage.shader" />
+    <None Include="Assets\Sound\Rik4kProductions - 8-Bit ChipTrance Vol.1 FREE\Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

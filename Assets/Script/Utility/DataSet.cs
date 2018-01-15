@@ -34,7 +34,7 @@ public class DataSet : MonoBehaviour
     private void BossSet()
     {
         boss = GameObject.FindGameObjectWithTag("Boss");
-        Boss boss_class = boss.GetComponent<Boss>();
+        BarrierBoss boss_class = boss.GetComponent<BarrierBoss>();
         RazerShooter razer = boss.GetComponent<RazerShooter>();
         Rotation rotation = boss.GetComponent<Rotation>();
 

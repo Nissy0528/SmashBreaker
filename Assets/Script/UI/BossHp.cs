@@ -6,18 +6,24 @@ using UnityEngine.UI;
 public class BossHp : MonoBehaviour
 {
     private Slider slider;
-    private Enemy enemy;
+    private Boss boss_class;
+    private GameObject boss;
 
     // Use this for initialization
     void Start()
     {
-        enemy = GameObject.FindGameObjectWithTag("Boss").GetComponent<Enemy>();
+        boss = GameObject.FindGameObjectWithTag("Boss");
+        if (boss != null)
+        {
+            boss_class = boss.GetComponent<Boss>();
+        }
         slider = GetComponent<Slider>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (boss == null) return;
         ShowHP();
     }
 
@@ -26,8 +32,8 @@ public class BossHp : MonoBehaviour
     /// </summary>
     private void ShowHP()
     {
-        int maxHp = enemy.MaxHP;//最大体力
-        int currentHp = enemy.HP;//現在の体力
+        int maxHp = boss_class.MaxHP;//最大体力
+        int currentHp = boss_class.HP;//現在の体力
         float hp = (float)currentHp / maxHp;//体力の割合
 
         slider.value = hp;//スライダーに体力を反映
