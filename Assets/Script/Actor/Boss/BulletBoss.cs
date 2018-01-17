@@ -36,61 +36,61 @@ public class BulletBoss : Boss
         enemys = GameObject.FindGameObjectsWithTag("Enemy");
     }
 
-    /// <summary>
-    /// 人工知能
-    /// </summary>
-    public override void AI()
-    {
-        if (enemys.Length > 0)
-        {
-            ai_classes[0].Stop();
-        }
-        else
-        {
-            ai_classes[0].enabled = true;
-        }
+    ///// <summary>
+    ///// 人工知能
+    ///// </summary>
+    //public override void AI()
+    //{
+    //    if (enemys.Length > 0)
+    //    {
+    //        ai_classes[0].Stop();
+    //    }
+    //    else
+    //    {
+    //        ai_classes[0].enabled = true;
+    //    }
 
-        if (HP <= 0 || isStan)
-        {
-            foreach (var ai in ai_classes)
-            {
-                ai.Stop();
-            }
-        }
-    }
+    //    if (HP <= 0 || isStan)
+    //    {
+    //        foreach (var ai in ai_classes)
+    //        {
+    //            ai.Stop();
+    //        }
+    //    }
+    //}
 
-    /// <summary>
-    /// 硬直
-    /// </summary>
-    public override void Stan()
-    {
-        if (!isStan) return;
+    ///// <summary>
+    ///// 硬直
+    ///// </summary>
+    //public override void Stan()
+    //{
+    //    if (!isStan) return;
 
-        if (stanDelay == stanTime)
-        {
-            EnemyDead();
-        }
-        stanDelay -= Time.deltaTime;
+    //    if (stanDelay == stanTime)
+    //    {
+    //        EnemyDead();
+    //    }
+    //    stanDelay -= Time.deltaTime;
 
-        if (stanDelay <= 0.0f)
-        {
-            isStan = false;
-            stanDelay = stanTime;
-            foreach (var ai in ai_classes)
-            {
-                ai.enabled = true;
-            }
-        }
-    }
+    //    if (stanDelay <= 0.0f)
+    //    {
+    //        isStan = false;
+    //        stanDelay = stanTime;
+    //        foreach (var ai in ai_classes)
+    //        {
+    //            ai.enabled = true;
+    //        }
+    //    }
+    //}
 
-    /// <summary>
-    /// 全雑魚敵消滅
-    /// </summary>
-    private void EnemyDead()
-    {
-        foreach (var e in enemys)
-        {
-            e.GetComponent<Enemy>().Dead();
-        }
-    }
+    ///// <summary>
+    ///// 全雑魚敵消滅
+    ///// </summary>
+    //private void EnemyDead()
+    //{
+    //    foreach (var e in enemys)
+    //    {
+    //        e.GetComponent<Enemy>().Dead();
+    //    }
+    //}
 }

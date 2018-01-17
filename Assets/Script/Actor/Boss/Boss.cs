@@ -7,12 +7,11 @@ public class Boss : MonoBehaviour
     [SerializeField]
     protected int maxHp;//最大体力
     [SerializeField]
-    protected AI[] ai_classes;//人工知能用配列
-    [SerializeField]
     protected float stanTime;//硬直時間
 
     protected GameManager gameManager;
     protected GameObject player;//プレイヤー
+    protected SmashGage smashGage;
     protected bool isStan;//気絶フラグ
     protected float stanDelay;//硬直カウント
 
@@ -21,7 +20,6 @@ public class Boss : MonoBehaviour
     public float deadShakeTime;//消滅時のコントローラー振動時間
 
     private MainCamera mainCamera;//カメラ
-    private SmashGage smashGage;
     private Animator anim;//アニメーション
     private GameObject cutIn;//死亡時のカットイン
     private GameObject deadUI;//死亡時の演出UI
@@ -37,12 +35,11 @@ public class Boss : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         cutIn = FindObjectOfType<CutIn>().gameObject;
         deadUI = FindObjectOfType<BossDown>().gameObject;
-        anim = GetComponentInChildren<Animator>();
+        anim = transform.Find("Chara").GetComponent<Animator>();
         isStan = false;
         isDamage = false;
         hp = maxHp;
         stanDelay = stanTime;
-        //ShadowSet();//影
         Initialize();
     }
 
@@ -56,7 +53,6 @@ public class Boss : MonoBehaviour
     {
         BossUpdate();
         Stan();
-        AI();
         BossDead();
     }
 
@@ -64,11 +60,6 @@ public class Boss : MonoBehaviour
     /// 更新
     /// </summary>
     public virtual void BossUpdate() { }
-
-    /// <summary>
-    /// 人工知能
-    /// </summary>
-    public virtual void AI() { }
 
     /// <summary>
     /// 硬直
@@ -129,16 +120,6 @@ public class Boss : MonoBehaviour
     }
 
     /// <summary>
-    /// 影の設定を有効にする
-    /// </summary>
-    //private void ShadowSet()
-    //{
-    //    var child = transform.GetChild(0);
-    //    var sr = child.GetComponent<SpriteRenderer>();
-    //    sr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-    //}
-
-    /// <summary>
     /// あたり判定（トリガー）
     /// </summary>
     void OnTriggerEnter2D(Collider2D col)
@@ -184,6 +165,7 @@ public class Boss : MonoBehaviour
     /// <param name="name">切り替えるフラグの名前</param>
     public virtual void AnimBool(string name, bool frag)
     {
+        anim = transform.Find("Chara").GetComponent<Animator>();
         if (!anim.enabled) return;
 
         anim.SetBool(name, frag);
@@ -195,6 +177,7 @@ public class Boss : MonoBehaviour
     /// <returns></returns>
     public virtual bool AnimFinish(string name)
     {
+        anim = transform.Find("Chara").GetComponent<Animator>();
         if (!anim.enabled) return false;
 
         AnimatorStateInfo animState = anim.GetCurrentAnimatorStateInfo(0);
@@ -207,6 +190,7 @@ public class Boss : MonoBehaviour
     public bool IsStan
     {
         get { return isStan; }
+        set { isStan = value; }
     }
 
     /// <summary>

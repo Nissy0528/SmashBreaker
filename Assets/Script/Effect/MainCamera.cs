@@ -34,14 +34,7 @@ public class MainCamera : MonoBehaviour
         savePosition = parent.transform.position;//振動前の座標取得
         lifeTime = 0.0f;
 
-        if (GameManager.stageNum < 1)
-        {
-            cam.backgroundColor = backColor[1];
-        }
-        else
-        {
-            cam.backgroundColor = backColor[0];
-        }
+        cam.backgroundColor = backColor[GameManager.stageNum];
     }
 
     // Update is called once per frame

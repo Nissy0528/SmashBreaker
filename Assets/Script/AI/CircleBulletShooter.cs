@@ -19,7 +19,6 @@ public class CircleBulletShooter : AI
     /// </summary>
     public override void Initialize()
     {
-        ResetBullet();
         shootCount = shootTime;
         isCreate = false;
     }
@@ -91,18 +90,6 @@ public class CircleBulletShooter : AI
 
         CreateBullets();
         shootCount = shootTime;
-    }
-
-    /// <summary>
-    /// 弾リストクリア
-    /// </summary>
-    private void ResetBullet()
-    {
-        foreach (var b in bulletList)
-        {
-            Destroy(b);
-        }
-        bulletList.Clear();
     }
 
     /// <summary>

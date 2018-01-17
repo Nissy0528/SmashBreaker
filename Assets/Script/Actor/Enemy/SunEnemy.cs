@@ -5,11 +5,16 @@ using UnityEngine;
 public class SunEnemy : Enemy
 {
     public float setSpeed;//発射位置に向かう速度
+    public float spawnSpeed;//生成時の移動速度
+    public float startTime;//行動開始時間
 
-    private GameManager gameManager;
+    private Rigidbody2D rigid;
+    private FollowPlayer followClass;//プレイヤー追従クラス
     private Vector2 shootPos;//発射位置
+    private Vector2 spawnDirec;//生成時に移動する方向
     private bool isShootSet;//発射準備フラグ
     private bool isShoot;//発射フラグ
+    private bool isStart;//行動開始フラグ
 
     /// <summary>
     /// 初期化
@@ -18,8 +23,16 @@ public class SunEnemy : Enemy
     {
         isShootSet = false;
         isShoot = false;
-        gameManager = FindObjectOfType<GameManager>();
-        gameManager.LayerCollision("Enemy", "Enemy", true);
+
+        followClass = GetComponent<FollowPlayer>();
+        rigid = GetComponent<Rigidbody2D>();
+
+        float x = Random.Range(-1.0f, 1.0f);
+        float y = Random.Range(-1.0f, 1.0f);
+        spawnDirec = new Vector2(x, y);
+        rigid.AddForce(spawnDirec * spawnSpeed, ForceMode2D.Impulse);
+
+        isStart = false;
     }
 
     /// <summary>
@@ -27,6 +40,14 @@ public class SunEnemy : Enemy
     /// </summary>
     public override void EnemyUpdate()
     {
+        startTime -= Time.deltaTime;
+        if (!isStart && startTime <= 0.0f)
+        {
+            rigid.velocity = Vector2.zero;
+            followClass.enabled = true;
+            isStart = true;
+        }
+
         MoveToPoint();
     }
 
@@ -50,6 +71,7 @@ public class SunEnemy : Enemy
         if (isStan)
         {
             gameObject.layer = 0;
+            isShootSet = false;
             foreach (var ai in ai_classes)
             {
                 ai.Stop();
@@ -64,6 +86,7 @@ public class SunEnemy : Enemy
     {
         if (!isShootSet || isShoot) return;
 
+        rigid.velocity = Vector2.zero;
         transform.position = Vector2.Lerp(transform.position, shootPos, setSpeed * Time.deltaTime);
         float distance = Vector2.Distance(transform.position, shootPos);
         if (distance <= 0.5f)

@@ -52,8 +52,6 @@ public class Razer
         shotRay.direction = velocity.normalized;
         //マテリアル設定
         lineRenderer.material = mat;
-        lineRenderer.startColor = Color.blue;
-        lineRenderer.endColor = Color.blue;
 
         this.wallLayer = wallLayer;
     }
@@ -205,6 +203,15 @@ public class Razer
     public GameObject GetOrigin
     {
         get { return origin; }
+    }
+
+    /// <summary>
+    /// レーザー発射フラグ
+    /// </summary>
+    /// <returns></returns>
+    public bool IsFire()
+    {
+       return count >= time;
     }
 }
 

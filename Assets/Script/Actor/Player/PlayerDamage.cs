@@ -26,7 +26,7 @@ public class PlayerDamage : MonoBehaviour
     /// </summary>
     public void Damage()
     {
-        if (player.IsState(Player.State.DASH)) return;
+        if (player.IsState(Player.State.DASH) || player.IsState(Player.State.DEAD)) return;
 
         //if (parameter.hp > 0 && !isDamage)
         //{

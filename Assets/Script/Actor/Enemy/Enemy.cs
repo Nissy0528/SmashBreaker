@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     protected AI[] ai_classes;//人工知能用配列
 
 
+    protected GameManager gameManager;
     protected GameObject player;//プレイヤー
     protected bool isStan;//気絶フラグ
 
@@ -38,6 +39,8 @@ public class Enemy : MonoBehaviour
         isStan = false;
         size = transform.localScale;
         col = GetComponent<Collider2D>();
+        gameManager = FindObjectOfType<GameManager>();
+        gameManager.LayerCollision("Enemy", "Enemy", true);
         Initialize();
     }
 

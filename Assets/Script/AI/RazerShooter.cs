@@ -45,9 +45,9 @@ public class RazerShooter : AI
     public override void Initialize()
     {
         GameObject[] razers = GameObject.FindGameObjectsWithTag("Razer");
-        if(razers.Length>0)
+        if (razers.Length > 0)
         {
-            foreach(var r in razers)
+            foreach (var r in razers)
             {
                 Destroy(r);
             }
@@ -57,17 +57,17 @@ public class RazerShooter : AI
         muzzle = new List<GameObject>();
         for (int i = 0; i < muzzles.Length; i++)
         {
-            if (muzzles[i].transform.parent == transform)
-            {
-                muzzle.Add(muzzles[i]);
-            }
+            muzzle.Add(muzzles[i]);
         }
 
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
 
         boss_class = GetComponent<Boss>();
-        boss_muzzle = transform.Find("Muzzle").Find("Boss2_Muzzle").gameObject;
-        boss_muzzle.SetActive(false);
+        if (name == "Sun")
+        {
+            boss_muzzle = transform.Find("Muzzle").Find("Boss2_Muzzle").gameObject;
+            boss_muzzle.SetActive(false);
+        }
 
         razerList = new List<Razer>();
         for (int i = 0; i < muzzle.Count; i++)
@@ -77,7 +77,7 @@ public class RazerShooter : AI
         razerCount = 0.0f;
         isEnable = false;
         Reset();
-		isEnd = false;
+        isEnd = false;
     }
 
     /// <summary>
@@ -128,6 +128,7 @@ public class RazerShooter : AI
         {
             warpRazer = null;
             Destroy(warpRazerObj);
+            isEnd = true;
         }
 
         if (boss_class.AnimFinish("Boss_Razer"))
@@ -135,8 +136,10 @@ public class RazerShooter : AI
             isEnable = !isEnable;
             Reset();
             razerCount = 0.0f;
-            boss_muzzle.SetActive(isEnable);
-			isEnd = true;
+            if (boss_muzzle != null)
+            {
+                boss_muzzle.SetActive(isEnable);
+            }
         }
     }
 
@@ -247,9 +250,22 @@ public class RazerShooter : AI
         get { return isEnable; }
     }
 
-	private bool isEnd = false;
-	public bool IsEnd()
-	{
-		return isEnd;
-	}
+    private bool isEnd = false;
+    public bool IsEnd()
+    {
+        return isEnd;
+    }
+
+    /// <summary>
+    /// レーザー発射フラグ
+    /// </summary>
+    /// <returns></returns>
+    public bool IsFire()
+    {
+        foreach (var r in razerList)
+        {
+            return r.IsFire();
+        }
+        return false;
+    }
 }

@@ -18,13 +18,12 @@ public class GameManager : MonoBehaviour
     private float stopDelay;//ゲーム停止時間
     private float controllerShakeTime;
     private bool isPause;//ポーズフラグ
-    private bool isDebug;//デバックフラグ
+    public bool isDebug;//デバックフラグ
     private Player player;//プレイヤー
     private GameObject bossObj;//ボス
     private MainCamera mainCamera;//カメラ
     private Vector2 stageMinPos;//ステージの左下
     private Vector2 stageMaxPos;//ステージの右上
-
 
     /// <summary>
     /// ワープゾーン
@@ -185,7 +184,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void SetStageRange()
     {
-        if (stageNum < 1&&!isDebug) return;
+        if (stageNum < 1 && !isDebug) return;
 
         GameObject under = GameObject.Find("Under");
         GameObject left = GameObject.Find("Left");
