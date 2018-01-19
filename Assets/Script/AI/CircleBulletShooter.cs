@@ -14,6 +14,8 @@ public class CircleBulletShooter : AI
     private float shootCount;//発射時間
     private bool isCreate;//弾生成完了フラグ
 
+	private bool isShoot;
+
     /// <summary>
     /// 初期化
     /// </summary>
@@ -21,6 +23,7 @@ public class CircleBulletShooter : AI
     {
         shootCount = shootTime;
         isCreate = false;
+		isShoot = false;
     }
 
     /// <summary>
@@ -90,6 +93,7 @@ public class CircleBulletShooter : AI
 
         CreateBullets();
         shootCount = shootTime;
+		isShoot = true;
     }
 
     /// <summary>
@@ -102,4 +106,17 @@ public class CircleBulletShooter : AI
             return isCreate;
         }
     }
+
+	public bool IsShoot
+	{
+		get
+		{
+			return isShoot;
+		}
+
+		set
+		{
+			isShoot = value;
+		}
+	}
 }

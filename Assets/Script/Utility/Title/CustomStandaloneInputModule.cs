@@ -19,7 +19,7 @@ namespace UnityEngine.EventSystems
         }
 
         [SerializeField]
-        private bool m_EnableMouse = false;
+        private bool m_EnableMouse = true;
 
         [SerializeField]
         private string m_HorizontalAxis = "Horizontal";
