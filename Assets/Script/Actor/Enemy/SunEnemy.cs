@@ -27,7 +27,9 @@ public class SunEnemy : Enemy
         followClass = GetComponent<FollowPlayer>();
         rigid = GetComponent<Rigidbody2D>();
 
-        float x = Random.Range(-1.0f, 1.0f);
+		ai_classes[0].enabled = false;
+
+		float x = Random.Range(-1.0f, 1.0f);
         float y = Random.Range(-1.0f, 1.0f);
         spawnDirec = new Vector2(x, y);
         rigid.AddForce(spawnDirec * spawnSpeed, ForceMode2D.Impulse);
@@ -35,17 +37,25 @@ public class SunEnemy : Enemy
         isStart = false;
     }
 
-    /// <summary>
-    /// 更新
-    /// </summary>
-    public override void EnemyUpdate()
+	public void SetShootReset()
+	{
+		isShootSet = false;
+		isShoot = false;
+		followClass.enabled = true;
+		followClass.ReMove();
+		GetComponent<Collider2D>().enabled = true;
+	}
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	public override void EnemyUpdate()
     {
         startTime -= Time.deltaTime;
         if (!isStart && startTime <= 0.0f)
         {
             rigid.velocity = Vector2.zero;
-            followClass.enabled = true;
-            isStart = true;
+			isStart = true;
         }
 
         MoveToPoint();
@@ -61,20 +71,20 @@ public class SunEnemy : Enemy
             GetComponent<FollowPlayer>().MoveStop();
             GetComponent<Collider2D>().enabled = false;
         }
-        if (GetComponent<Dash>().IsActive && ai_classes[0].enabled)
-        {
-            GetComponent<Collider2D>().enabled = true;
-            ai_classes[1].Stop();
-            ai_classes[2].Stop();
-        }
-
+        //if (GetComponent<Dash>().IsActive && ai_classes[0].enabled)
+        //{
+        //    GetComponent<Collider2D>().enabled = true;
+        //    ai_classes[1].Stop();
+        //    ai_classes[2].Stop();
+        //}
+		
         if (isStan)
         {
             gameObject.layer = 0;
             isShootSet = false;
             foreach (var ai in ai_classes)
             {
-                ai.Stop();
+              //  ai.Stop();
             }
         }
     }
@@ -101,6 +111,7 @@ public class SunEnemy : Enemy
     /// </summary>
     public void SetShoot(Vector2 shootPos)
     {
+		//DebugCommand.DebugLog(gameObject.name);
         this.shootPos = shootPos;
         isShootSet = true;
     }
