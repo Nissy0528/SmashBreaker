@@ -13,6 +13,7 @@ public class BossBulletShooter : AI
     // Use this for initialization
     public override void Initialize()
     {
+        t_count = 0;
     }
 
     protected override void AIUpdate()

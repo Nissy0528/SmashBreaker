@@ -40,7 +40,7 @@ public class TurorialBoss : Boss
             spawner.enabled = true;
             followClass.enabled = true;
 
-            if(razerClass.IsFire())
+            if (razerClass.IsFire())
             {
                 followClass.Stop();
             }

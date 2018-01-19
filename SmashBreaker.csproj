@@ -85,10 +85,12 @@
     <Compile Include="Assets\Script\AI\AreaEnemy.cs" />
     <Compile Include="Assets\Script\AI\Barrier.cs" />
     <Compile Include="Assets\Script\AI\BossBulletShooter.cs" />
+    <Compile Include="Assets\Script\AI\Bound.cs" />
     <Compile Include="Assets\Script\AI\CircleBulletShooter.cs" />
     <Compile Include="Assets\Script\AI\Dash.cs" />
     <Compile Include="Assets\Script\AI\DistanseEnemy.cs" />
     <Compile Include="Assets\Script\AI\FollowPlayer.cs" />
+    <Compile Include="Assets\Script\AI\GrowBullet.cs" />
     <Compile Include="Assets\Script\AI\RazerShooter.cs" />
     <Compile Include="Assets\Script\AI\RotEnemy.cs" />
     <Compile Include="Assets\Script\AI\Translation.cs" />
@@ -98,7 +100,7 @@
     <Compile Include="Assets\Script\Actor\Boss\BossSun.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Bullet.cs" />
     <Compile Include="Assets\Script\Actor\Boss\BulletBoss.cs" />
-    <Compile Include="Assets\Script\Actor\Boss\GrowBullet.cs" />
+    <Compile Include="Assets\Script\Actor\Boss\DrillBoss.cs" />
     <Compile Include="Assets\Script\Actor\Boss\PlayerLook.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Razer.cs" />
     <Compile Include="Assets\Script\Actor\Boss\Rotation.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="Assets\Script\Actor\Enemy\BulletEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\Enemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\EnemySpawner.cs" />
+    <Compile Include="Assets\Script\Actor\Enemy\GrowDrillEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\SunEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Enemy\TutorialEnemy.cs" />
     <Compile Include="Assets\Script\Actor\Player\Player.cs" />

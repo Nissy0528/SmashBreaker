@@ -191,7 +191,6 @@ public class Smash : MonoBehaviour
     {
         if (playerSP.IsMax && colTag == "Boss")
         {
-            //maxHitEffect.SetActive(true);
             mainCamera.SetShake(false, 0.5f);
             player.AddSP(0, true);
             FindObjectOfType<GameManager>().ShakeController(1.0f, 0.3f);

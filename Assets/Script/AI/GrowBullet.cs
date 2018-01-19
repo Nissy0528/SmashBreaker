@@ -23,17 +23,6 @@ public class GrowBullet : BossBullet
         rigid = GetComponent<Rigidbody2D>();
         rigid.freezeRotation = true;
         //GetComponent<CircleCollider2D>().isTrigger = true;
-        float x = 0f, y = 0f;
-        while (x == 0f)
-        {
-            x = Random.Range(-1f, 1f);
-        }
-        while (y == 0f)
-        {
-            y = Random.Range(-1f, 1f);
-        }
-        Vector2 velocity = new Vector2(x, y);
-        rigid.AddForce(velocity * speed, ForceMode2D.Impulse);
     }
 
     /// <summary>
@@ -79,12 +68,8 @@ public class GrowBullet : BossBullet
         }
         if (layer == "Player")
         {
-            //var p = FindObjectOfType<Player>();
-            //if (!p.IsState(Player.State.DASH))
-            //{
-                Destroy(gameObject);
-                FindObjectOfType<PlayerDamage>().Damage();
-            //}
+            Destroy(gameObject);
+            FindObjectOfType<PlayerDamage>().Damage();
         }
     }
 
