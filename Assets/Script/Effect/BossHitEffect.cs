@@ -22,6 +22,7 @@ public class BossHitEffect : MonoBehaviour
         boss = bossObj.GetComponent<Boss>();
         bossHP = boss.HP;
         iniHP = bossHP;
+        anim.enabled = false;
     }
 
     // Update is called once per frame
@@ -39,10 +40,10 @@ public class BossHitEffect : MonoBehaviour
         if (bossHP == iniHP) return;
 
         anim.enabled = true;
-        if (bossHP <= 0)
-        {
-            anim.SetBool("BossDead", true);
-        }
+        //if (bossHP <= 0)
+        //{
+        //    anim.SetBool("BossDead", true);
+        //}
         iniHP = bossHP;
     }
 }

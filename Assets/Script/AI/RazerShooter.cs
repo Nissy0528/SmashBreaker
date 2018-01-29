@@ -25,10 +25,11 @@ public class RazerShooter : AI
     private string shieldLayer;
 
     public Material mat;//レーザーの色
-
     public float razerOnTime;//レーザーオン時間
     public float razerOffTime;//レーザーオフ時間
     public float time;//レーザー発射時間
+    public Transform parent;
+
     private List<Razer> razerList;//レーザーのリスト
     private Razer warpRazer;//ワープしたレーザーのリスト
     private List<GameObject> muzzle;//発射口のリスト
@@ -49,7 +50,13 @@ public class RazerShooter : AI
         {
             foreach (var r in razers)
             {
-                Destroy(r);
+                Transform firepos = r.transform.parent;
+                Transform muzzle = firepos.parent;
+                Transform parent = muzzle.parent;
+                if (parent == this.parent)
+                {
+                    Destroy(r);
+                }
             }
         }
 
@@ -57,12 +64,18 @@ public class RazerShooter : AI
         muzzle = new List<GameObject>();
         for (int i = 0; i < muzzles.Length; i++)
         {
-            muzzle.Add(muzzles[i]);
+            if (muzzles[i].transform.parent == parent)
+            {
+                muzzle.Add(muzzles[i]);
+            }
         }
 
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
 
-        boss_class = GetComponent<Boss>();
+        if (tag == "Boss")
+        {
+            boss_class = GetComponent<Boss>();
+        }
         if (name == "Sun")
         {
             boss_muzzle = transform.Find("Muzzle").Find("Boss2_Muzzle").gameObject;
@@ -122,7 +135,10 @@ public class RazerShooter : AI
             return;
         }
 
-        boss_class.AnimBool("Razer", !isEnable);
+        if (boss_class != null)
+        {
+            boss_class.AnimBool("Razer", !isEnable);
+        }
 
         if (isEnable)
         {
@@ -131,7 +147,20 @@ public class RazerShooter : AI
             isEnd = true;
         }
 
-        if (boss_class.AnimFinish("Boss_Razer"))
+        if (boss_class != null)
+        {
+            if (boss_class.AnimFinish("Boss_Razer"))
+            {
+                isEnable = !isEnable;
+                Reset();
+                razerCount = 0.0f;
+                if (boss_muzzle != null)
+                {
+                    boss_muzzle.SetActive(isEnable);
+                }
+            }
+        }
+        else
         {
             isEnable = !isEnable;
             Reset();

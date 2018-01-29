@@ -172,6 +172,12 @@ public class Enemy : MonoBehaviour
             smash.Hit(tag);
         }
     }
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        Collision(col);
+    }
+
+    public virtual void Collision(Collision2D col) { }
 
     /// <summary>
     /// 画面外に出たら消滅

@@ -33,9 +33,15 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
+        GameObject debugObj = FindObjectOfType<DebugCommand>().gameObject;
         if (!isDebug)
         {
             Instantiate(stages[stageNum]);
+            debugObj.SetActive(false);
+        }
+        else
+        {
+            debugObj.SetActive(true);
         }
 
         stopDelay = stopTime;

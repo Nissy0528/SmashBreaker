@@ -21,8 +21,7 @@ public class Boss : MonoBehaviour
 
     private MainCamera mainCamera;//カメラ
     private Animator anim;//アニメーション
-    private GameObject cutIn;//死亡時のカットイン
-    private GameObject deadUI;//死亡時の演出UI
+    private BossHitEffect hitEffect;//ヒットエフェクト
     private int hp;//体力
     private bool isDamage;//ダメージフラグ
 
@@ -33,9 +32,8 @@ public class Boss : MonoBehaviour
         player = GameObject.Find("Player");//プレイヤーを探す
         smashGage = FindObjectOfType<SmashGage>();
         gameManager = FindObjectOfType<GameManager>();
-        cutIn = FindObjectOfType<CutIn>().gameObject;
-        deadUI = FindObjectOfType<BossDown>().gameObject;
         anim = transform.Find("Chara").GetComponent<Animator>();
+        hitEffect = FindObjectOfType<BossHitEffect>();
         isStan = false;
         isDamage = false;
         hp = maxHp;
@@ -90,33 +88,40 @@ public class Boss : MonoBehaviour
     /// </summary>
     private void BossDead()
     {
-        if (hp > 0) return;
+        if (hp > 0 || hitEffect.GetComponent<Animator>().enabled) return;
 
-        if (cutIn != null)
+        if (anim.updateMode != AnimatorUpdateMode.UnscaledTime)
         {
-            cutIn.GetComponent<CutIn>().enabled = true;
-            cutIn.GetComponent<CutIn>().SetBossDeadUI(deadUI);
+            gameManager.SetTimeScale(2.0f, 0.0f);
+            // タイムスケールを無視する
+            anim.updateMode = AnimatorUpdateMode.UnscaledTime;
         }
 
-        if (deadUI == null)
+        if (Time.timeScale == 1.0f)
         {
-            GameObject charaPrefab = Instantiate(transform.Find("Chara").gameObject);
-            charaPrefab.transform.position = transform.position;
-            charaPrefab.transform.localScale = transform.localScale;
-            if (charaPrefab.GetComponent<Animator>() != null)
-            {
-                charaPrefab.GetComponent<Animator>().enabled = false;
-            }
-
-            GameObject effect = Instantiate(dead_effect);
-            effect.transform.parent = charaPrefab.transform;
-            effect.transform.localPosition = Vector3.zero;
-            effect.transform.localScale = new Vector3(0.05f, 0.05f, 1);
-
-            gameManager.SetTimeScale(deadTime, 0.25f);
-            gameManager.ShakeController(1.0f, deadShakeTime);
+            GameObject deadEffectObj = Instantiate(dead_effect);
+            deadEffectObj.transform.position = transform.position + new Vector3(0, -0.43f);
             Destroy(gameObject);
         }
+
+        //if (Time.timeScale == 1.0f)
+        //{
+        //    GameObject charaPrefab = Instantiate(transform.Find("Chara").gameObject);
+        //    charaPrefab.transform.position = transform.position;
+        //    charaPrefab.transform.localScale = transform.localScale;
+        //    if (charaPrefab.GetComponent<Animator>() != null)
+        //    {
+        //        charaPrefab.GetComponent<Animator>().enabled = false;
+        //    }
+
+        //    GameObject effect = Instantiate(dead_effect);
+        //    effect.transform.parent = charaPrefab.transform;
+        //    effect.transform.localPosition = Vector3.zero;
+        //    effect.transform.localScale = new Vector3(0.05f, 0.05f, 1);
+        //    gameManager.SetTimeScale(deadTime, 0.25f);
+        //    gameManager.ShakeController(1.0f, deadShakeTime);
+        //    Destroy(gameObject);
+        //}
     }
 
     /// <summary>
@@ -148,16 +153,12 @@ public class Boss : MonoBehaviour
             smash.Hit(tag);
         }
     }
-
-    /// 消滅
-    /// </summary>
-    public void Dead()
+    void OnCollisionEnter2D(Collision2D col)
     {
-        GameObject effect = Instantiate(dead_effect);
-        effect.transform.position = transform.position;
-
-        Destroy(gameObject);//消滅
+        Collision(col);
     }
+
+    public virtual void Collision(Collision2D col) { }
 
     /// <summary>
     /// アニメーション切り替え

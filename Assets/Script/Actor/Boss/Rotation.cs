@@ -29,7 +29,6 @@ public class Rotation : AI
     public float changeTime;//角度切り替え時間
     public string targetTag;//回転軸にするオブジェクトのタグ
 
-    private Enemy enemyClass;//エネミークラス
     private Vector2 targetPos;//回転軸の座標
     private Transform target;
     private float changeCount;//回転切り替えカウント
@@ -38,11 +37,10 @@ public class Rotation : AI
     // Use this for initialization
     public override void Initialize()
     {
-        enemyClass = GetComponent<Enemy>();
         iniAngle = transform.eulerAngles.z;
 
         changeCount = changeTime;
-        if (GetComponent<Collider2D>() != null)
+        if (GetComponent<Collider2D>() != null && tag != "Boss")
         {
             GetComponent<Collider2D>().enabled = false;
         }
@@ -51,8 +49,6 @@ public class Rotation : AI
     // Update is called once per frame
     protected override void AIUpdate()
     {
-        if (enemyClass.IsStan) return;
-
         Move();
         AngleChange();
         TargetRotate();

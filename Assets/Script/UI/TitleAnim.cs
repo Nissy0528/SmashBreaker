@@ -25,6 +25,7 @@ namespace TitleUtility
 		private AnimState state;
 		private Transform canvas;
 		private Transform titles;
+        private bool isPlayerWalk;//プレイヤー歩きアニメーション開始
 
 		/// <summary>
 		/// 演出の進行状況
@@ -109,7 +110,7 @@ namespace TitleUtility
 			}
 			var rect = smashSprite.GetComponent<RectTransform>();
 			rect.localScale = Vector3.Lerp(Vector3.zero, new Vector3(1f, 1f), count);
-			count += Time.deltaTime / 2f;
+			count += Time.deltaTime;
 		}
 
 
@@ -122,18 +123,29 @@ namespace TitleUtility
 			{
 				return;
 			}
-			else if (count > 1f)
+			else if (count >= 1f)
 			{
-				var mainCamera = GameObject.Find("Main Camera").GetComponent<TitleCamera>();
-				mainCamera.SetShake(0.3f);
+				//var mainCamera = GameObject.Find("Main Camera").GetComponent<TitleCamera>();
+				//mainCamera.SetShake(0.3f);
 
 				State = AnimState.startEnd;
 				return;
 			}
-			var rect = knuckleSprite.GetComponent<RectTransform>();
-			rect.localScale = Vector3.Lerp(Vector3.zero, new Vector3(1f, 1f), count);
-			float speed = 2f;
-			count += Time.deltaTime * speed;
+            //var rect = knuckleSprite.GetComponent<RectTransform>();
+            //rect.localScale = Vector3.Lerp(Vector3.zero, new Vector3(1f, 1f), count);
+            //float speed = 3f;
+            //count += Time.deltaTime * speed;
+            Animator anim = canvas.Find("Player").GetComponent<Animator>();
+            AnimatorStateInfo animState = anim.GetCurrentAnimatorStateInfo(0);
+            if(!isPlayerWalk)
+            {
+                anim.SetBool("Start", true);
+                isPlayerWalk = true;
+            }
+            if (animState.IsName("TitlePlayer_Walk"))
+            {
+                count = animState.normalizedTime;
+            }
 		}
 	}
 }

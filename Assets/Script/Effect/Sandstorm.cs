@@ -1,31 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Sandstorm : MonoBehaviour
 {
     public float scrollSpeed;
     public float activeTime;
     public float negativeTime;
-    public GameObject mainCamera;
+    public bool isLoop;
 
-    private SpriteRenderer sprite;
+    private Image sprite;
     private float time;
 
     // Use this for initialization
     void Start()
     {
-        sprite = GetComponent<SpriteRenderer>();
-        sprite.enabled = false;
+        sprite = GetComponent<Image>();
+        sprite.enabled = isLoop;
         time = activeTime;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 cameraPos = mainCamera.transform.position;
-        transform.position = new Vector3(cameraPos.x, cameraPos.y, 0.0f);
-        ShowChange();
+        if (!isLoop)
+        {
+            ShowChange();
+        }
         Scroll();
     }
 

@@ -67,6 +67,8 @@ public class Razer
 
     private void LineUpdate()
     {
+        
+
         WallCheck();
 
         length = WallCheck();

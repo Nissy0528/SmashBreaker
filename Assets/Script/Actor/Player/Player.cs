@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     //public GameObject bullet;
     public GameObject muzzle;
     public GameObject spMaxEffect;
+    public GameObject chara;//画像オブジェクト
 
     private Parameter parameter;//パラメータ
     private MainCamera mainCamera;//カメラ
@@ -68,7 +69,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
-        anim = transform.Find("body").GetComponent<Animator>();
+        anim = chara.GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         size = transform.localScale;//大きさ取得
         state = State.IDEL;//最初は待機状態
@@ -153,11 +154,11 @@ public class Player : MonoBehaviour
 
         if (x_axis > 0)
         {
-            transform.rotation = Quaternion.identity;
+            chara.transform.rotation = Quaternion.identity;
         }
         if (x_axis < 0)
         {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            chara.transform.rotation = Quaternion.Euler(0, 180, 0);
         }
     }
 
