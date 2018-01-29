@@ -73,10 +73,9 @@ public class BossSun : Boss
 	/// 更新
 	/// </summary>
 	public override void BossUpdate()
-	{ 
+	{
 		enemys = GameObject.FindGameObjectsWithTag("Enemy");
 
-		
 
 		ClearShootPoint();
 		enemyBulletClass.CreateBullets();
@@ -187,7 +186,7 @@ public class BossSun : Boss
 			}
 		}
 
-		if(bulletClass.enabled & bulletClass.IsShoot)
+		if (bulletClass.enabled & bulletClass.IsShoot)
 		{
 			bulletClass.Stop();
 			state = State.move;
@@ -354,7 +353,7 @@ public class BossSun : Boss
 			enemyNum = 0;
 			return;
 		}
-		else if(enemyNum >= enemys.Length && isEnemyShoot)
+		else if (enemyNum >= enemys.Length && isEnemyShoot)
 		{
 			EnemyShoot();
 			return;
@@ -382,7 +381,7 @@ public class BossSun : Boss
 		var check = true;
 		foreach (var e in enemys)
 		{
-			check = check & e.GetComponent<SunEnemy>().IsShoot;
+			check = check & (e.GetComponent<SunEnemy>().IsShoot || e.GetComponent<SunEnemy>().IsStan);
 		}
 		if (!check)
 		{
@@ -424,7 +423,7 @@ public class BossSun : Boss
 	/// </summary>
 	private void ResetEnemyShoot()
 	{
-		if(enemys.Length <= 0)
+		if (enemys.Length <= 0)
 		{
 			return;
 		}
