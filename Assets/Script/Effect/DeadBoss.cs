@@ -26,9 +26,10 @@ public class DeadBoss : MonoBehaviour
         SpawnExplosion();
         if (time <= 0.0f)
         {
-            Destroy(transform.parent.gameObject);
-        }
-    }
+			Destroy(transform.gameObject);
+			//Destroy(transform.parent.gameObject);
+		}
+	}
 
     /// <summary>
     /// 爆発エフェクト生成

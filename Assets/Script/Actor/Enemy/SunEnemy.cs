@@ -111,6 +111,10 @@ public class SunEnemy : Enemy
     /// </summary>
     public void SetShoot(Vector2 shootPos)
     {
+		if (isStan)
+		{
+			return;
+		}
 		//DebugCommand.DebugLog(gameObject.name);
         this.shootPos = shootPos;
         isShootSet = true;
