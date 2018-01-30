@@ -28,6 +28,14 @@ public class DebugCommand : MonoBehaviour
             FindObjectOfType<Player>().Damage();
         }
 
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            GameObject hit = GameObject.Find("BossHitEffect");
+            Animator anim = hit.GetComponent<Animator>();
+            anim.enabled = true;
+            hit.GetComponent<Effect>().Initialized();
+        }
+
     }
 
     [Conditional("UNITY_EDITOR")]

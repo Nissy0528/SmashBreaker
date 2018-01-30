@@ -40,10 +40,10 @@ public class Rotation : AI
         iniAngle = transform.eulerAngles.z;
 
         changeCount = changeTime;
-        if (GetComponent<Collider2D>() != null && tag != "Boss")
-        {
-            GetComponent<Collider2D>().enabled = false;
-        }
+        //if (GetComponent<Collider2D>() != null && tag != "Boss")
+        //{
+        //    GetComponent<Collider2D>().enabled = false;
+        //}
     }
 
     // Update is called once per frame

@@ -14,13 +14,15 @@ public class GameManager : MonoBehaviour
     public GameObject pauseText;//ポーズUI
     public GameObject[] stages;//ステージの配列
     public AudioSource BGM;
+    public AudioClip[] se;
 
     private float stopDelay;//ゲーム停止時間
     private float controllerShakeTime;
     private bool isPause;//ポーズフラグ
-    public bool isDebug;//デバックフラグ
-    private Player player;//プレイヤー
     private GameObject bossObj;//ボス
+    private Player player;//プレイヤー
+    private Smash smash;//スマシュクラス
+    private Boss bossClass;//ボスクラス
     private MainCamera mainCamera;//カメラ
     private Vector2 stageMinPos;//ステージの左下
     private Vector2 stageMaxPos;//ステージの右上
@@ -34,30 +36,42 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         GameObject debugObj = FindObjectOfType<DebugCommand>().gameObject;
-        if (!isDebug)
+        GameObject stageObj = GameObject.FindGameObjectWithTag("Stage");
+
+        player = FindObjectOfType<Player>();
+        smash = FindObjectOfType<Smash>();
+        mainCamera = FindObjectOfType<MainCamera>();
+
+        if (stageObj == null)
         {
             Instantiate(stages[stageNum]);
             debugObj.SetActive(false);
+            if (stageNum == 0)
+            {
+                player.enabled = true;
+                smash.enabled = true;
+                BGM.gameObject.SetActive(true);
+            }
         }
         else
         {
             debugObj.SetActive(true);
+            player.enabled = true;
+            smash.enabled = true;
         }
 
         stopDelay = stopTime;
-        player = FindObjectOfType<Player>();
-        bossObj = GameObject.FindGameObjectWithTag("Boss");
-        mainCamera = FindObjectOfType<MainCamera>();
-        if (stageNum >= 1 || isDebug)
+        if (stageNum >= 1 || stageObj != null)
         {
             mainCamera.followSpeed = 0.0f;
             mainCamera.gameObject.transform.position = new Vector3(0.0f, 0.0f, -10.0f);
-            BGM.gameObject.SetActive(true);
         }
 
         warpZone = FindObjectOfType<SceneWarpZone>();
 
         Time.timeScale = 1.0f;
+
+        BGM.clip = se[stageNum];
 
         SetStageRange();
     }
@@ -65,9 +79,16 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        bossObj = GameObject.FindGameObjectWithTag("Boss");
+        if (bossObj != null)
+        {
+            bossClass = bossObj.GetComponent<Boss>();
+        }
+        StartEffect();
         GameStart();//ゲーム再開
         ShowGameOver();//ゲームオーバー表示
         ShowGameClear();//ゲームクリア表示
+        StopBGM();//ボスが倒されたらBGM停止
         Pause();//ポーズ
         C_Shake();//コントローラー振動
 
@@ -102,7 +123,9 @@ public class GameManager : MonoBehaviour
 
         BGM.Stop();
         gameover.SetActive(true);
-        Time.timeScale = 0.0f;
+        GameObject.Find("body").GetComponent<Collider2D>().enabled = false;
+        GameObject.Find("SmashColllison").GetComponent<Collider2D>().enabled = false;
+        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         Animator playerAnim = player.GetComponentInChildren<Animator>();
         AnimatorStateInfo playerAnimState = playerAnim.GetCurrentAnimatorStateInfo(0);
         if (playerAnimState.normalizedTime >= 1.0f && playerAnimState.IsName("Player_Dead"))
@@ -190,7 +213,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void SetStageRange()
     {
-        if (stageNum < 1 && !isDebug) return;
+        if (stageNum < 1 && bossObj == null) return;
 
         GameObject under = GameObject.Find("Under");
         GameObject left = GameObject.Find("Left");
@@ -202,6 +225,36 @@ public class GameManager : MonoBehaviour
 
         stageMinPos = new Vector2(underleft.x, underleft.y);
         stageMaxPos = new Vector2(topright.x, topright.y);
+    }
+
+    /// <summary>
+    /// ボスが倒されたらBGM停止
+    /// </summary>
+    private void StopBGM()
+    {
+        if (bossObj == null) return;
+
+        bossClass = bossObj.GetComponent<Boss>();
+        if (bossClass.HP <= 0)
+        {
+            BGM.Stop();
+        }
+    }
+
+    /// <summary>
+    /// ボスの登場エフェクトが終わったらプレイヤーが動けるように
+    /// </summary>
+    private void StartEffect()
+    {
+        if (bossObj == null) return;
+
+        if (bossClass.IsStart)
+        {
+            player.enabled = true;
+            smash.enabled = true;
+            BGM.gameObject.SetActive(true);
+        }
+
     }
 
     /// <summary>
@@ -252,14 +305,5 @@ public class GameManager : MonoBehaviour
     public Vector2 StageMaxPos
     {
         get { return stageMaxPos; }
-    }
-
-    /// <summary>
-    /// デバッグフラグ
-    /// </summary>
-    public bool IsDebug
-    {
-        get { return isDebug; }
-        set { isDebug = value; }
     }
 }

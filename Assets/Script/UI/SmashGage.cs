@@ -123,19 +123,27 @@ public class SmashGage : MonoBehaviour
         set { isMax = value; }
     }
 
-	public float Sp
-	{
-		get
-		{
-			return sp;
-		}
-	}
+    /// <summary>
+    /// スマシュポイント
+    /// </summary>
+    public float Sp
+    {
+        get { return sp; }
+    }
 
-	public float Max
-	{
-		get
-		{
-			return max;
-		}
-	}
+    /// <summary>
+    /// スマシュポイントの最大値
+    /// </summary>
+    public float Max
+    {
+        get { return max; }
+    }
+
+    /// <summary>
+    /// スマシュポイントの割合
+    /// </summary>
+    public float SpRate
+    {
+        get { return sp / max; }
+    }
 }

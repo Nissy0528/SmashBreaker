@@ -13,18 +13,29 @@ public class Effect : MonoBehaviour
     public Mode mode;//アニメーション終了時の処理の種類
 
     private Animator anim;//アニメーション
+    private AnimatorStateInfo animState;
 
     // Use this for initialization
     void Start()
     {
+        Initialized();
+    }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    public void Initialized()
+    {
         anim = GetComponent<Animator>();
+        animState = anim.GetCurrentAnimatorStateInfo(0);
+        anim.Play(animState.shortNameHash, 0, 0.0f);
     }
 
     // Update is called once per frame
     void Update()
     {
         //アニメーションが終わったら削除
-        var animState = anim.GetCurrentAnimatorStateInfo(0);
+        animState = anim.GetCurrentAnimatorStateInfo(0);
         Finish(animState.normalizedTime);
     }
 

@@ -8,13 +8,14 @@ public class CircleBulletShooter : AI
     public int bulletCount;//弾の数
     public float radius;//生成する円状の広さ
     public float shootTime;//発射時間（設定用）
+    public float bulletSpeed;//弾の速度
     public bool setRotate;//角度設定フラグ
 
     private List<GameObject> bulletList = new List<GameObject>();//弾のリスト
     private float shootCount;//発射時間
     private bool isCreate;//弾生成完了フラグ
 
-	private bool isShoot;
+    private bool isShoot;
 
     /// <summary>
     /// 初期化
@@ -23,7 +24,7 @@ public class CircleBulletShooter : AI
     {
         shootCount = shootTime;
         isCreate = false;
-		isShoot = false;
+        isShoot = false;
     }
 
     /// <summary>
@@ -45,7 +46,12 @@ public class CircleBulletShooter : AI
 
         for (int i = 0; i < bulletCount; i++)
         {
-            bulletList.Add(Instantiate(bullet));
+            GameObject bulletObj = Instantiate(bullet);
+            if (bulletObj.GetComponent<Bullet>() != null)
+            {
+                bulletObj.GetComponent<Bullet>().Speed = bulletSpeed;
+            }
+            bulletList.Add(bulletObj);
         }
 
         float angleDiff = 360f / (float)bulletList.Count;//オブジェクト間の角度差
@@ -93,7 +99,7 @@ public class CircleBulletShooter : AI
 
         CreateBullets();
         shootCount = shootTime;
-		isShoot = true;
+        isShoot = true;
     }
 
     /// <summary>
@@ -107,16 +113,16 @@ public class CircleBulletShooter : AI
         }
     }
 
-	public bool IsShoot
-	{
-		get
-		{
-			return isShoot;
-		}
+    public bool IsShoot
+    {
+        get
+        {
+            return isShoot;
+        }
 
-		set
-		{
-			isShoot = value;
-		}
-	}
+        set
+        {
+            isShoot = value;
+        }
+    }
 }

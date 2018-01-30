@@ -75,10 +75,8 @@ public class MainCamera : MonoBehaviour
     /// </summary>
     private void Shake()
     {
-        if (Time.timeScale == 0.0f) return;
-
         //振動時間が0になったら振動終了
-        if (lifeTime < 0.0f)
+        if (lifeTime < 0.0f|| Time.timeScale == 0.0f)
         {
             Stop();
         }

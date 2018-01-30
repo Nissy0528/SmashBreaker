@@ -37,4 +37,12 @@ public class Bullet : BossBullet
             FindObjectOfType<PlayerDamage>().Damage();
         }
     }
+
+    /// <summary>
+    /// 速度
+    /// </summary>
+    public float Speed
+    {
+        set { speed = value; }
+    }
 }

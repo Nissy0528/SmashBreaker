@@ -14,7 +14,7 @@ public class Smash : MonoBehaviour
 
     public Player player;//プレイヤー
     public SmashGage playerSP;//プレイヤーのスマッシュゲージ
-    //public GameObject maxHitEffect;//ワンパン攻撃時のエフェクト
+    public GameObject frash;
 
     private Parameter parameter;//パラメータ
     private GameObject smash;//攻撃オブジェクト
@@ -57,14 +57,12 @@ public class Smash : MonoBehaviour
         if (isAttack) return;
 
         //攻撃コマンドが入力されたら押下フラグをtureに
-        if (Input.GetMouseButtonDown(0) || Input.GetAxisRaw("Smash") <= -0.5f)
+        if (Input.GetMouseButtonDown(0) || Input.GetAxisRaw("Smash") >= 0.5f)
         {
             smash.GetComponent<CircleCollider2D>().isTrigger = true;//あたり判定を有効に
             moveToPos = smash.transform.position + smash.transform.up * parameter.length;//攻撃を飛ばす方向を設定
-            offset = smash.transform.position - transform.position;//攻撃オブジェクトとの距離設定
             isAttack = true;
         }
-
     }
 
     /// <summary>
@@ -75,7 +73,7 @@ public class Smash : MonoBehaviour
         if (!isAttack) return;//攻撃フラグがfalseならこれ以降何もしない
 
         smash.transform.position = Vector3.MoveTowards(smash.transform.position, moveToPos, parameter.smashSpeed * Time.deltaTime);//設定された方向に平行移動
-        returnPos = transform.position + offset;//戻る座標設定
+        returnPos = transform.GetChild(1).transform.position;//戻る座標設定
 
         //戻るフラグがtureなら
         if (isReturn)
@@ -133,14 +131,19 @@ public class Smash : MonoBehaviour
     /// </summary>
     private void ChangeScale()
     {
-        if (!playerSP.IsMax)
-        {
-            transform.localScale = new Vector3(smashIniScale.x, smashIniScale.y, 1);
-        }
-        else
-        {
-            transform.localScale = new Vector3(parameter.maxScale, parameter.maxScale, 1);
-        }
+        //if (!playerSP.IsMax)
+        //{
+        float rate = playerSP.SpRate;
+
+        transform.localScale = new Vector3(
+           smashIniScale.x + parameter.maxScale * rate,
+           smashIniScale.y + parameter.maxScale * rate,
+            1);
+        //}
+        //else
+        //{
+        //    transform.localScale = new Vector3(parameter.maxScale, parameter.maxScale, 1);
+        //}
     }
 
     /// <summary>
@@ -194,6 +197,7 @@ public class Smash : MonoBehaviour
             mainCamera.SetShake(false, 0.5f);
             player.AddSP(0, true);
             FindObjectOfType<GameManager>().ShakeController(1.0f, 0.3f);
+            Instantiate(frash, GameObject.Find("Canvas").transform);
         }
         isReturn = true;
         moveToPos = returnPos;//もといた座標に戻る

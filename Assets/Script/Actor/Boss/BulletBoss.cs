@@ -9,33 +9,24 @@ public class BulletBoss : Boss
     public int spawnCountMax;//敵を生成する数（スマッシュゲージマックス時）
     public float bulletTime;//弾発射時間
     public PhysicsMaterial2D p_mat;//フィジックマテリアル
+    public FollowPlayer lookClass;//プレイヤーを見るクラス
 
     private Rigidbody2D rigid;
     private Vector2 currentRV;
-    private GameObject[] enemys;//フィールド上の雑魚敵
     private CircleBulletShooter enemyBulletClass;//雑魚敵発射クラス
     private BossBulletShooter bulletClass;//弾発射クラス
     private Dash dashClass;//突撃クラス
     private Rotation rotateClass;//回転クラス
     private int dashCount;//突撃した回数
     private float bulletCount;//弾発射時間
+    private bool isStartMove;//初期加速フラグ
 
     /// <summary>
     /// 初期化
     /// </summary>
     public override void Initialize()
     {
-        //ランダム方向に加速
-        float x = Random.Range(-1.0f, 1.0f);
-        float y = Random.Range(-1.0f, 1.0f);
-        Vector2 v = new Vector2(x, y).normalized;
-
-        rigid = GetComponent<Rigidbody2D>();
-        rigid.velocity = Vector2.zero;
-        rigid.sharedMaterial = p_mat;
-        rigid.drag = 0.0f;
-        rigid.AddForce(v * speed, ForceMode2D.Impulse);
-        currentRV = rigid.velocity;
+        StartMove();
 
         enemyBulletClass = GetComponent<CircleBulletShooter>();
         bulletClass = GetComponent<BossBulletShooter>();
@@ -51,8 +42,12 @@ public class BulletBoss : Boss
     /// </summary>
     public override void BossUpdate()
     {
-        enemys = GameObject.FindGameObjectsWithTag("Enemy");
         AI();
+        StartMove();
+        for(int i=0;i<enemys.Length;i++)
+        {
+            enemys[i].GetComponent<BulletEnemy>().SetNumber(i);
+        }
     }
 
     /// <summary>
@@ -81,7 +76,7 @@ public class BulletBoss : Boss
                 rigid.velocity = currentRV;
                 enemyBulletClass.bulletCount = spawnCountMax;
             }
-            if (dashCount <= 3)
+            if (dashCount <= 2)
             {
                 bulletCount = bulletTime;
                 dashClass.enabled = true;
@@ -121,34 +116,16 @@ public class BulletBoss : Boss
             bulletClass.Stop();
             dashClass.Stop();
             rotateClass.Stop();
+            lookClass.Stop();
             dashCount = 0;
             bulletCount = bulletTime;
             currentRV = Vector2.zero;
+            isStartMove = false;
         }
         else
         {
             rigid.velocity = currentRV;
-        }
-    }
-
-    /// <summary>
-    /// 硬直
-    /// </summary>
-    public override void Stan()
-    {
-        if (!isStan) return;
-
-        if (stanDelay == stanTime)
-        {
-            EnemyDead();
-        }
-        stanDelay -= Time.deltaTime;
-
-        if (stanDelay <= 0.0f)
-        {
-            isStan = false;
-            stanDelay = stanTime;
-            Initialize();
+            lookClass.enabled = true;
         }
     }
 
@@ -165,13 +142,24 @@ public class BulletBoss : Boss
     }
 
     /// <summary>
-    /// 全雑魚敵消滅
+    /// 初期加速
     /// </summary>
-    private void EnemyDead()
+    private void StartMove()
     {
-        foreach (var e in enemys)
-        {
-            e.GetComponent<Enemy>().Dead();
-        }
+        if (isStartMove) return;
+
+        //ランダム方向に加速
+        float x = Random.Range(-1.0f, 1.0f);
+        float y = Random.Range(-1.0f, 1.0f);
+        Vector2 v = new Vector2(x, y).normalized;
+
+        rigid = GetComponent<Rigidbody2D>();
+        rigid.velocity = Vector2.zero;
+        rigid.sharedMaterial = p_mat;
+        rigid.drag = 0.0f;
+        rigid.AddForce(v * speed, ForceMode2D.Impulse);
+        currentRV = rigid.velocity;
+
+        isStartMove = true;
     }
 }
