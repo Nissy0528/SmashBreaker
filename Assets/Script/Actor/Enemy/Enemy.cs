@@ -7,6 +7,8 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     protected int point;//倒されたときのポイント
     [SerializeField]
+    protected int comboPoint;//コンボ時のポイント
+    [SerializeField]
     protected float shootSpeed;//吹き飛ぶ速度
     [SerializeField]
     protected float speed;//移動速度
@@ -20,7 +22,8 @@ public class Enemy : MonoBehaviour
 
     public GameObject dead_effect;//死亡時エフェクト
     public GameObject sp_effect;//スマッシュポイントエフェクト
-    public GameObject audio;
+    public GameObject sound;//サウンド
+    public GameObject comboText;//コンボUI
     public AudioClip[] se;//効果音
 
     private MainCamera mainCamera;//カメラ
@@ -40,7 +43,6 @@ public class Enemy : MonoBehaviour
         size = transform.localScale;
         col = GetComponent<Collider2D>();
         gameManager = FindObjectOfType<GameManager>();
-        gameManager.LayerCollision("Enemy", "Enemy", true);
         Initialize();
     }
 
@@ -83,7 +85,7 @@ public class Enemy : MonoBehaviour
         point = 0;
 
         //ヒット効果音生成
-        GameObject audioObj = Instantiate(audio);
+        GameObject audioObj = Instantiate(sound);
         audioObj.GetComponent<SE>().SetClip(se[0]);
 
         isStan = true;//気絶フラグtrue
@@ -158,6 +160,14 @@ public class Enemy : MonoBehaviour
         {
             Dead();
         }
+
+        if (col.tag == "Enemy")
+        {
+            if (!col.gameObject.GetComponent<Enemy>().IsStan)
+            {
+                col.GetComponent<Enemy>().ComboDead();
+            }
+        }
     }
     void OnTriggerStay2D(Collider2D col)
     {
@@ -205,10 +215,23 @@ public class Enemy : MonoBehaviour
         effect.transform.position = transform.position;
 
         //爆破効果音生成
-        GameObject audioObj = Instantiate(audio);
+        GameObject audioObj = Instantiate(sound);
         audioObj.GetComponent<SE>().SetClip(se[1]);
 
         Destroy(gameObject);//消滅
+    }
+
+    /// <summary>
+    ///　吹き飛ばした敵に当たったら消滅
+    /// </summary>
+    public void ComboDead()
+    {
+        SpawnSPEffect();
+        point *= 2;
+        player.GetComponent<Player>().AddSP(point, false);//プレイヤーのスマッシュポイント加算
+        GameObject comboTextObj = Instantiate(comboText);
+        comboTextObj.GetComponent<TextUI>().SetPos(transform.position);
+        Dead();
     }
 
     /// <summary>

@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class BulletEnemy : Enemy
 {
+    public float[] bulletSpeed;//弾の速度
+
     private Rigidbody2D rigid;
     private Vector2 currentRV;//移動ベクトル
     private CircleBulletShooter bulletClass;//円状弾クラス
     private RazerShooter razerClass;//レーザークラス
+    private int num;//ID番号
+    private bool isStart;//行動開始フラグ
 
     /// <summary>
     /// 初期化
@@ -21,6 +25,7 @@ public class BulletEnemy : Enemy
         currentRV = rigid.velocity;
 
         bulletClass = GetComponent<CircleBulletShooter>();
+        bulletClass.Stop();
         razerClass = GetComponent<RazerShooter>();
     }
 
@@ -29,6 +34,11 @@ public class BulletEnemy : Enemy
     /// </summary>
     public override void EnemyUpdate()
     {
+        if (!isStart)
+        {
+            SetBulletSpeed();
+            isStart = true;
+        }
     }
 
     /// <summary>
@@ -36,7 +46,9 @@ public class BulletEnemy : Enemy
     /// </summary>
     public override void AI()
     {
-        if(!razerClass.IsActive)
+        if (!isStart) return;
+
+        if (!razerClass.IsActive)
         {
             bulletClass.enabled = true;
             if (rigid.velocity == Vector2.zero)
@@ -51,7 +63,7 @@ public class BulletEnemy : Enemy
             currentRV = rigid.velocity;
         }
 
-        if(isStan)
+        if (isStan)
         {
             foreach (var ai in ai_classes)
             {
@@ -65,6 +77,17 @@ public class BulletEnemy : Enemy
     }
 
     /// <summary>
+    /// 弾の速度設定
+    /// </summary>
+    private void SetBulletSpeed()
+    {
+        //IDによって弾の移動速度を変える
+        int n = num / 2;
+        int speedNum = n % 2;
+        bulletClass.bulletSpeed = bulletSpeed[speedNum];
+    }
+
+    /// <summary>
     /// あたり判定
     /// </summary>
     /// <param name="col"></param>
@@ -74,5 +97,15 @@ public class BulletEnemy : Enemy
         {
             currentRV = rigid.velocity;
         }
+    }
+
+
+    /// <summary>
+    /// 番号設定
+    /// </summary>
+    /// <param name="num"></param>
+    public void SetNumber(int num)
+    {
+        this.num = num;
     }
 }

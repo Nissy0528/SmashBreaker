@@ -291,6 +291,8 @@ public class RazerShooter : AI
     /// <returns></returns>
     public bool IsFire()
     {
+        if (razerList == null) return false;
+
         foreach (var r in razerList)
         {
             return r.IsFire();

@@ -52,6 +52,9 @@ public class Razer
         shotRay.direction = velocity.normalized;
         //マテリアル設定
         lineRenderer.material = mat;
+        //太さ設定
+        lineRenderer.startWidth = 2.0f;
+        lineRenderer.endWidth = 2.0f;
 
         this.wallLayer = wallLayer;
     }
@@ -112,8 +115,8 @@ public class Razer
 
         if (count >= time)
         {
-            lineRenderer.startWidth = 0.5f;
-            lineRenderer.endWidth = 0.5f;
+            lineRenderer.startWidth = 1.0f;
+            lineRenderer.endWidth = 1.0f;
             Color color = lineRenderer.material.color;
             color.a = 1.0f;
             lineRenderer.material.color = color;
@@ -145,8 +148,8 @@ public class Razer
     public void Stop(bool isEnabled)
     {
         //幅設定
-        lineRenderer.startWidth = 0.25f;
-        lineRenderer.endWidth = 0.25f;
+        lineRenderer.startWidth = 0.5f;
+        lineRenderer.endWidth = 0.5f;
         lineRenderer.enabled = isEnabled;
         count = 0.0f;
         //マテリアル設定

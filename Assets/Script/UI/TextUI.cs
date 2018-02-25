@@ -15,7 +15,7 @@ public class TextUI : MonoBehaviour
         rectTransfrom = GetComponent<RectTransform>();
         GameObject canvas = GameObject.Find("Canvas");
         rectTransfrom.SetParent(canvas.transform, false);
-        rectTransfrom.position = RectTransformUtility.WorldToScreenPoint(Camera.main, position);
+        rectTransfrom.position = position;
         text = GetComponent<Text>();
     }
 
@@ -26,7 +26,7 @@ public class TextUI : MonoBehaviour
         color.a -= Time.deltaTime;
         text.color = color;
 
-        if(text.color.a<=0.0f)
+        if (text.color.a <= 0.0f)
         {
             Destroy(gameObject);
         }

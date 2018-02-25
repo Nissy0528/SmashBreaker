@@ -40,6 +40,7 @@ public class BossHitEffect : MonoBehaviour
         if (bossHP == iniHP) return;
 
         anim.enabled = true;
+        GetComponent<Effect>().Initialized();
         //if (bossHP <= 0)
         //{
         //    anim.SetBool("BossDead", true);

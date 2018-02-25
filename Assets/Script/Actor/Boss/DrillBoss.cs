@@ -7,7 +7,6 @@ public class DrillBoss : Boss
     public float moveLength;//逃げる距離
     public float drillCount;//ドリルの数
 
-    private GameObject[] enemys;//フィールド上の雑魚敵
     private Object[] drills;//フィールド上のドリル
     private BossBulletShooter bulletClass;//弾発射クラス
     private EnemySpawner spawnClass;//雑魚敵生成クラス
@@ -36,7 +35,6 @@ public class DrillBoss : Boss
     /// </summary>
     public override void BossUpdate()
     {
-        enemys = GameObject.FindGameObjectsWithTag("Enemy");
         drills = FindObjectsOfType<GrowDrillEnemy>();
         length = Vector2.Distance(transform.position, player.transform.position);
         AI();
@@ -118,37 +116,5 @@ public class DrillBoss : Boss
         Vector2[] positions = new Vector2[] { firstPos };
         moveClass.Positions = positions;
         moveClass.Initialize();
-    }
-
-    /// <summary>
-    /// 硬直
-    /// </summary>
-    public override void Stan()
-    {
-        if (!isStan) return;
-
-        if (stanDelay == stanTime)
-        {
-            EnemyDead();
-        }
-        stanDelay -= Time.deltaTime;
-
-        if (stanDelay <= 0.0f)
-        {
-            isStan = false;
-            stanDelay = stanTime;
-            Initialize();
-        }
-    }
-
-    /// <summary>
-    /// 全雑魚敵消滅
-    /// </summary>
-    private void EnemyDead()
-    {
-        foreach (var e in enemys)
-        {
-            e.GetComponent<Enemy>().Dead();
-        }
     }
 }

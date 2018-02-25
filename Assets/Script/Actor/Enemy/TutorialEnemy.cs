@@ -33,13 +33,7 @@ public class TutorialEnemy : Enemy
     /// </summary>
     public override void EnemyUpdate()
     {
-        startTime -= Time.deltaTime;
-        if (!isStart && startTime <= 0.0f)
-        {
-            rigid.velocity = Vector2.zero;
-            followClass.enabled = true;
-            isStart = true;
-        }
+
     }
 
     /// <summary>
@@ -53,6 +47,16 @@ public class TutorialEnemy : Enemy
             foreach (var ai in ai_classes)
             {
                 ai.Stop();
+            }
+        }
+        else
+        {
+            startTime -= Time.deltaTime;
+            if (!isStart && startTime <= 0.0f)
+            {
+                rigid.velocity = Vector2.zero;
+                followClass.enabled = true;
+                isStart = true;
             }
         }
     }

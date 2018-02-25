@@ -13,6 +13,10 @@ public class Title : MonoBehaviour
     /// </summary>
     public static string titleCaptions = "titles";
 
+    public GameObject sound;
+    public AudioClip[] se;
+    public TitlePlayer player;
+
     /// <summary>
     /// アニメ
     /// </summary>
@@ -71,11 +75,13 @@ public class Title : MonoBehaviour
     /// <param name="type"></param>
     private void ButtonPush(BType type)
     {
-        SoundManager.PlaySound(SoundType.SE, "title_selectSE");
+        GameObject soundObj = Instantiate(sound);
+        soundObj.GetComponent<SE>().SetClip(se[1]);
 
         if (type == BType.start)
         {
             StartPush();
+            player.PlayerState = TitlePlayer.State.DASH;
         }
         else if (type == BType.option)
         {
@@ -143,15 +149,17 @@ public class Title : MonoBehaviour
 
         if (anime.State == AnimState.open)
         {
-            foreach (var b in buttons.Values)
-            {
-                b.gameObject.SetActive(false);
-            }
+            //foreach (var b in buttons.Values)
+            //{
+            //    b.gameObject.SetActive(false);
+            //}
         }
         else if (anime.State == AnimState.openEnd)
         {
-            ButtonOn();
+            //ButtonOn();
             isAnime = false;
+            //GameObject soundObj = Instantiate(sound);
+            //soundObj.GetComponent<SE>().SetClip(se[0]);
         }
         else if (anime.State == AnimState.start)
         {
@@ -162,11 +170,11 @@ public class Title : MonoBehaviour
                 for (var c = 0; c < canvas.childCount; c++)
                 {
                     var g = canvas.GetChild(c);
-                    if (g.name != "Player" && g.name != "Back" && g.name != "Sandstorm")
+                    if (g.tag != "Remain")
                     {
                         g.gameObject.SetActive(false);
                     }
-                    if (g.name == "Player")
+                    if (g.name == "TitlePlayerBack")
                     {
                         Animator anim = g.GetComponent<Animator>();
                     }
@@ -198,7 +206,7 @@ public class Title : MonoBehaviour
     /// </summary>
     private void SceneChange()
     {
-        SceneManager.LoadSceneAsync(nextScene);
+        SceneManager.LoadScene(nextScene);
     }
 
     /// <summary>

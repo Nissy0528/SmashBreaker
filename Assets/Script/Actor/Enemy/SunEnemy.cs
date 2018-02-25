@@ -50,15 +50,7 @@ public class SunEnemy : Enemy
 	/// 更新
 	/// </summary>
 	public override void EnemyUpdate()
-    {
-        startTime -= Time.deltaTime;
-        if (!isStart && startTime <= 0.0f)
-        {
-            rigid.velocity = Vector2.zero;
-			isStart = true;
-        }
-
-        MoveToPoint();
+    { 
     }
 
     /// <summary>
@@ -69,23 +61,33 @@ public class SunEnemy : Enemy
         if (isShootSet)
         {
             GetComponent<FollowPlayer>().MoveStop();
-            GetComponent<Collider2D>().enabled = false;
         }
-        //if (GetComponent<Dash>().IsActive && ai_classes[0].enabled)
-        //{
-        //    GetComponent<Collider2D>().enabled = true;
-        //    ai_classes[1].Stop();
-        //    ai_classes[2].Stop();
-        //}
-		
+        if (GetComponent<Dash>().IsActive && ai_classes[0].enabled)
+        {
+            GetComponent<Collider2D>().enabled = true;
+            ai_classes[1].Stop();
+            ai_classes[2].Stop();
+        }
+
         if (isStan)
         {
             gameObject.layer = 0;
             isShootSet = false;
             foreach (var ai in ai_classes)
             {
-              //  ai.Stop();
+                ai.Stop();
             }
+        }
+        else
+        {
+            startTime -= Time.deltaTime;
+            if (!isStart && startTime <= 0.0f)
+            {
+                rigid.velocity = Vector2.zero;
+                isStart = true;
+            }
+
+            MoveToPoint();
         }
     }
 

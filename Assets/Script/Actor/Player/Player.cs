@@ -8,8 +8,6 @@ public class Player : MonoBehaviour
     //パラメータの構造体
     public struct Parameter
     {
-        //public int hp;//体力
-        //public int maxHP;//最大体力
         public int maxSP;//最大スマッシュポイント
         public float speed;//移動速度
         public float sp;//スマシュポイント
@@ -17,32 +15,25 @@ public class Player : MonoBehaviour
         public float spDifSpeed;//スマッシュポイントが減る速度
         public float dashInterval;//ダッシュのインターバル
         public float dashSpeed;//ダッシュ速度
-                               //public float shootInterval;
-                               //public float bulletGrawSpeed;
-                               //public float bulletMaxSize;
     }
 
     public GameObject damageEffect;//ダメージエフェクト
-                                   //public GameObject warp;//ワープゾーン
-    public SmashGage smashGage;
-    //public GameObject bullet;
-    public GameObject muzzle;
-    public GameObject spMaxEffect;
+    public GameObject aura;//オーラ
+    public SmashGage smashGage;//スマッシュゲージ
     public GameObject chara;//画像オブジェクト
+    public GameObject sound;//サウンド
+    public AudioClip[] se;//効果音
 
     private Parameter parameter;//パラメータ
     private MainCamera mainCamera;//カメラ
     private Animator anim;//アニメーション
     private Rigidbody2D rigid;
-    private GameObject bulletObj;
-    private Vector3 size;//大きさ
-    private Vector3 dashPos;//後ろに下がる座標
+    private Vector3 dashPos;//ダッシュ座標
     private Vector3 vec;//ダッシュの方向
     private float x_axis;//横の入力値
     private float y_axis;//縦の入力値
     private float spDifCount;//スマッシュポイントが減るまでの時間
     private float dashCount;
-    //private float shootCount;
     private bool isDamage;//ダメージフラグ
 
     /// <summary>
@@ -71,14 +62,12 @@ public class Player : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera").GetComponent<MainCamera>();
         anim = chara.GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
-        size = transform.localScale;//大きさ取得
         state = State.IDEL;//最初は待機状態
 
         isDamage = false;
         parameter.sp = 0.0f;
         spDifCount = 0.0f;
         dashCount = 0.0f;
-        //shootCount = 0.0f;
     }
 
     // Update is called once per frame
@@ -91,30 +80,12 @@ public class Player : MonoBehaviour
         {
             Move();//移動
             Rotate();//向き変更
-                     //DamageEffect();//ダメージ演出
             SmashPoint();
             Dash();//ダッシュ
-                   //BulletShoot();
-                   //CreateWarp();
             BrownOff();//吹き飛び
         }
         Dead();
-        //Clamp();//移動制限
-    }
-
-    /// <summary>
-    /// 移動制限
-    /// </summary>
-    private void Clamp()
-    {
-        Vector3 screenMinPos = mainCamera.ScreenMin;//画面の左下の座標
-        Vector3 screenMaxPos = mainCamera.ScreenMax;//画面の右下の座標
-
-        //座標を画面内に制限(自分の座標)
-        Vector3 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, screenMinPos.x + 0.5f, screenMaxPos.x - 0.5f);
-        pos.y = Mathf.Clamp(pos.y, screenMinPos.y + 0.5f, screenMaxPos.y - 0.5f);
-        transform.position = pos;
+        AuraAcrive();
     }
 
     /// <summary>
@@ -176,11 +147,13 @@ public class Player : MonoBehaviour
         if (state != State.DASH)
         {
             if (vec == Vector3.zero && dashCount <= 0.0f
-                && (Input.GetButtonDown("Dash") || Input.GetAxisRaw("Dash") >= 0.5f))
+                && (Input.GetButtonDown("Dash") || Input.GetAxisRaw("Dash") <= -0.5f))
             {
                 vec = (lookPos - transform.position).normalized;//向く方向を正規化
                 rigid.AddForce(vec * parameter.dashSpeed, ForceMode2D.Impulse);
                 state = State.DASH;
+                GameObject soundObj = Instantiate(sound);
+                soundObj.GetComponent<SE>().SetClip(se[0]);
             }
             if (vec != Vector3.zero
                 && (Input.GetButtonUp("Dash") || Input.GetAxisRaw("Dash") == 0.0f))
@@ -202,100 +175,6 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// ダメージ演出
-    /// </summary>
-    //private void DamageEffect()
-    //{
-    //    if (!isDamage) return;
-
-    //    if (!damageEffect.activeSelf)
-    //    {
-    //        mainCamera.SetShake(true, 0.0f);
-    //        ControllerShake.Shake(1.0f, 1.0f);
-    //        damageEffect.SetActive(true);
-    //    }
-    //    else
-    //    {
-    //        if (mainCamera.IsShakeFinish)
-    //        {
-    //            ControllerShake.Shake(0.0f, 0.0f);
-    //            damageEffect.SetActive(false);
-    //            isDamage = false;
-    //        }
-    //    }
-    //}
-
-    /// <summary>
-    /// 弾発射
-    /// </summary>
-    //private void BulletShoot()
-    //{
-    //    SpawnBullt();//弾生成
-    //    GrowBullet();//弾を大きくする
-
-    //    if (Input.GetButtonUp("Decision") && bulletObj != null)
-    //    {
-    //        bulletObj.transform.parent = null;
-    //        bulletObj.AddComponent<CircleCollider2D>();
-    //        bulletObj.GetComponent<CircleCollider2D>().radius = 0.16f;
-    //        bulletObj.GetComponent<CircleCollider2D>().isTrigger = true;
-    //        bulletObj.AddComponent<CircleBullet>();
-    //        bulletObj.GetComponent<CircleBullet>().Speed = 20;
-    //        bulletObj.GetComponent<CircleBullet>().IsPlayer = true;
-    //        muzzle.transform.localScale = Vector3.one;
-    //        bulletObj = null;
-    //        state = State.IDEL;
-    //    }
-    //}
-    /// <summary>
-    /// 弾生成
-    /// </summary>
-    //private void SpawnBullt()
-    //{
-    //    if (shootCount > 0.0f)
-    //    {
-    //        shootCount -= Time.deltaTime;
-    //        return;
-    //    }
-
-    //    if (Input.GetButtonDown("Decision"))
-    //    {
-    //        bulletObj = Instantiate(bullet, muzzle.transform);
-    //        bullet.transform.localPosition = new Vector3(0, 0.18f, 0);
-    //        shootCount = parameter.shootInterval;
-    //    }
-    //}
-    /// <summary>
-    /// 弾を大きくする
-    /// </summary>
-    //private void GrowBullet()
-    //{
-    //    if (bulletObj == null) return;
-
-    //    if (Input.GetButton("Decision"))
-    //    {
-    //        state = State.ATTACK;
-    //        Vector3 bulletSize = muzzle.transform.localScale;
-    //        bulletSize += new Vector3(parameter.bulletGrawSpeed, parameter.bulletGrawSpeed, 1.0f);
-    //        bulletSize.x = Mathf.Clamp(bulletSize.x, 0.0f, parameter.bulletMaxSize);
-    //        bulletSize.y = Mathf.Clamp(bulletSize.y, 0.0f, parameter.bulletMaxSize);
-    //        muzzle.transform.localScale = bulletSize;
-    //    }
-    //}
-
-    /// <summary>
-    /// ワープゾーン生成
-    /// </summary>
-    //private void CreateWarp()
-    //{
-    //    if (Input.GetButtonDown("Decision"))
-    //    {
-    //        GameObject warpObj = Instantiate(warp);
-    //        warpObj.transform.position = transform.position;
-    //    }
-    //}
-
-    /// <summary>
     /// スマッシュポイント
     /// </summary>
     private void SmashPoint()
@@ -307,8 +186,6 @@ public class Player : MonoBehaviour
         }
 
         parameter.sp = Mathf.Max(parameter.sp - Time.deltaTime * parameter.spDifSpeed, 0.0f);
-
-        spMaxEffect.SetActive(smashGage.IsMax);
     }
 
     /// <summary>
@@ -318,7 +195,7 @@ public class Player : MonoBehaviour
     {
         if (state != State.DEAD) return;
 
-        if (damageEffect == null 
+        if (damageEffect == null
             && anim.updateMode != AnimatorUpdateMode.UnscaledTime)
         {
             anim.SetTrigger("Dead");
@@ -327,14 +204,19 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// 体力回復
+    /// オーラのアクティブを切り替える
     /// </summary>
-    //public void ChangeHp(int h)
-    //{
-    //    //体力を上限まで回復
-    //    parameter.hp += h;
-    //    parameter.hp = Mathf.Clamp(parameter.hp, 0, parameter.maxHP);
-    //}
+    private void AuraAcrive()
+    {
+        if (smashGage.IsMax && Time.deltaTime == 0.0f)
+        {
+            aura.SetActive(false);
+        }
+        else
+        {
+            aura.SetActive(true);
+        }
+    }
 
     /// <summary>
     /// スマッシュポイント変動
@@ -419,15 +301,6 @@ public class Player : MonoBehaviour
     public void Damage()
     {
         if (state == State.DASH) return;
-
-        //if (parameter.hp > 0 && !isDamage)
-        //{
-        //    ChangeHp(-1);
-        //    isDamage = true;
-        //}
-        //if (parameter.hp <= 0 && state != State.DEAD)
-        //{
-        //    parameter.hp = 0;
         damageEffect.SetActive(true);
 
         Animator damageAnim = damageEffect.GetComponent<Animator>();
@@ -435,7 +308,6 @@ public class Player : MonoBehaviour
         FindObjectOfType<GameManager>().ShakeController(1.0f, 0.5f);
 
         state = State.DEAD;
-        //}
     }
 
     /// <summary>
